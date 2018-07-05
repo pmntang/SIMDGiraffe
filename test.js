@@ -9,16 +9,13 @@ myNewJSON.computeResult=function(){
     
 };
 myNewJSON.computeResult();
-//test and verify function computeResult
-//console.log(myNewJSON);
-//var variableToDisplay=myNewJSON.operand;
-//variableToDisplay.push(myNewJSON.result);
-//console.log(""+variableToDisplay[0][0]);
 
-var canvas,ctx, w, h, testafichage="oui";
-var eventctxAbscissa, eventctxOrdinate;
+
+var canvas,ctx, w, h;
+var mousePosition, variablesToDisplay;
 
 window.onload = function init() {
+   
     // called AFTER the page has been loaded
     canvas = document.querySelector("#myCanvas");
   
@@ -29,60 +26,31 @@ window.onload = function init() {
     // important, we will draw with this object
     ctx = canvas.getContext('2d');
    canvas.addEventListener('click', click);
-  
-  
-    // create my objects
+      // create my objects
    variablesToDisplay=createVariablesToDisplay(myNewJSON);
-     // ready to go !
-    mainFunction();
-   
-    var exemple=createVariablesToDisplay(myNewJSON);
-console.log(exemple[0].createMyObjects(), exemple[1].createMyObjects(), exemple[2].createMyObjects(), "un exemple");
+    // display my object
+   ctx.clearRect(0, 0, w, h);
+ 
+   displayVariables(variablesToDisplay);
+    
 };
 
 
-/*function mainFunction(){
-    ctx.clearRect(0, 0, w, h);
-    displayAVariable(myObjects);
-}
-
-*/
-
 
 function click (evt){
-testafichage="qui"
-  eventctxAbscissa=getMousePos(canvas, evt).x;
- eventctxOrdinate=getMousePos(canvas, evt).y;
-    var firstAbscissa, secondAbscissa, firstOrdinate, secondOrdinate;
-    testEventPosition(eventctxAbscissa, eventctxOrdinate, firstAbscissa, secondAbscissa, firstOrdinate, secondOrdinate);
+   
+mousePosition=getMousePos(canvas, evt);
+ctx.clearRect(0, 0, w, h);
+variablesToDisplay=createVariablesToDisplay(myNewJSON);
+reactToEventsOfVariables(variablesToDisplay);
+  //   ctx.clearRect(0, 0, w, h);   
   
-}
-
-
-//the two tests may not occur and the same level
-function testEventPosition(evt, firstAbscissa, secondAbscissa, firstOrdinate, secondOrdinate){
-  return  testPositionOrdinate(eventctxOrdinate, firstOrdinate, secondOrdinate)&&testPositionAbscissa(eventctxAbscissa, firstAbscissa, secondAbscissa);
-  }
-
-function testPositionOrdinate(eventctxOrdinate, firstOrdinate, secondOrdinate){
-    if ((firstOrdinate-eventctxOrdinate)*(secondOrdinate-eventctxOrdinate)<=0)
-        return true
-    else
-        return false
-}
-
-function testPositionAbscissa(eventctxAbscissa, firstAbscissa, secondAbscissa){
-    if ((firstAbscissa-eventctxAbscissa)*(secondAbscissa-eventctxAbscissa)<=0)
-        return true
-    else
-        return false
-}
-
-
+    console.log(mousePosition.x, mousePosition)
+    }
 
 function getMousePos(canvas, evt) {
    // Here we take into account CSS boudaries
-   var rect = canvas.getBoundingClientRect();
+   rect = canvas.getBoundingClientRect();
    return {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top
@@ -92,13 +60,9 @@ function getMousePos(canvas, evt) {
 
 
 
-function mainFunction(){
-    ctx.clearRect(0, 0, w, h);
-    displayVariables(variablesToDisplay);
-    reactToEventsOfVariables(variablesToDisplay);
-}
 
 function createVariablesToDisplay(someJasonSpecification){
+    console.log("create var called");
     var someVariablesToDisplay=[], m=someJasonSpecification.operand.length+1, widthOfVariable=w, heigthOfVariable=h/(2*m+1);
     for (var i=0; i<m; i++) {
                            var objectsTodisplay={//The values to display are those of the operands or the result, we just combine the set in a single array.
@@ -109,19 +73,64 @@ function createVariablesToDisplay(someJasonSpecification){
                                                  },
                                                  ordinate:i*heigthOfVariable+5*i,
                                                  //: We may add some global properties here, global to the variable and which should be propagated to objects.
+                                                 display: function () {
+                                                                //ctx.clearRect(0, 0, w, h);
+                                                                ctx.save();
+                                                                ctx.translate(0, this.ordinate);
+                                                                this.createMyObjects().forEach(function(everyObject){everyObject.drawn();})
+                                                                ctx.restore();
+                                                     console.log("a la variable ordonne" + (this.ordinate));
+                                                 },
+                                                react:function () {
+                                                                ctx.save();
+                                                                ctx.translate(0, this.ordinate);
+                                                                this.createMyObjects().forEach(function(everyObject){everyObject.react();})
+                                                                ctx.restore();
+
+                                                },
                                                  createMyObjects: function (){
+                                                                        var ordinateOfRect=this.ordinate;
                                                                         var myObjects=[], n2=this.valuesToDisplay.length, widthOfObjects=(w/(n2+2));
                                                                         for (var j=0; j<n2; j++){
+                                                                             
                                                                              var anObject={abscissa: j*widthOfObjects,
-                                                                                           // ordinate:this.ordinate,It is a global property and common to all the objects of the variable, we go back in the variable., 
+                                                                                           ordinate: ordinateOfRect,
                                                                                            text:""+this.valuesToDisplay[j],
                                                                                            color:"#000000",
                                                                                            font:"8px Arial",
                                                                                            width:widthOfObjects,
                                                                                            height:heigthOfVariable,
-                                                                                           react: function (){if (testPositionAbscissa(eventctxAbscissa, this.abscissa, this.abscissa+this.width)) this.color="red";
+                                                                                           position: function (){
+                                                                                                      ctx.save();
+                                                                                                      ctx.translate(this.abscissa, 0);
+                                                                                           },
+                                                                                           drawn: function (){
+                                                                                                    this.position(),
+                                                                                                   // ctx.fillStyle = "rgba(255, 255, 255, 1)";
+                                                                                                   // ctx.fillRect(0, 0, anObject.width, anObject.height);
+                                                                                                    ctx.clearRect(0, 0, this.width, this.height);
+                                                                                                    ctx.strokeRect(0, 0, this.width, this.height);
+                                                                                                    ctx.font = this.font;
+                                                                                                    ctx.fillStyle = this.color;
+                                                                                                    ctx.fillText(this.text, 2, this.height*2/3);
+                                                                                                    ctx.restore();
                                                                                                
+                                                                                           },
+                                                                                           react: function () {
+                                                                                                   if (((this.ordinate<=mousePosition.y)&&(this.ordinate+this.height>=mousePosition.y))&&((this.abscissa<=mousePosition.x)&&(this.abscissa+this.width>=mousePosition.x)))
+                                                                                                        {      
+                                                                                                           
+                                                                                                           this.color="red";
+                                                                                                           this.drawn();
+                                                                                                        }
+                                                                                                    else
+                                                                                                         {   this.color="green";
+                                                                                                            this.drawn();
+                                                                                                          }
+                                                                                               console.log("au rectangle ordonne"+(this.ordinate),"au rectangle ordonne souris"+mousePosition.y, "au rectangle abscisse" + (this.abscissa),  "au rectangle abscisse souris" + mousePosition.x, this.text);
+                                                                                          
                                                                                            }
+                                                                                           
                                                                                            //bangNumber:is an array of object with two fields (number, status)
                                                                                            
                                                                                            }
@@ -144,109 +153,23 @@ function createVariablesToDisplay(someJasonSpecification){
 
 
 
-function displayVariables(arrayOfObjects){
-    arrayOfObjects.forEach(function(anObjectOfArray){
-        ctx.save();
-        ctx.translate(0, anObjectOfArray.ordinate);
-        displayAVariable(anObjectOfArray);
-        ctx.restore();
-        
+function displayVariables(arrayOfArrayOfObject){
+    arrayOfArrayOfObject.forEach(function(anArrayOfobject){
+anArrayOfobject.display();
     });
 }
 
-function reactToEventsOfVariables(arrayOfObjects){
-    arrayOfObjects.forEach(function(anObjectOfArray){
-        reactToEventsOfAVariables(anObjectOfArray);
+function reactToEventsOfVariables(arrayOfArrayOfObject){
+    arrayOfArrayOfObject.forEach(function(anArrayOfobject){
+anArrayOfobject.react();
     });
 }
+ 
 /*
-function createMyObjects (aVariable){
-    var myObjects=[], n1=aVariable.length, widthOfObjects=(w/(n1+2)), heigthOfObjects=widthOfObjects;
-    for (var i=0; i<n1; i++){
-        var anObject={abscissa: i*widthOfObjects,
-                      ordinate:aVariable.ordinate,
-                      text:""+aVariable[i],
-                      color:"#000000",
-                      font:"8px Arial",
-                      width:widthOfObjects,
-                      height:heigthOfObjects
-            
-        }
-    
-        myObjects.push(anObject);
-    }
-    
-  return myObjects  
- }
-*/
-
-function displayAVariable(anObjectOfArray) {
-    anObjectOfArray.createMyObjects().forEach(function(anObject) {
-      drawObject(anObject);
-    });
-}
-
-function reactToEventsOfAVariables(anObjectOfArray) {
-    anObjectOfArray.createMyObjects().forEach(function(anObject) {
-      anObject.react();
-    });
-}
-
-
-function drawObject(anObject){
-    ctx.save();
-    ctx.translate(anObject.abscissa, 0);
-   // ctx.fillStyle = "rgba(255, 255, 255, 1)";
-   // ctx.fillRect(0, 0, anObject.width, anObject.height);
-    ctx.strokeRect(0, 0, anObject.width, anObject.height);
-    ctx.font = anObject.font;
-    ctx.fillStyle = anObject.color;
-    ctx.fillText(anObject.text, 2, anObject.height*2/3);
-    ctx.restore();
-}
-
-
-function reactToEventsOfObject(anObject){
-  
-}
-/*
-var unexemple=createMyObjects(variableToDisplay[0]);
-console.log(unexemple[10].text);
-
-let myNewData=JSON.parse('{"head":
-	{"name":"_mm_add_epi8",
-	 "operandBitCount": [128, 128],
-	 "resultBitCount": 128,
-	 "fieldOperandCount":[16, 16],
-	 "fieldResultCount": 16
-	},
- "operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],
-			  
-			 [11,2, 4, 76, 56,3, 26,12,11,32, 3,  7,45, 9, 24, 87 ]
-			],
- "LinkingIndex":        [ [0,0],
-						  [1,1],
-						  [2,2],
-						  [3,3],
-						  [4,4],
-						  [5,5],
-						  [6,6],
-						  [7,7],
-						  [8,8],
-						  [9,9],
-						  [10,10],
-						  [11,11],
-						  [12,12],
-						  [13,13],
-						  [14,14],
-						  [15,15],
-						],
- "result": []
-}')*/
-
 function unefonction(){
      console.log(testafichage);
 }
+console.log(eventctxAbscissa);
 var SuperObjectModel={
     init:function (st1){
         this.mebre1=st1;
@@ -274,7 +197,6 @@ tab.push(SuperObjectModel1);
 tab.push(SuperObjectModel2);
 tab.push(SuperObjectModel3);
 
-/*
 function display(t){
     t.forEach(function displayelt (x) {console.log(x.mebre1);});
 }
