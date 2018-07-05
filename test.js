@@ -25,26 +25,27 @@ window.onload = function init() {
   
     // important, we will draw with this object
     ctx = canvas.getContext('2d');
-   canvas.addEventListener('click', click);
+    ctx.save();
+    canvas.addEventListener('click', click);
       // create my objects
    variablesToDisplay=createVariablesToDisplay(myNewJSON);
     // display my object
    ctx.clearRect(0, 0, w, h);
  
    displayVariables(variablesToDisplay);
-    
+    ctx.restore();
 };
 
 
 
 function click (evt){
-   
+   ctx.save();
 mousePosition=getMousePos(canvas, evt);
 ctx.clearRect(0, 0, w, h);
 variablesToDisplay=createVariablesToDisplay(myNewJSON);
 reactToEventsOfVariables(variablesToDisplay);
   //   ctx.clearRect(0, 0, w, h);   
-  
+  ctx.restore();
     console.log(mousePosition.x, mousePosition)
     }
 
@@ -75,17 +76,17 @@ function createVariablesToDisplay(someJasonSpecification){
                                                  //: We may add some global properties here, global to the variable and which should be propagated to objects.
                                                  display: function () {
                                                                 //ctx.clearRect(0, 0, w, h);
-                                                                ctx.save();
-                                                                ctx.translate(0, this.ordinate);
+                                                               
+                                                             
                                                                 this.createMyObjects().forEach(function(everyObject){everyObject.drawn();})
-                                                                ctx.restore();
+                                                             
                                                      console.log("a la variable ordonne" + (this.ordinate));
                                                  },
                                                 react:function () {
-                                                                ctx.save();
-                                                                ctx.translate(0, this.ordinate);
+                                                                
+                                                           
                                                                 this.createMyObjects().forEach(function(everyObject){everyObject.react();})
-                                                                ctx.restore();
+                                                               
 
                                                 },
                                                  createMyObjects: function (){
@@ -102,7 +103,7 @@ function createVariablesToDisplay(someJasonSpecification){
                                                                                            height:heigthOfVariable,
                                                                                            position: function (){
                                                                                                       ctx.save();
-                                                                                                      ctx.translate(this.abscissa, 0);
+                                                                                                      ctx.translate(this.abscissa,  this.ordinate);
                                                                                            },
                                                                                            drawn: function (){
                                                                                                     this.position(),
@@ -117,7 +118,7 @@ function createVariablesToDisplay(someJasonSpecification){
                                                                                                
                                                                                            },
                                                                                            react: function () {
-                                                                                                   if (((this.ordinate<=mousePosition.y)&&(this.ordinate+this.height>=mousePosition.y))&&((this.abscissa<=mousePosition.x)&&(this.abscissa+this.width>=mousePosition.x)))
+                                                                                                   if (((this.ordinate<mousePosition.y)&&((this.ordinate+this.height)>mousePosition.y))&&((this.abscissa<mousePosition.x)&&((this.abscissa+this.width)>mousePosition.x)))
                                                                                                         {      
                                                                                                            
                                                                                                            this.color="red";
@@ -127,7 +128,7 @@ function createVariablesToDisplay(someJasonSpecification){
                                                                                                          {   this.color="green";
                                                                                                             this.drawn();
                                                                                                           }
-                                                                                               console.log("au rectangle ordonne"+(this.ordinate),"au rectangle ordonne souris"+mousePosition.y, "au rectangle abscisse" + (this.abscissa),  "au rectangle abscisse souris" + mousePosition.x, this.text);
+                                          
                                                                                           
                                                                                            }
                                                                                            
