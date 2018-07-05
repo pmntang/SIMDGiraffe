@@ -1,10 +1,11 @@
-html
+
+/*html
 {
 /*border: 1px solid black;*/
 height: 100%;
 width: 100%;
 }
-body
+/*body
 {
 
 /*display: flex;*/
@@ -14,14 +15,15 @@ width: 100%;
 margin-top: 0px;
 margin-bottom: 0px;
 }
+*/
 
 canvas
 {
 
 /*display: flex;*/
 /*border: 1px solid yellow;*/
-height: 30%;
-width: 30%;
+height: 200px;
+width: 400px;
 margin-top: 0px;
 margin-bottom: 0px;
 }
