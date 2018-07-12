@@ -1,112 +1,17 @@
-
-/*html
+html
 {
-/*border: 1px solid black;*/
+
 height: 100%;
 width: 100%;
 }
-/*body
+body
 {
 
-/*display: flex;*/
-/*border: 1px solid yellow;*/
+
 height: 100%;
 width: 100%;
 margin-top: 0px;
 margin-bottom: 0px;
 }
-*/
-
-canvas
-{
-
-/*display: flex;*/
-/*border: 1px solid yellow;*/
-height: 200px;
-width: 400px;
-margin-top: 0px;
-margin-bottom: 0px;
-}
 
 
-
-#variables
-{
-	display: flex;
-	flex-direction: column;
-
-	background-color:white;
-	border: solid green 1px;
-	justify-content: space-around;
-	align-items:stretch;
-	flex: 1;
-	height: 100%;
-}
-
-#var1
-{
-	display: flex;
-	
-background-color:white;
-	border: solid 1px;
-	justify-content: center;
-}
-
-
-
-.var1
-{
-	display: flex;
-	
-	background-color:white;
-	border: solid 1px;
-	justify-content: center;
-	 flex: 1;
-	
-}
-
-#var
-{
-	display: flex;
-	
-background-color:white;
-	border: solid 1px;
-	justify-content: center;
-}
-
-
-
-.var
-{
-	display: flex;
-	
-	background-color:white;
-	border: solid 1px;
-	justify-content: center;
-	 flex: 1;
-	
-
-}
-
-#rest
-{
-	display: flex;
-	
-background-color:white;
-	border: solid 1px;
-	justify-content: center;
-}
-
-
-
-.rest
-{
-	display: flex;
-	
-	background-color:white;
-	border: solid 1px;
-	justify-content: center;
-	 flex: 1;
-	
-
-}
