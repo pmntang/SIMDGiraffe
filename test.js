@@ -1,3 +1,16 @@
+/*var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi8", "operandBitCount": [128, 128], "resultBitCount": 128, "fieldOperandCount":[16, 16], "fieldResultCount": 16}, "operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],[11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 24, 87]], "LinkingIndex":[ [[[0,1]],[[0,2]]],[[[1,1]],[[1,2]]],[[[2,1]],[[2,2]]],[[[3,1]],[[3,2]]], [[[4,1]],[[4,2]]],  [[[5,1]],[[5,2]]],  [[[6,1]],[[6,2]]], [[[7,1]],[[7,2]]], [[[8,1]],[[8,2]]], [[[9,1]],[[9,2]]], [[[10,1]],[[10,2]]], [[[11,1]],[[11,2]]],[[[12,1]],[[12,2]]],[[[13,1]],[[13,2]]], [[[14,1]],[[14,2]]], [[[15,1]],[[15,2]]]], "result": []}');
+*/
+var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi8", "operandBitCount": [128], "resultBitCount": 128, "fieldOperandCount":[16], "fieldResultCount": 8}, "operand":[ [11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 24, 87]], "LinkingIndex":[ [[[0,1],[1,2]]],[[[2,1],[3,2]]],[[[4,1],[5,2]]],[[[6,1],[7,2]]],[[[8,1],[9,2]]],[[[10,1],[11,2]]],[[[12,1],[13,2]]],[[[14,1],[15,2]]]], "result": []}');
+
+//function to compute result on the fly
+myNewJSON.computeResult=function(){
+    var i;
+        for (i=0; i<this.head.fieldResultCount; i++)
+        this.result[i]=this.operand[0][2*i]+this.operand[0][2*i+1];
+    
+};
+/*
+
 var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi8", "operandBitCount": [128, 128], "resultBitCount": 128, "fieldOperandCount":[16, 16], "fieldResultCount": 16}, "operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],[11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 24, 87]], "LinkingIndex":[ [[[0,1]],[[0,2]]],[[[1,1]],[[1,2]]],[[[2,1]],[[2,2]]],[[[3,1]],[[3,2]]], [[[4,1]],[[4,2]]],  [[[5,1]],[[5,2]]],  [[[6,1]],[[6,2]]], [[[7,1]],[[7,2]]], [[[8,1]],[[8,2]]], [[[9,1]],[[9,2]]], [[[10,1]],[[10,2]]], [[[11,1]],[[11,2]]],[[[12,1]],[[12,2]]],[[[13,1]],[[13,2]]], [[[14,1]],[[14,2]]], [[[15,1]],[[15,2]]]], "result": []}');
 
 
@@ -7,7 +20,9 @@ myNewJSON.computeResult=function(){
         for (i=0; i<this.head.fieldResultCount; i++)
         this.result[i]=this.operand[0][i]+this.operand[1][i];
     
-};
+};*/
+
+
 myNewJSON.computeResult();
 myNewJSON.extractIndexRankContribution=function(){   var indexRankContribution=[];
                                                          for (var j=0; j<this.LinkingIndex.length; j++)
@@ -133,11 +148,49 @@ function test (n, t){
 }
 
 
+function getLocationOrderByOrd (arrayOfRect){
+    var rectBorder=[], x, y, width, height;
+    for (var k=0; k<arrayOfRect.length; k++)
+        {
+         var  bottomPosition={absc:0, ord:0}, topPosition={absc:0, ord:0};
+         x=parseFloat(arrayOfRect[k].getAttribute("x"));
+         y=parseFloat(arrayOfRect[k].getAttribute("y"));
+         width=parseFloat(arrayOfRect[k].getAttribute("width"));
+         height=parseFloat(arrayOfRect[k].getAttribute("height"));
+         bottomPosition.absc=x+width*0.5;
+         bottomPosition.ord=y+height;
+         topPosition.absc=bottomPosition.absc;
+         topPosition.ord=y;
+         rectBorder.push(bottomPosition);
+         rectBorder.push(topPosition);
+         }
+
+     return rectBorder.sort(compare);
+ }
+
+       
+function compare(a,b){
+ return a.ord-b.ord;
+}
 
 
 function createVariablesToDisplay(someJasonSpecification){
-
     var someVariablesToDisplay=[], m=someJasonSpecification.operand.length+1, widthOfVariable=w, heigthOfVariable=h/(2*m+4);
+    var ns="http://www.w3.org/2000/svg", style="fill:black;stroke:black;font-size:20px;font-weight:bold;";
+    var displayzone=document.getElementById("display");
+    var svg=document.createElementNS(ns,"svg");
+    svg.setAttribute( "width", "800");
+    svg.setAttribute( "height", "800"); 
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    displayzone.appendChild(svg);
+    var global=document.createElementNS(ns, "g"); //I'd put the whole the graphics and text in this g svg's element
+    global.setAttribute("id", "global");
+    global.setAttribute("transform", "translate(0, 0)"); // this is a void instruction, did nothing;
+    global.setAttribute("style", style); // I'shoul define the style to display and the event globaly
+    svg.appendChild(global);
+                                                
+
+    
     for (var y=0; y<m; y++) {
                            var objectsTodisplay={//The values to display are those of the operands or the result, we just combine the set in a single array.
                                                  valuesToDisplay:y<m-1?someJasonSpecification.operand[y]:someJasonSpecification.result,
@@ -147,7 +200,7 @@ function createVariablesToDisplay(someJasonSpecification){
                                                   bandNumberToallocate:y<m-1?someJasonSpecification.allocateBandNumber()[y]:someJasonSpecification.constructBandNumber(), 
 
                                                 
-                                                 ordinate:(y+1)*heigthOfVariable+3*y,
+                                                 ordinate:y*heigthOfVariable,
                                                  //: We may add some global properties here, global to the variable and which should be propagated to objects.
 
 
@@ -158,13 +211,13 @@ function createVariablesToDisplay(someJasonSpecification){
 
                                                                              var anObject={bandNumber:this.bandNumberToallocate[j],
                                                                                           abscissa: j*widthOfObjects,
-                                                                                           ordinate: ordinateOfRect,
+                                                                                           ordinate: 4*ordinateOfRect+4*y,
                                                                                            text:""+this.valuesToDisplay[j],
                                                                                            color:"#000000",
                                                                                            font:"9px Arial",
                                                                                            width:widthOfObjects,
                                                                                            height:heigthOfVariable,
-                                                                                           textAtribut:"fill:black;stroke:black;font-size:20px;font-weight:bold;",
+                                                                                           textAtribut:style,
                                                                                        
                                                                                            };
 
@@ -181,13 +234,7 @@ function createVariablesToDisplay(someJasonSpecification){
                                                                 },
                                                   displayMyobject: function () {
                                                      
-                                                      var ns="http://www.w3.org/2000/svg";
-                                                     var displayzone=document.getElementById("display");
-                                                      var svg=document.createElementNS(ns,"svg");
-                                                      svg.setAttribute( "width", "800");
-                                                      svg.setAttribute( "height", "800"); 
-                                                      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-                                                      displayzone.appendChild(svg);
+                                                      
                                                       
                                                       
                                                       for (var k=0; k<this.createMyObjects().length; k++)
@@ -237,48 +284,84 @@ function createVariablesToDisplay(someJasonSpecification){
                                                               group.appendChild(text);
                                                               
                                                               group.addEventListener("click", this.reactToEvent, true);
-                                                              //group.addEventListener("mouseover", this.reactToEvent);
+                                                              group.addEventListener("mouseover", this.reactToEvent, true);
+                                                              group.addEventListener("dblclick", this.reactToEvent, true);
                                            
                                                           }
                                                   },
                                                  reactToEvent:function(t){
 
-                                                     var elt=t.target;
-                                                     var parent=elt.parentNode;
-                                                     
-                                                      attrClass="*"+"["+"class"+"*"+"="+"r"+"]";
-                                                     
-                                                     var band=document.querySelectorAll(attrClass);
-                                                     
-                                                     
-                                                
-                                                     for (var p=0; p<band.length; p++)
-                                                         {
-                                                             band[p].setAttribute("fill", "white");
-                                                             band[p].setAttribute("style", "stroke: #000000; stroke-opacity:0.5");
-                                                         }
+                                                     var evt=t.type, elt=t.target, parent=elt.parentNode;
+                                                     var attrClassP= parent.getAttribute("class"), attrClass="*"+"["+"class"+"*"+"="+attrClassP+"]",   band=document.querySelectorAll(attrClass);
+                                                     var  attrClassR="*"+"["+"class"+"*"+"="+"r"+"]", attrClassT="*"+"["+"class"+"*"+"="+"t"+"]",attrClassL="*"+"["+"class"+"*"+"="+"l"+"]", bandr=document.querySelectorAll(attrClassR), bandl=document.querySelectorAll(attrClassL),bandtext=document.querySelectorAll(attrClass+" "+"text"),bandLocation=document.querySelectorAll(attrClass+" "+"rect") ;
+                                                     for (var p=0; p<bandr.length; p++)
+                                                                     {
+                                                                         bandr[p].setAttribute("fill", "white");
+                                                                         bandr[p].setAttribute("style", "stroke: #000000; stroke-opacity:0.5");
+                                                                     }
+                                                     var lineToDrop=document.querySelectorAll("line");
+                                                     while(lineToDrop.length){
+                                                         global.removeChild(lineToDrop[lineToDrop.length-1]);
+                                                         lineToDrop=document.querySelectorAll("line")
+                                                         
+                                                     }
+                                                     var SelectedRect=getLocationOrderByOrd(bandLocation);
+                                                     for (var e=0; (2*e+1)<SelectedRect.length-1; e++)
+                                                         {   
+                                                             var line=document.createElementNS(ns,"line"); 
 
-                                                    
-                                                 
-                                                        
-                                                     var attrClass=parent.getAttribute("class");
-                                                   
-                                                      
-                                                    attrClass="*"+"["+"class"+"*"+"="+attrClass+"]";
-                                                     
-                                                     
-                                               
-                                                     
-                                                      band=document.querySelectorAll(attrClass);
-                                                     
-                                                  
-                                                     
-                                                     
-                                                     for (var p=0; p<band.length; p++)
-                                                         {
-                                                             band[p].setAttribute("fill", "red");
-                                                             band[p].setAttribute("stroke", "red");
+                                                              line.setAttribute("x1",""+SelectedRect[2*e+1].absc);
+                                                              line.setAttribute("y1",""+SelectedRect[2*e+1].ord);
+                                                              line.setAttribute("x2",""+SelectedRect[2*e+2].absc);
+                                                              line.setAttribute("y2",""+SelectedRect[2*e+2].ord);
+                                                              line.setAttribute("style", "fill:#000000;stroke: #000000; stroke-opacity:0.8; stroke-width:1;")
+                                                              line.setAttribute("class", attrClassP);
+                                                              global.appendChild(line);
+     
                                                          }
+                                                     
+                                                     switch(evt){
+                                                         case "click":{
+
+                                                                 for (var p=0; p<band.length; p++)
+                                                                     {
+                                                                         band[p].setAttribute("fill", "red");
+                                                                         band[p].setAttribute("stroke", "red");
+                                                                     }
+                                                             }
+                                                             break;
+                                                        
+                                                         case "mouseover":{
+
+                                                                 for (var p=0; p<band.length; p++)
+                                                                     {
+                                                                         band[p].setAttribute("fill", "green");
+                                                                         band[p].setAttribute("stroke", "green");
+                                                                     }
+                                                             }
+                                                             break;
+                                                             
+                                                        
+                                                         case "dblclick":{
+
+
+
+                                                                 for (var p=0; p<band.length; p++)
+                                                                     {
+                                                                         band[p].setAttribute("fill", "purple");
+                                                                         band[p].setAttribute("stroke", "purple");
+                                                                     }
+                                                             
+                                                             for(var j=0; j<bandtext.length; j++)
+                                                                 {
+                                                                     var content=parseInt(bandtext[j].textContent, 10).toString(16);
+                                                                     bandtext[j].textContent=""+content;
+                                                                     bandtext[j].setAttribute("style", style);
+                                                                 }
+                                                             }
+                                                             break;
+                                                             
+                                                    }
                                                     
 
 
