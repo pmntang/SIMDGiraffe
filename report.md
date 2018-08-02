@@ -57,3 +57,22 @@ Donc je propose ce matin (et les jours suivants) de travailler à classifier et 
 et sur cette base de terminer l’article. Tous les autres aspects (ast, raffinement de la modélisation et de la classification des fonctions intrinsèques seraient renvoyés en dehors du champ de porté de l’article).
 
 Donc en résumé, je propose de travailler directement à la classification et la visualisation de ces exemples (qui incluent la génération ou la saisie des données éventuelles, l'affinement des graphiques, etc) et la finalisation de l'article sur cette hypothèse.
+
+pour le code sur les arbres:
+Je disais que pour l'affichage, je peux calculer les  paramètres globaux pour le rendu que je veux, l'une des choses les plus facile aussi étant de modifier les variables de translation (ou de rotation) localement en fonction de la profondeur.
+
+    function pictureRighttree(ast,g)
+    {
+  
+    var gr=document.createElementNS(ns, "g");
+       //I can put an if or case here on the depth of the tree, and move to xt, yt and angle fixed values to improve the display of the tree (in fact avoid stacking).
+    var xt=depth(ast)*coefCox*x0t+x0t, yt=reverseDepth(ast)*coefCoy*y0t+y0t,ang=depth(ast)*coefAng*angt+angt; 
+    var cr=drawnSvgCircle(0, 0, radius, ast[2][0], gr)[0], tr=drawnSvgCircle(0, 0, radius, ast[2][0], gr)[1];
+    var lr=drawnSvgLine(0, 0, -xt, -yt, gr), yto=-yt, ango=-ang;
+    gr.setAttribute("transform", "translate("+xt+","+yt+") rotate("+ango+", 0, "+yto+")");
+    gr.appendChild(cr);
+    gr.appendChild(tr);
+    gr.appendChild(lr);
+    g.appendChild(gr);
+    return gr;
+  }
