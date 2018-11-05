@@ -1,0 +1,31 @@
+{"head":
+	{"name":"function",
+	 "operandBitCount": [],
+	 "resultBitCount": number,
+	 "fieldOperandCount":[],
+	 "fieldResultCount": number
+	}
+ "operand":[ [],
+			  .
+			  .
+			  .
+			  []
+			],
+ "LinkingIndex":[ [],
+						  [],
+						  .
+						  .
+						  .
+						  []
+						],
+ "result":[]
+}
+
+
+
+//fin du json, début des contraintes.	
+[operand][i].length=head.[fieldOperandCount][i];	
+[operand].length=[headoperandBitCount].length=[fieldOperandCount].length;	
+sizeof([operand][i][j])*([fieldOperandCount][i])=[operandBitCount][i];
+[LinkingIndex].length=head.fieldResultCount=[result].length;
+result is computed on the fly but still, need to suit with the above constraints.

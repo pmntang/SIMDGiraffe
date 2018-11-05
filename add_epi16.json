@@ -1,0 +1,39 @@
+{"head":
+	{"name":"_mm_add_epi8",
+	 "operandBitCount": [128, 128],
+	 "resultBitCount": 128,
+	 "fieldOperandCount":[16, 16],
+	 "fieldResultCount": 16
+	},
+ "operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],
+			  
+			  [11,2, 4, 76, 56,3, 26,12,11,32, 3,  7,45, 9, 24, 87 ]
+			],
+ "LinkingIndex":[ [0,0]
+						  [1,1],
+						  [2,2],
+						  [3,3],
+						  [4,4],
+						  [5,5],
+						  [6,6],
+						  [7,7],
+						  [8,8],
+						  [9,9],
+						  [10,10],
+						  [11,11],
+						  [12,12],
+						  [13,13],
+						  [14,14],
+						  [15,15],
+						],
+ "result": []
+}
+
+
+
+//fin du json, début des contraintes.	
+[operand][i].length=head.[fieldOperandCount][i];	
+[operand].length=[headoperandBitCount].length=[fieldOperandCount].length;	
+sizeof([operand][i][j])*([fieldOperandCount][i])=[operandBitCount][i];
+[LinkingIndex].length=head.fieldResultCount=[result].length;
+result is computed on the fly but still, need to suit with the above constraints.
