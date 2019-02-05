@@ -100,11 +100,11 @@ function processCCode(cCode){
         if(regexAssignExpr.test(cCode)){
             var regArray = regexAssignExpr.exec(cCode)
             tab=Array.of('=',[regArray[2],[regArray[1]]], [regArray[3]]);
-                 if (simpleExpression(tab[2][0])){
-                        tab[2][0]=Array.of(tab[2][0]);
-                    }
-                 else
-                     {
+                 if (!simpleExpression(tab[2][0])){
+                      //  tab[2][0]=tab[2][0];
+                  //  }
+              //   else
+                  //   {
                          tab[2][0]=processCCode(tab[2][0]);                         
                      }
 
@@ -144,15 +144,30 @@ var regexFunctionDeclar=/^\s*([_$a-zA-Z][_$a-zA-Z0-9]*)\s+([_$a-zA-Z][_$a-zA-Z0-
 
 var ss1='__m256i avx512_pcg32_random_r(avx512_pcg32_random_t *rng) {  __m512i oldstate = *rng.state; *rng.state = _mm512_add_epi64(_mm512_mullo_epi64(*rng.multiplier, *rng.state),*rng.inc);  __m512i xorshifted = _mm512_srli_epi64(   _mm512_xor_epi64(_mm512_srli_epi64(oldstate,        18), oldstate), 27);  __m512i rot = _mm512_srli_epi64(oldstate, 59);  return _mm512_cvtepi64_epi32(_mm512_rorv_epi32(xorshifted,    rot));}   ', s='_mm512_srli_epi64(_mm512_xor_epi64(_mm512_srli_epi64(oldstate, 18), oldstate), 27);';
 
-var debugString = 'int fonction(double a){int c = 50;d = fct2(c);return c;}';
+var debugString = 'int a=c+d; }';
 
+var ssa= `__m256i interleave_uint8_with_zeros_avx_lut(__m256i word) {   __m256i m = _mm256_set_epi8(85, 84, 81, 80, 69, 68,              65, 64, 21, 20, 17, 16, 5, 4, 1, 0, 85, 84,                81, 80, 69, 68, 65, 64, 21, 20, 17, 16, 5, 
+               4, 1, 0);
+  __m256i lownibbles =
+      _mm256_shuffle_epi8(m, _mm256_and_si256(word,
+            _mm256_set1_epi8(0xf)));
+  __m256i highnibbles = _mm256_and_si256(word, 
+          _mm256_set1_epi8(0xf0));
+   highnibbles = _mm256_srli_epi16(highnibbles,4);
+   highnibbles = _mm256_shuffle_epi8(m, highnibbles);
+   highnibbles =  _mm256_slli_epi16(highnibbles, 8);
+  return _mm256_or_si256(lownibbles,highnibbles);
+}`
+
+var ssb= `__m256i interleave_uint8_with_zeros_avx_lut(__m256i word) { int a=b+6;
+}`
 let ssimple = ''
 //ss=extractExpression(ss1);
 //console.log(regexFunctionDeclar.exec(ss1), extractExpression(ss1))
 //console.log(processCCode(ssimple))
 //console.log(extractParameter(regexFunctioncall.exec(extractParameter(regexFunctioncall.exec(s)[2])[0])[2]));
 //console.log(extractParameter(regexFunctioncall.exec(ssimple)[2]))
-console.log(processCCode(ss1))
+console.log(processCCode(ssa))
 //console.log(regexAssignExpr.exec('(*rng).state = _mm512_add_epi64(_mm512_mullo_epi64((*rng).multiplier, (*rng).state),(*rng).inc)'))
 
 /*var regex1=/^\s*([_$a-zA-Z][_$a-zA-Z0-9]*)\s*\((.*)(?:\)\s*(?=\s|;))/, ss=cleanExpression(ss1);

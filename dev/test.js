@@ -1,5 +1,5 @@
 /*var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi8", "operandBitCount": [128, 128], "resultBitCount": 128, "fieldOperandCount":[16, 16], "fieldResultCount": 16}, "operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],[11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 24, 87]], "LinkingIndex":[ [[[0,1]],[[0,2]]],[[[1,1]],[[1,2]]],[[[2,1]],[[2,2]]],[[[3,1]],[[3,2]]], [[[4,1]],[[4,2]]],  [[[5,1]],[[5,2]]],  [[[6,1]],[[6,2]]], [[[7,1]],[[7,2]]], [[[8,1]],[[8,2]]], [[[9,1]],[[9,2]]], [[[10,1]],[[10,2]]], [[[11,1]],[[11,2]]],[[[12,1]],[[12,2]]],[[[13,1]],[[13,2]]], [[[14,1]],[[14,2]]], [[[15,1]],[[15,2]]]], "result": []}');
-*/
+
 var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi8", "operandBitCount": [128], "resultBitCount": 128, "fieldOperandCount":[16], "fieldResultCount": 8}, "operand":[ [11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 24, 87]], "LinkingIndex":[ [[[0,1],[1,2]]],[[[2,1],[3,2]]],[[[4,1],[5,2]]],[[[6,1],[7,2]]],[[[8,1],[9,2]]],[[[10,1],[11,2]]],[[[12,1],[13,2]]],[[[14,1],[15,2]]]], "result": []}');
 
 //function to compute result on the fly
@@ -7,6 +7,16 @@ myNewJSON.computeResult=function(){
     var i;
         for (i=0; i<this.head.fieldResultCount; i++)
         this.result[i]=this.operand[0][2*i]+this.operand[0][2*i+1];
+    
+};
+*/
+var myNewJSON=JSON.parse('{"head":{"name":"_mm_add_epi16", "operandBitCount": [128, 128], "resultBitCount": 128, "fieldOperandCount":[16, 16], "fieldResultCount": 16}, "operand":[ [11,2, 4, 76, 56,3, 26,12,11,32, 3,7,45, 9, 0, 67],[1,20, 12, 76, 56,3, 26,12,11,25, 3,7,0, 7, 24, 87]], "LinkingIndex":[ [[[0,1]],[[0,2]]],[[[1,1]],[[1,2]]],[[[2,1]],[[2,2]]],[[[3,1]],[[3,2]]],[[[4,1]],[[4,2]]],[[[5,1]],[[5,2]]],[[[6,1]],[[6,2]]],[[[7,1]],[[7,2]]],[[[8,1]],[[8,2]]],[[[9,1]],[[9,2]]],[[[10,1]],[[10,2]]],[[[11,1]],[[11,2]]],[[[12,1]],[[12,2]]],[[[13,1]],[[13,2]]],[[[14,1]],[[14,2]]],[[[15,1]],[[15,2]]]], "result": []}');
+
+//function to compute result on the fly
+myNewJSON.computeResult=function(){
+    var i;
+        for (i=0; i<this.head.fieldResultCount; i++)
+        this.result[i]=this.operand[0][i]+this.operand[1][i];
     
 };
 /*
@@ -30,7 +40,7 @@ myNewJSON.extractIndexRankContribution=function(){   var indexRankContribution=[
                                                                  var anIndexRankContribution=[];
                                                                  for (var i=0; i<this.operand.length; i++)
                                                                      {
-                                                                         if(this.LinkingIndex[j][i].length===0) 
+                                                                         if(this.LinkingIndex[j][i].length===0) // Aucun index de l'opérande i ne contribue au résultat du champ d'indice j du vecteur result, on passe;
                                                                              {
                                                                                  continue;
                                                                              }
@@ -38,28 +48,28 @@ myNewJSON.extractIndexRankContribution=function(){   var indexRankContribution=[
                                                                              {
                                                                                  for(var k=0; k<this.LinkingIndex[j][i].length; k++)
                                                                                      {
-                                                                                      anIndexRankContribution[this.LinkingIndex[j][i][k][1]-1]=this.LinkingIndex[j][i][k][0]
+                                                                                      anIndexRankContribution[(this.LinkingIndex[j][i][k][1]-1)]=this.LinkingIndex[j][i][k][0] //On fait indice de gauche-1 pour que le tableau anIndexRankContribution commence à 0;Un élément de ce tableau contient la position de la contribution de l'opérande i au champ j du résultat. On parcout donc le tableau t[j][i] et on recupere toutes ces positions qu'on ajoute à anIndexRankContribution.[j][i][k][1] signifie que chacune de ces position est donnée par le second élément du tableau à deux éléments(le premier élément étant la position de la contribution dans l'opérande). Ce tableau à deux éléments est en fait l'élément k de  t[j][i].
                                                                                      }
                                                                              }
-
+                                                                         
                                                                      }
-                                                                 indexRankContribution[j]=anIndexRankContribution;
+                                                                 indexRankContribution[j]=anIndexRankContribution; // Ici on a toutes les contributions au résultat d'indice j sous forme de tableau. Chaque élément de ce tableau est un tableau t qui contient les positions des contributions au champ j du vecteur resultat. indexRankContribution[j][0] est un tableau t qui represente les contributions de l'opérande 0 (operand[0]) au résultat de champ j (result[j]).Si aucun champ de l'opérande i ne contribue au calcul du résultat de champ j, l'élément t correspondant est un tableau vide. Quand l'opérande i contribue au calcul du résultat de champ j, le tableau t qui est l'élément indexRankContribution[j][i], est tel que t[k] (qui est une position dans l'opérande i) représente la keme position de la contribution au résultat de champ j. Pour j fixé, pendant que i parcourt les opérandes et k parcourt N, on ne peut jamais avoir t[k]=t[k'], puisqu'une position ne peut être occupée par deux valeurs à la fois. La réunion de tous les t (sans précaution) donnerai un tableau Tj de longueur la taille des éléments utilisé pour calculer le champ du vecteur résultat d'indice j. Mais un tel tableau ne servirait pas à grand chose puisqu'on ne saurait pas à quel opérande appartient une position donnée
                                                              }
-                                                         return indexRankContribution
+                                                         return indexRankContribution; // Toutes les contributions au vecteur résultat
                                                               };
 myNewJSON.constructBandNumber=function(){
                                                      var bandNumber=[]; 
-                                                     for (var j=0; j<this.extractIndexRankContribution().length; j++)
-                                                     {var n=j*Math.log(cribleHoare(this.extractIndexRankContribution()[j].length+1)[0]), aBandNumber={status: 0, value:0};
-                                                         for (var i=0; i<this.extractIndexRankContribution()[j].length; i++)
-                                                            { n+=this.extractIndexRankContribution()[j][i]*Math.log(cribleHoare(this.extractIndexRankContribution()[j].length+1)[i+1]);
+                                                     for (var j=0; j<this.extractIndexRankContribution().length; j++) //Parcours de indexRankContribution
+                                                         {var n=j*Math.log(cribleHoare(this.extractIndexRankContribution()[j].length+1)[0]), aBandNumber={status: 0, value:0}; //juste une définition de deux variables
+                                                          for (var i=0; i<this.extractIndexRankContribution()[j].length; i++)
+                                                              { n+=this.extractIndexRankContribution()[j][i]*Math.log(cribleHoare(this.extractIndexRankContribution()[j].length+1)[i+1]);
 
-                                                            }
+                                                              }
                                                       
                                                       aBandNumber.status=false;
                                                       aBandNumber.value=n;
                                                       bandNumber.push(aBandNumber);
-                                                     }
+                                                     } 
                                                      return bandNumber
                                                  };
 
@@ -103,9 +113,9 @@ myNewJSON.constructBandNumber();
 myNewJSON.allocateBandNumber();
 
 
-console.log(myNewJSON.constructBandNumber());
- console.log(myNewJSON.allocateBandNumber());
-console.log(myNewJSON);
+console.log(myNewJSON.constructBandNumber(), "construction band number");
+ console.log(myNewJSON.allocateBandNumber(), "distribution banNuber");
+console.log(myNewJSON, "le json");
 
 var  variablesToDisplay, w=800, h=800;
 
@@ -123,26 +133,26 @@ window.onload = function init() {
 
 
 
-function cribleHoare(i){
+function cribleHoare(i){ //Retourne les i premiers nombres premiers.
     var post=[2];
     if (i>=1)
         {
             for (var j=2;post.length<i; j++ )
-             if(test(j, post)) post[post.length]=j;  
+                if(test(j, post)) post[post.length]=j;  
            
         }
     else
         post=[];
     
-     return post;
+    return post;
 }
 
-function test (n, t){
+function test (n, t){// Pour un entier naturel n et un tableau d'entiers naturels t, retourne vrai si aucun élément de t ne divise n. 
     var ok;
     for (var i=0; i<t.length; i++)
-    {ok=((n%t[i])===0)?false:true;
+        {ok=((n%t[i])===0)?false:true;
         if(!ok) break;
-    }
+        }
     return ok;
         
 }

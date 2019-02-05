@@ -2,15 +2,22 @@
 
 var test =[0,[1, [3,[7 ,[15], [16] ], [8 ,[17], [18]]], [4, [9 ,[19], [20]], [10, [21] ,[22]]]], [2, [5, [11, [23], [24]], [12, [25], [26]]], [6 ,[13, [27], [28]], [14, [29], [30]]]]];
 
+var tab=[0,["a"],[10],[1,[2]],[3,[7]],[4,[5],[6]]], x0=100, y0=10;
 
 
-
-var width=1920, heigth=1080, radius=20,firsTranslation="translate(960, 50)",first=true,x0t=200, y0t=20, angt=0, coefCox=0;
+var width=1920, heigth=1080, radius=15,firsTranslation="translate(960, 50)",first=true,x0t=200, y0t=20, angt=0, coefCox=0, x0=0, y0=0;
 var coefCoy=20,coefAng=0 ; //x0=500, y0=25, pasx=120, pasy=35;
 window.onload = function init() {
 
-pictureTree(test, global);
+drawnSvgCircle(-100, 100,10, 'r1', global);
 
+drawnSvgCircle(-150, 170,10, 'r2', global);
+    var c1={}, c2={}; c1.abs=-100; c2.abs=-150; c1.ord=100; c2.ord=170;c1.svgElt=global; c2.svgElt=global;
+    linkContext(c1,c2);
+    
+    pictureTree(tab,initialContext);
+
+//drawnSvgLine(100, 100, 150, 170, global);
   
 };
 
@@ -25,43 +32,67 @@ pictureTree(test, global);
       global.setAttribute("transform", firsTranslation);
       global.setAttribute("style", style);
       svg.appendChild(global);
- 
+      var initialContext={};
+      initialContext.level=0; initialContext.abs=x0; initialContext.ord=y0; initialContext.svgElt=global;
 
 
-function pictureTree(ast, g){
-    if ((first)&&!(ast.length===0)){
-        drawnSvgCircle(0, 0, radius, ast[0], g);
-        first=false;
-     }
-    var l
-    if (!(ast[1].length===0)){
-        l=ast[1].length;
-        switch (l){
-            case 1:pictureLefttree(ast,g);
-                break;
-            case 3:{
-                pictureLefttree(ast, g);
-                pictureTree(ast[1], pictureLefttree(ast, g));
+function pictureTree(ast, globalContext){
+   if(ast.length >= 1){
+       drawnSvgCircle(globalContext.abs, globalContext.ord, radius, ast[0], globalContext.svgElt);
+       console.log(globalContext.abs, globalContext.ord,  'ast:  '+ast[0], 'niveau  '+globalContext.level);
+   }
+    if(ast.length > 1){ 
+        for(var i=1; i<ast.length; i++){
+            var localContext={};
+            localContext.level=globalContext.level+1; localContext.abs=Math.ceil(i*(width/ast.length)-width/2); localContext.ord=localContext.level*100;localContext.svgElt=document.createElementNS(ns, "g");
+            var translation="translate("+localContext.abs+","+localContext.ord+")";
+            linkContext(localContext, globalContext);
+            localContext.svgElt.setAttribute("id",("local"+i)+localContext.level);
+            localContext.svgElt.setAttribute("transform", translation);
+            localContext.abs=0;localContext.ord=0;
+            pictureTree(ast[i], localContext);
+           // console.log(localContext.abs, localContext.ord);
 
-            }
-                break;
         }
     }
-    if (!(ast[2].length===0)){
-         l=ast[2].length;
-        switch (l){
-            case 1:pictureRighttree(ast,g);
-                break;
-            case 3:{
-            pictureRighttree(ast,g);
-            pictureTree(ast[2], pictureRighttree(ast,g));
-            
-        }
-                break;
-    }
-}
 }
         
+
+function getNestedChildren(arr, root) {
+    const empty = [];
+    const childrenOf = {};
+
+    // build a dictionary containing all nodes keyed on parent
+    arr.forEach((node) => {
+        if (!childrenOf[node.headerId]) childrenOf[node.headerId] = [];
+        childrenOf[node.headerId].push(node);
+    });
+
+    // attach children to their parents and decorate with level
+    const iterateHash = (parent, level) => {
+        const nodes = childrenOf[parent] || empty;
+        return nodes.map((node) => {
+            const children = iterateHash(node.workId, level + 1);
+            // remove the first argument {} to mutate arr
+            return Object.assign({}, node, { level, children });
+        });
+    };
+
+    return iterateHash(root, 0);
+}
+
+console.log( getNestedChildren(tab, 8) )
+
+
+
+function refreshAbscissa(x, y){
+    return (-2-1*x)+(2+1*y)
+}
+
+function refreshOrdinate(x,y){
+    return (1*x)+(2+1*y)
+}
+
 function pictureRighttree(ast,g){
     var gr=document.createElementNS(ns, "g");
     //I can put an if or case here on the depth of the tree, and move to xt, yt and angle fixed values to improve the display of the tree (in fact avoid stacking).
@@ -93,7 +124,6 @@ function pictureLefttree(ast,g){
 
 
 function drawnSvgCircle(abs, ord, rad, root, parentElt){
-    var tab=[];
     var circle=document.createElementNS(ns, "circle");
     circle.setAttribute("cx", ""+abs);
     circle.setAttribute("cy", ""+ord);
@@ -104,19 +134,27 @@ function drawnSvgCircle(abs, ord, rad, root, parentElt){
     text.setAttribute("y", ""+ord);
     text.textContent=""+root;
     parentElt.appendChild(text);
-    tab.push(circle);
-    tab.push(text);
-    return tab;
  }
 
-function drawnSvgLine(abs1, ord1, abs2,translat, parentElt){
+function linkContext(c1, c2){
     var line=document.createElementNS(ns,"line");
-    line.setAttribute("x1",""+abs1);
+    line.setAttribute("x1", ""+c1.abs);
+    line.setAttribute("x2", ""+c2.abs);
+    line.setAttribute("y1", ""+c1.ord);
+    line.setAttribute("y2", ""+c2.ord);
+    if(!(c1.svgElt==c2.svgElt))
+        {
+            c2.svgElt.appendChild(c1.svgElt);
+        }
+    c2.svgElt.appendChild(line);
+}
+function drawnSvgLine(abs1, ord1, abs2,ord2, parentElt){
+    var line=document.createElementNS(ns,"line");
+    line.setAttribute("x1", ""+abs1);
     line.setAttribute("x2", ""+abs2);
     line.setAttribute("y1", ""+ord1);
-    line.setAttribute("y2", ""+translat);
+    line.setAttribute("y2", ""+ord2);
     parentElt.appendChild(line);
-    return line;
  }
 
 function depth(ast){
@@ -130,5 +168,7 @@ function reverseDepth(ast){
     d=(depth(ast)===0)?0:(1/depth(ast));
     return d;
 }
+
+
 
 console.log(depth(test), reverseDepth(test));
