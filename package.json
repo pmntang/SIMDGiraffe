@@ -1,31 +1,55 @@
 {
-  "name": "simdgiraffe",
+  "name": "SIMDGiraffe",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://pmntang.github.io/SIMDGiraffe",
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "acorn": "^6.0.4",
+    "animejs": "^2.2.0",
+    "bitly": "^6.0.8",
+    "bootstrap": "^4.3.1",
+    "codemirror": "^5.41.0",
+    "history": "^4.7.2",
+    "i": "^0.3.6",
+    "lodash": "^4.17.11",
+    "node-sass": "^4.10.0",
+    "npm": "^6.9.0",
+    "prop-types": "^15.6.2",
+    "qs": "^6.6.0",
+    "rc-slider": "^8.6.4",
+    "react": "^16.6.3",
+    "react-codemirror2": "^5.1.0",
+    "react-copy-to-clipboard": "^5.0.1",
+    "react-dom": "^16.6.0",
+    "react-rangeslider": "^2.2.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.0.5",
+    "react-sortable-tree": "^2.3.0",
+    "react-transition-group": "^2.5.0",
+    "reactstrap": "^6.5.0",
+    "request": "^2.88.0",
+    "styled-components": "^4.0.2",
+    "uint32": "^0.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "gh-pages": "^2.0.1",
+    "raw-loader": "^3.0.0"
   }
 }

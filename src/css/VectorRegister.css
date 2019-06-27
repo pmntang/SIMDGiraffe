@@ -1,0 +1,107 @@
+.VectorRegister-container {
+    fill: var(--main);
+    filter: drop-shadow(3px 3px 2px rgba(42, 54, 59, .5));
+    -webkit-filter: drop-shadow(3px 3px 2px rgba(42, 54, 59, .5));
+}
+
+.VectorRegister-line {
+    stroke: var(--gray);
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.VectorRegister-values {
+    fill: var(--clear-text-color);
+    text-anchor: middle;
+}
+
+.shift-values-right {
+    fill: var(--five);
+    text-anchor: middle;
+}
+
+.shift-values-left {
+    fill: var(--two);
+    text-anchor: middle;
+}
+
+.registerUsed {
+    display: flex;
+    justify-content: space-around;
+    background-color: black;
+    color:white ;   
+}
+.visualization {
+    min-width: 80%;
+    justify-content: space-around;
+    background-color:black;
+    color: black;
+}
+
+.presentation {
+    max-width: 20%;
+}
+
+.instruction {
+    color: black;
+    text-align: left;
+    height: 10%;
+    font-size: xx-large;
+}
+
+.text {
+    color:#D2D2D2;
+}
+.out {
+    vertical-align: bottom;
+    text-align: center;
+    font-size: 100%
+} 
+
+.in {
+    vertical-align: top;
+    text-align: center;
+    font-size: 100%;
+   
+} 
+
+.intrinsicName {
+    vertical-align: middle;
+    text-align: left;
+} 
+
+.head {
+    vertical-align: middle;
+    text-align: center;
+} 
+
+table {
+    border-spacing: 1em .5em;
+    padding: 0 2em 1em 0; 
+    border-collapse:separate;  
+}
+
+td,th
+{  
+    min-width: 100px;
+    min-height: 300px;
+    text-align: center;
+    width: 1.5em;
+    height: 4.7em;
+    background: #d2d2d2;
+    border: 1px solid steelblue;
+}
+
+caption {
+    caption-side: top; 
+    color: black;
+}
+
+.animation {
+    display: flex;
+    justify-content: space-between;
+}
+
+.presentation {
+    max-width: 20% 
+}
