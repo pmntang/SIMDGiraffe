@@ -4,23 +4,23 @@ self.__precacheManifest = [
     "url": "/SIMDGiraffe/static/js/runtime~main.92c738e1.js"
   },
   {
-    "revision": "a4cc3886d974e6e646a8",
-    "url": "/SIMDGiraffe/static/js/main.a4cc3886.chunk.js"
+    "revision": "b894feb4fa06dab5a211",
+    "url": "/SIMDGiraffe/static/js/main.b894feb4.chunk.js"
   },
   {
     "revision": "218e3729f084f38e1425",
     "url": "/SIMDGiraffe/static/js/1.218e3729.chunk.js"
   },
   {
-    "revision": "a4cc3886d974e6e646a8",
-    "url": "/SIMDGiraffe/static/css/main.1cf061a6.chunk.css"
+    "revision": "b894feb4fa06dab5a211",
+    "url": "/SIMDGiraffe/static/css/main.2a2bcdde.chunk.css"
   },
   {
     "revision": "218e3729f084f38e1425",
     "url": "/SIMDGiraffe/static/css/1.35c818a1.chunk.css"
   },
   {
-    "revision": "29f10447fc42cc7ed48ce5eca8a31a50",
+    "revision": "1fff23c690f9632eb49c247ab092c244",
     "url": "/SIMDGiraffe/index.html"
   }
 ];

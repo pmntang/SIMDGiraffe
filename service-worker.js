@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/SIMDGiraffe/precache-manifest.a9088b356c4f1b73c66134e97f974f3a.js"
+  "/SIMDGiraffe/precache-manifest.36c1e0b8a3e00df359663458598a3cbc.js"
 );
 
 workbox.clientsClaim();
