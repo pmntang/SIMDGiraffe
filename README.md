@@ -1,6 +1,6 @@
 
 # Live Version found here (Proof of concept)
-[http://pmntang.github.io/SIMD-Visualiser](http://pmntang.github.io/SIMDGiraffe)
+[https://pmntang.github.io/SIMDGiraffe](https://pmntang.github.io/SIMDGiraffe)
 
 ![](doc/SIMD-Visualizer-Demo.gif)
 ( This is a Prototype version, we are still in development! Thanks for your support  :-) 
