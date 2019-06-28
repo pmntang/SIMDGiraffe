@@ -101,7 +101,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   
   function retrievePosition(aPosition, aMatrix){
     if (aPosition.rank==0){//we are at the first column (index 0)
-      return <td className="intrinsicName"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name}</span></td>
+      return <td className="intrinsicName"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></td>
     }
     else 
       if(aMatrix[aPosition.line][aPosition.column].length==1){
@@ -165,7 +165,7 @@ class VectorRegister extends React.Component {
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.tableBodyInit=this.matrix.map((e,i)=>i==0?e.map((x,j)=><th className="head">{x}</th>)://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                  (i==1? e.map((x,j)=>j==0?<td className="intrinsicName"><span className="intrinsicName">{this.matrix[1][0].name}</span></td>:<td ><span className="empty"></span></td>):
+                                                  (i==1? e.map((x,j)=>j==0?<td className="intrinsicName"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></td>:<td ><span className="empty"></span></td>):
                                                         (e.map(x=><td ><span className="empty"></span></td>))))
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},

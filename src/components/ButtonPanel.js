@@ -108,11 +108,11 @@ export default class ButtonPanel extends Component {
             <ButtonPanelContainer>
                 <Top>
                     <Buttons>
-                        <button disabled={disabled} onClick={visualize}>Visualize</button>
-                        <button onClick={restart}>Stop</button>
-                        <button onClick={addCode}>Add Code</button>
+                        <button disabled={disabled} onClick={visualize}><span className="button">Visualize</span></button>
+                        <button onClick={restart}><span className="button">Stop</span></button>
+                        <button onClick={addCode}><span className="button">Add Code</span></button>
                         <p style={style}><br/><br/>
-                        <label htmlFor="chooseCode">Choose Code</label><br/>
+                        <label htmlFor="chooseCode"><span className="button">Choose Code</span></label><br/>
                         <select name="chooseCode" id="chooseCode" onChange={(e)=>chooseCode(e.target.value)} >
                           {this.props.codeSample.map(e=><option value={e.name}>{e.name}</option>)}
                         </select>

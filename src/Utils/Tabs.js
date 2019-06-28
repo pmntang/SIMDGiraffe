@@ -57,7 +57,7 @@ export class Tabs extends Component {
 export class Pane extends Component {
     render() {
         return (
-            <div>
+            <div className="label">
                 {this.props.children}
             </div>
         );
