@@ -229,7 +229,7 @@ class App extends Component {
 
     getShareLink = () => {
         //We need to specify the whole URL since we are in dev and bitly cannot work with localhost links.
-        return 'https://piotte13.github.io/SIMDGiraffe/#/link/' + qs.stringify({code: this.state.code})
+        return 'https://pmntang.github.io/SIMDGiraffe/#/link/' + qs.stringify({code: this.state.code})
         //return window.location.origin + "#/link" + qs.stringify(this.state)
     };
 

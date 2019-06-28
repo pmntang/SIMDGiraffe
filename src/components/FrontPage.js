@@ -96,10 +96,9 @@ export default class FrontPage extends Component {
                     <SvgCProgramming ref={this.image}/>
                 </Image>
 
-                <AppTitle>The Ultimate SIMD visualizer</AppTitle>
+                <AppTitle>Semantic Visualizer: Application to SIMD</AppTitle>
                 <AppDescription>
-                    Built by <strong>Jérémie Piotte</strong>, <strong>Daniel Lemire</strong> and <strong>Pierre Marie
-                    Ntang</strong>
+                    Built by <strong>Pierre Marie Ntang</strong> and <strong>Daniel Lemire</strong>
                 </AppDescription>
                 <ButtonGroup>
                     <a href="https://github.com/pmntang/SIMDGiraffe" target="_blank" rel="noopener noreferrer">
