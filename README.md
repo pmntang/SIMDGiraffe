@@ -2,7 +2,7 @@
 # Live Version found here 
 [https://pmntang.github.io/SIMDGiraffe](https://pmntang.github.io/SIMDGiraffe)
 
-![](doc/SIMD-Visualizer-Demo.gif)
+![](doc/SIMDGiraffe-Demo.gif)
 ( This is a Prototype version, we are still in development! Thanks for your support  :-) 
 # But wait, what is SIMD?
 SIMD (pronounced "seem-dee") is short for **Single intrinsic/Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
@@ -68,9 +68,9 @@ Now that we have parsed every command and their parameters, we can finally start
 
 
 # Development/Contributing
-SIMD-Visualizer is a research project and for now, we are a small team! We actively encourage and support contributions. The SIMD-Visualizer source code is released under the BSD License. This license is very simple, and is friendly to all kinds of projects, whether open source or not. 
+SIMDGiraffe is a research project and for now, we are a small team! We actively encourage and support contributions. The SIMDGiraffe source code is released under the BSD License. This license is very simple, and is friendly to all kinds of projects, whether open source or not. 
 
-Feel free to fork and improve/enhance SIMD-Visualizer any way you want. If you feel that the application or the research team will benefit from your changes, please open a pull request.
+Feel free to fork and improve/enhance SIMDGiraffe any way you want. If you feel that the application or the research team will benefit from your changes, please open a pull request.
 
 ## Available Scripts
 

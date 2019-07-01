@@ -25,12 +25,16 @@
     text-anchor: middle;
 }
 
+.tabs__content {
+    overflow: scroll;
+}
+
 .registerUsed {
     display: flex;
     justify-content: space-around;
     background-color: #263238;
     color:white ;  
-    font-family: monospace; 
+    font-family: monospace;
 }
 .visualization {
     min-width: 80%;
