@@ -61,19 +61,23 @@
 .out {
     vertical-align: bottom;
     text-align: center;
-    font-size: 100%
+    font-size: 24px;
+    color: #DE7663;
+
 } 
 
 .in {
     vertical-align: top;
     text-align: center;
-    font-size: 100%;
+    font-size: 24px;
+    color:#6BB1F3;
    
 } 
-
+/*
 .intrinsicName {
-    vertical-align: middle;
-    text-align: left;
+    vertical-align: top;
+    text-align: center;
+    font-size: 24px;
     padding: 1em;
  
 } 
@@ -82,12 +86,16 @@
     vertical-align: middle;
     text-align: center;
 } 
-
+*/
 table {
     border-spacing: 1em .5em;
     padding: 0 2em 1em 0; 
     border-collapse:separate;
-    margin: 1em;  
+    margin: 1em; 
+    min-height: 100%; 
+}
+tbody {
+    border-color:  #FFFFFF;
 }
 .sc-bwzfXH.cvBOXt {
     background-color: #263238;
@@ -98,7 +106,7 @@ strong {
    
 }
 
-td,th
+th
 {  
     min-width: 100px;
     min-height: 300px;
@@ -108,6 +116,9 @@ td,th
     background: #FFFFFF;
     border: 1px solid #2F9599;
     color :#263238;
+    vertical-align: middle;
+    text-align: center;
+    padding: 1em;
 }
 
 caption {

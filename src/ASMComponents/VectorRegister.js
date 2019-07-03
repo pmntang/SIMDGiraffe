@@ -69,9 +69,9 @@ function extractStepRegAtInst(aRegister, anArrayOfRegisters, instNumber){// extr
 }
 
 function buildMatrixRegInt(anArrayOfRegisters, anArrayOfInstructions){ 
-    let augMentArrayOfReg=[{register:"name"},...anArrayOfRegisters]
+    let augMentArrayOfReg=[{register:"NAME"},...anArrayOfRegisters]
     let matrix=augMentArrayOfReg.map(e=>new Array(anArrayOfInstructions.length+1).fill(e.register))
-    matrix=matrix.map(r=>(r[0]=="name")? (r.map((c,i)=>(i==0)?r[0]:{name:""+anArrayOfInstructions[i-1].intrinsic, line:anArrayOfInstructions[i-1].line})):(r.map((c, i)=>(i==0)?r[0]:extractStepRegAtInst(c, anArrayOfRegisters, i-1))) )
+    matrix=matrix.map(r=>(r[0]=="NAME")? (r.map((c,i)=>(i==0)?r[0]:{name:""+anArrayOfInstructions[i-1].intrinsic, line:anArrayOfInstructions[i-1].line})):(r.map((c, i)=>(i==0)?r[0]:extractStepRegAtInst(c, anArrayOfRegisters, i-1))) )
     return matrix[0].map((x,i)=>matrix.map(x=>x[i])) //this is to transpose
 }
 
@@ -101,30 +101,35 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   
   function retrievePosition(aPosition, aMatrix){
     if (aPosition.rank==0){//we are at the first column (index 0)
-      return <td className="intrinsicName"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></td>
+      return <th className="intrinsicName"   rowspan="3" scope="rowgroup"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></th>
     }
     else 
       if(aMatrix[aPosition.line][aPosition.column].length==1){
         if(aPosition.rank==buildNonNulPositionsLine(aPosition.line, aMatrix).length-1){
-          return <td className="out"><span className="out">&#x21D9;</span></td>
+          return <React.Fragment><td ><span className="empty"></span>a</td><td ><span className="empty"></span>a</td><td className="out"><span className="out">&#x21D9;</span></td></React.Fragment>
         }
         else
           {
-            return <td className="in"><span className="in">&#x21D7;</span></td>
+            return <React.Fragment><td className="in"><span className="in">&#x21D7;</span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></React.Fragment>
           }
       }
       else 
         if(aMatrix[aPosition.line][aPosition.column].length==2){
           if(aPosition.rank==buildPosition(aPosition.line,aPosition.column,aMatrix)[0].rank){
-            return <td className="in"><span className="in">&#x21D7;</span></td>
+            return <React.Fragment><td className="in"><span className="in">&#x21D7;</span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></React.Fragment>
           }
           else
           {
-            return <td className="inAndout"><span className="in">&#x21D7;</span><br/><br/><span className="out">&#x21D9;</span></td>
+            return <React.Fragment><td className="in"><span className="in">&#x21D7;</span></td><td ><span className="empty"></span></td><td className="out"><span className="out">&#x21D9;</span></td></React.Fragment>
           }
         }
   }
 
+  function retrieveLinePosition(aPosition, aMatrix){
+    return<tr>{aMatrix[aPosition.line].map((x,j)=>searchStep(aPosition.line,j,aMatrix)?
+                (buildPosition(aPosition.line,j, aMatrix)[buildPosition(aPosition.line,j, aMatrix).length-1].rank<=aPosition.rank?retrievePosition(buildPosition(aPosition.line,j, aMatrix)[buildPosition(aPosition.line,j, aMatrix).length-1], aMatrix):
+                  (buildPosition(aPosition.line,j, aMatrix)[0].rank<=aPosition.rank?retrievePosition(buildPosition(aPosition.line,j, aMatrix)[0], aMatrix):<td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td>)}</tr>
+  }
   function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
     return (searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank):
@@ -164,9 +169,9 @@ class VectorRegister extends React.Component {
         super(props);
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?e.map((x,j)=><th className="head">{x}</th>)://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                  (i==1? e.map((x,j)=>j==0?<td className="intrinsicName"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></td>:<td ><span className="empty"></span></td>):
-                                                        (e.map(x=><td ><span className="empty"></span></td>))))
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=><th className="head">{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+                                                 (i==1? e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
+                                                       (e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
             tableBody:this.tableBodyInit
@@ -193,7 +198,7 @@ class VectorRegister extends React.Component {
           let position=state.position
           let tableBody=state.tableBody
           position=advancePosition(position, this.matrix)
-          tableBody=tableBody.map((e,i)=>i!=position.line?e:(e.map((x,j)=>j!=position.column?x:retrievePosition(position, this.matrix))))
+          tableBody=tableBody.map((e,i)=>i!=position.line?e:retrieveLinePosition(position, this.matrix))
           if(position.line==1 && position.rank==0){
             tableBody=this.tableBodyInit
           }
@@ -239,15 +244,15 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){
+    render(){console.log("this.state.tableBody", this.state.tableBody)
         if (this.hightlightedline) this.hightlightedline.clear();
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
         return(
             <div className="registerUsed"> 
-
+                <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on {this.registers.length} registers in {this.props.instructions.length} instructions</h6>
-                <table className="visualization"><thead>{this.state.tableBody.map((e,i)=>i==0?<tr ref={i}>{e}</tr>:null)}</thead><tfoot> {this.state.tableBody.map((e,i)=>i==0?null:<tr ref={i}>{e}</tr>)}</tfoot></table>
+                <table className="visualization"><thead>{this.state.tableBody.map((e,i)=>i==0?<tr ref={i}>{e}</tr>:null)}</thead><tbody> {this.state.tableBody.map((e,i)=>i==0?null:<tr ref={i}>{e}</tr>)}</tbody></table>
                 </div>
                 <div className="presentation" className="text"><h6><strong>{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic} : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
               </div>
