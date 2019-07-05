@@ -59,18 +59,20 @@
  
 }
 .out {
-    vertical-align: bottom;
+   /* vertical-align: bottom;*/
     text-align: center;
     font-size: 24px;
     color: #DE7663;
+    background-color: #DE7663;
 
 } 
 
 .in {
-    vertical-align: top;
+   /* vertical-align: top;*/
     text-align: center;
     font-size: 24px;
     color:#6BB1F3;
+    background-color :#6BB1F3;
    
 } 
 /*
@@ -106,7 +108,7 @@ strong {
    
 }
 
-th, td
+th
 {  
     min-width: 100px;
     min-height: 300px;
@@ -119,6 +121,17 @@ th, td
     vertical-align: middle;
     text-align: center;
     padding: 1em;
+}
+td
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    /*!background: #FFFFFF;*/
+   /* border: 1px solid #2F9599;*/
+    color :#263238;
+    text-align: center;
+    padding: 0;
 }
 
 caption {

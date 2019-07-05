@@ -130,16 +130,16 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   function retrieveLinePosition(aPosition, aMatrix){
     let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, aMatrix)
-    var ligne1=<th rowspan="3" scope="rowgroup">{preRetriveMatrixLine[0].name}</th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name}</th>, ligne2=null, ligne3=null;
     for(let j=1; j<preRetriveMatrixLine.length; j++){
       if(preRetriveMatrixLine[j]){
         let statePos=preRetriveMatrixLine[j]
         switch(statePos){
-          case "in":{ligne1=<React.Fragment>{ligne1}<td>in</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+          case "in":{ligne1=<React.Fragment>{ligne1}<td  className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
           break;
-          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td>out</td></React.Fragment>}
+          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="out">&#x21D9;</td></React.Fragment>}
           break
-          case "inout":{ligne1=<React.Fragment>{ligne1}<td>in</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td>out</td></React.Fragment>}
+          case "inout":{ligne1=<React.Fragment>{ligne1}<td className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="out">&#x21D9;</td></React.Fragment>}
           break
         }
       }
@@ -147,7 +147,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
         {ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
       }
 
-    }console.log("2", <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>, "ligne1", ligne1, "ligne2", ligne2, "ligne3", ligne3)
+    }
     return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
      
   }
@@ -161,7 +161,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
   }
   function initializeFirstLineMatrix(firstLine, aMatrix){
-    var ligne1=<th rowspan="3" scope="rowgroup">{aMatrix[firstLine][0].name}</th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name}</th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[firstLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
       ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>
@@ -240,7 +240,7 @@ class VectorRegister extends React.Component {
         super(props);
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=><th className="head">{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=><th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.matrix):initializeLinesMatrix(i, this.matrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
