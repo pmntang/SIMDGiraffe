@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
 import "../css/VectorRegister.css";
+import 'array-flat-polyfill';
 //import {convertToStrings} from "../Utils/Converter";
 
 
@@ -23,7 +24,8 @@ function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {
                     }
                 }
         })
-        return newArray.sort((a,b)=>a.register > b.register)
+        var sorted = newArray.sort((a,b)=>(a.register > b.register?1:a.register < b.register?-1:0));console.log("sorted ", sorted )
+        return sorted;
 }
 
 function searchInstruction (id, idr, tab){//this function extracts from an array of objects (tab) { register:, instructions:} an object in the form {instruction:, register: } corresponding to the criteria passed to it as a parameter (id, idr,tab). the property instructions is an array of triples
