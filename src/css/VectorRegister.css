@@ -90,14 +90,14 @@
 } 
 */
 table {
-    border-spacing: 1em .5em;
+    border-spacing: 1em 0.5em;
     padding: 0 2em 1em 0; 
     border-collapse:separate;
     margin: 1em; 
-    min-height: 100%; 
+    /*min-height: 100%; */
 }
 tbody {
-    border-color:  #FFFFFF;
+    border-color: #263238;;
 }
 .sc-bwzfXH.cvBOXt {
     background-color: #263238;
@@ -116,7 +116,7 @@ th
     width: 1.5em;
     height: 4.7em;
     background: #FFFFFF;
-    border: 1px solid #2F9599;
+    border: 1px solid #263238;;
     color :#263238;
     vertical-align: middle;
     text-align: center;
@@ -128,7 +128,7 @@ td
     width: 1.5cm;
     height: 1cm;
     /*!background: #FFFFFF;*/
-   /* border: 1px solid #2F9599;*/
+    border: 1px solid#263238;
     color :#263238;
     text-align: center;
     padding: 0;
