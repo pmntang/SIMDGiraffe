@@ -106,7 +106,7 @@ strong {
    
 }
 
-th
+th, td
 {  
     min-width: 100px;
     min-height: 300px;
