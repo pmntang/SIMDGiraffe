@@ -132,7 +132,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   function retrieveLinePosition(aPosition, aMatrix){
     let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, aMatrix)
-    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name}</th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
     for(let j=1; j<preRetriveMatrixLine.length; j++){
       if(preRetriveMatrixLine[j]){
         let statePos=preRetriveMatrixLine[j]
@@ -163,7 +163,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
   }
   function initializeFirstLineMatrix(firstLine, aMatrix){
-    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name}</th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[firstLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
       ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>
@@ -242,7 +242,7 @@ class VectorRegister extends React.Component {
         super(props);
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=><th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.matrix):initializeLinesMatrix(i, this.matrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
@@ -324,10 +324,10 @@ class VectorRegister extends React.Component {
         return(
             <div className="registerUsed"> 
                 <div className="controlButton">  </div>
-                <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on {this.registers.length} registers in {this.props.instructions.length} instructions</h6>
+                <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
                 <table className="visualization"><thead>{this.state.tableBody.map((e,i)=>i==0?e:null)}</thead> {this.state.tableBody.map((e,i)=>i==0?null:e)}</table>
                 </div>
-                <div className="presentation" className="text"><h6><strong>{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic} : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
+                <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
               </div>
  
             </div>

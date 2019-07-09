@@ -115,13 +115,41 @@ th
     text-align: center;
     width: 1.5em;
     height: 4.7em;
-    background: #FFFFFF;
-    border: 1px solid #263238;;
-    color :#263238;
+    background: #263238;
+    border: 1px solid #FFFFFF;
+    color :#C792EA;
     vertical-align: middle;
     text-align: center;
     padding: 1em;
 }
+
+.head
+{  
+    color :#DECB6B;
+    text-align: center;
+}
+
+.name
+{  
+    color : #FFFFFF;
+}
+
+.registers
+{  
+    color :#DECB6B;
+}
+
+.instructions
+{  
+    color :#C792EA;
+}
+
+.description
+{  
+    color  :#C792EA;
+}
+
+
 td
 {  
     text-align: center;
