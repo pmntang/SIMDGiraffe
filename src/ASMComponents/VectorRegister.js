@@ -5,7 +5,7 @@ import 'array-flat-polyfill';
 //import {convertToStrings} from "../Utils/Converter";
 
 const prefix=["p","vp", "v"]
-const suffixe=["w","ps", "sb", "b"]
+const suffix=["w","ps", "sb", "b"]
 function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
             var newArray=[]
             arrayOfObject.map(function (anIntrObj){          
@@ -237,12 +237,20 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function renameRegister(aMatrix){
     return aMatrix.map((e,i)=>i==0?e.map((x,j)=>j==0?x:renameReg(x)):e)
   }
-  function removePrefix(aTablePrefix, aMatrix){
-
+  function removePrefix(aTablePrefix, aMatrix){console.log("aMatrix", aMatrix)
+  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findPrefix(aTablePrefix, x.name.toUpperCase())?{name:x.name.slice(findPrefix(aTablePrefix, x.name.toUpperCase()).length)}:x))
   }
 
-  function removeSuffixe(aTableSuffixe, aMatrix){
+  function findPrefix(aTablePrefix,anInstruction){
+  return aTablePrefix.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(0, currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(0, e.length).match(e.toUpperCase())).length>currentPre.length))
+  }
 
+  function removeSuffix(aTableSuffix, aMatrix){
+  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findSuffix(aTableSuffix, x.name.toUpperCase())?{name:x.name.slice(0, x.name.length-findSuffix(aTableSuffix, x.name.toUpperCase()).length)}:x))
+  }
+
+  function findSuffix(aTableSuffixe, anInstruction){
+  return aTableSuffixe.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(anInstruction.length-currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(anInstruction.length-e.length).match(e.toUpperCase())).length>currentPre.length))
   }
 
 class VectorRegister extends React.Component {
@@ -250,8 +258,9 @@ class VectorRegister extends React.Component {
         super(props);
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                 (i==1? initializeFirstLineMatrix(i, this.matrix):initializeLinesMatrix(i, this.matrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
+        this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
+        this.tableBodyInit=this.renameInstrunctionMatrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+                                                 (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
@@ -279,7 +288,7 @@ class VectorRegister extends React.Component {
           let position=state.position
           let tableBody=state.tableBody
           position=advancePosition(position, this.matrix)
-          tableBody=tableBody.map((e,i)=>i!=position.line?e:retrieveLinePosition(position, this.matrix))
+          tableBody=tableBody.map((e,i)=>i!=position.line?e:retrieveLinePosition(position, this.renameInstrunctionMatrix))
           if(position.line==1 && position.rank==0){
             tableBody=this.tableBodyInit
           }
