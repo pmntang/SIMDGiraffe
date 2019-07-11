@@ -4,7 +4,8 @@ import "../css/VectorRegister.css";
 import 'array-flat-polyfill';
 //import {convertToStrings} from "../Utils/Converter";
 
-
+const prefix=["p","vp", "v"]
+const suffixe=["w","ps", "sb", "b"]
 function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
             var newArray=[]
             arrayOfObject.map(function (anIntrObj){          
@@ -236,6 +237,13 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function renameRegister(aMatrix){
     return aMatrix.map((e,i)=>i==0?e.map((x,j)=>j==0?x:renameReg(x)):e)
   }
+  function removePrefix(aTablePrefix, aMatrix){
+
+  }
+
+  function removeSuffixe(aTableSuffixe, aMatrix){
+
+  }
 
 class VectorRegister extends React.Component {
     constructor(props) {
@@ -317,7 +325,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){console.log("this.state.tableBody", this.state.tableBody)
+    render(){
         if (this.hightlightedline) this.hightlightedline.clear();
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
