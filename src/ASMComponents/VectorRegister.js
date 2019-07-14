@@ -4,8 +4,8 @@ import "../css/VectorRegister.css";
 import 'array-flat-polyfill';
 //import {convertToStrings} from "../Utils/Converter";
 
-const prefix=["p","vp", "v"]
-const suffix=["w","ps", "sb", "b"]
+const prefix=["vp", "v","p"]
+const suffix=["dqa","ps", "sb", "dq","ss","pd","sd","ud","q","w", "b", "d","s"]
 function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
             var newArray=[]
             arrayOfObject.map(function (anIntrObj){          
@@ -25,8 +25,8 @@ function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {
                     }
                 }
         })
-        var sorted = newArray.sort((a,b)=>(a.register > b.register?1:a.register < b.register?-1:0));console.log("sorted ", sorted )
-        return sorted;
+        let sorted = newArray.sort((a,b)=>(a.register > b.register?1:a.register < b.register?-1:0))
+        return sorted
 }
 
 function searchInstruction (id, idr, tab){//this function extracts from an array of objects (tab) { register:, instructions:} an object in the form {instruction:, register: } corresponding to the criteria passed to it as a parameter (id, idr,tab). the property instructions is an array of triples
@@ -151,8 +151,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       }
 
     }
-    return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
-     
+    return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
   }
   function initializeLinesMatrix(aLine, aMatrix){
     var ligne1=<th rowspan="3" scope="rowgroup" className="empty"></th>, ligne2=null, ligne3=null;
@@ -237,7 +236,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function renameRegister(aMatrix){
     return aMatrix.map((e,i)=>i==0?e.map((x,j)=>j==0?x:renameReg(x)):e)
   }
-  function removePrefix(aTablePrefix, aMatrix){console.log("aMatrix", aMatrix)
+  function removePrefix(aTablePrefix, aMatrix){
   return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findPrefix(aTablePrefix, x.name.toUpperCase())?{name:x.name.slice(findPrefix(aTablePrefix, x.name.toUpperCase()).length)}:x))
   }
 
@@ -268,7 +267,7 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() {
+    componentDidMount() {console.log("in",document.getElementsByClassName("in"))
         this.timerID = setInterval(
           () => this.process(),
           1500

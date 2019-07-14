@@ -98,7 +98,7 @@ class App extends Component {
         let savedState =false//localStorage.getItem('app-state');
         this.history = createBrowserHistory();
         this.rawAsm=[];
-       // this.chooseCode = this.chooseCode.bind(this);
+        //this.chooseCode = this.chooseCode.bind(this);
         this.state = {//initial state of the application, the next state depends on it
             code: `#include <x86intrin.h>\n\n__m128i PrefixSum(__m128i curr) {\n  __m128i Add = _mm_slli_si128(curr, 4); \n  curr = _mm_add_epi32(curr, Add);   \n  Add = _mm_slli_si128(curr, 8);    \n  return _mm_add_epi32(curr, Add);       \n}`,
             codeWasModifiedSinceLastCompile: true,
@@ -214,7 +214,7 @@ class App extends Component {
         });
     };
     chooseCode = (codeName) => {
-        let code=codeSample.find(codeObject=>codeObject.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
+        let code=codeSample.find(codeObject=>codeObject.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());console.log("this", this)
         if(!code) return;
         var newcode = "#include <x86intrin.h>\n\n"+code.code;
         this.setState({code:newcode});
