@@ -251,7 +251,42 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function findSuffix(aTableSuffixe, anInstruction){
   return aTableSuffixe.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(anInstruction.length-currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(anInstruction.length-e.length).match(e.toUpperCase())).length>currentPre.length))
   }
+  function consPath(aPosition,  aMatrix){
+    return forwardPathPosition(aPosition,  aMatrix).concat(consPreviousPos(aPosition,aMatrix))
+  }
+  function nextPos(aPosition, aMatrix){
+    var pathNextpos=[]
+    if (aPosition.rank>0){
+      var forbidenColumn=0
+      pathNextpos.push(aPosition)
+      let lastPositionLine=buildNonNulPositionsLine(aPosition.line, aMatrix)[buildNonNulPositionsLine(aPosition.line, aMatrix).length-1]
+      if(aPosition.rank<lastPositionLine.rank){// the last position is always the successor of all the position of the same line
+        pathNextpos.push(lastPositionLine)
+        forbidenColumn=lastPositionLine.column
+      }
+     for(let i=aPosition.line; i<aMatrix.length; i++){
+       let positionsLine=buildNonNulPositionsLine(i, aMatrix)
+       if(positionsLine.find(e=>e.column!=forbidenColumn&&e.column==aPosition.column&&e.line!=aPosition.line&&!pathNextpos.find(x=>x.rank==e.rank&&x.line==e.line&&x.column==e.column))){ 
+        let posNext=positionsLine.find(e=>e.column!=forbidenColumn&&e.column==aPosition.column&&e.line!=aPosition.line&&!pathNextpos.find(x=>x.rank==e.rank&&x.line==e.line&&x.column==e.column))
+        if(posNext.rank<positionsLine[positionsLine.length-1].rank){
+          pathNextpos.push(posNext)
+        }
+        break
+       }
+     }
+    }
+    return pathNextpos
+  }
+function matrixPath(aMatrix){
+  return aMatrix.map((x,i)=>i==0?[]:x.map((y,j)=>j==0?[]:(searchStep(i, j, aMatrix)?buildPosition(i,j,aMatrix).map(e=>nextPos(e,aMatrix)):[])))
+}
 
+  function forwardPathPosition(aPosition, aMatrix){
+    return nextPos(aPosition, aMatrix).length==1?nextPos(aPosition, aMatrix):nextPos(aPosition, aMatrix).map(e=>forwardPathPosition(e, aMatrix))
+  }
+  function consPreviousPos(aPosition, aMatrix){
+
+  }
 class VectorRegister extends React.Component {
     constructor(props) {
         super(props);
@@ -267,7 +302,7 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() {console.log("in",document.getElementsByClassName("in"))
+    componentDidMount() {
         this.timerID = setInterval(
           () => this.process(),
           1500
@@ -333,7 +368,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){
+    render(){console.log("test path", matrixPath(this.matrix))
         if (this.hightlightedline) this.hightlightedline.clear();
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
