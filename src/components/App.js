@@ -214,7 +214,7 @@ class App extends Component {
         });
     };
     chooseCode = (codeName) => {
-        let code=codeSample.find(codeObject=>codeObject.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());console.log("this", this)
+        let code=codeSample.find(codeObject=>codeObject.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())
         if(!code) return;
         var newcode = "#include <x86intrin.h>\n\n"+code.code;
         this.setState({code:newcode});

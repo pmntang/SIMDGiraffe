@@ -132,17 +132,18 @@ function searchStep(lineIndex, columnIndex, aMatrix){
     return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))
   }
   function retrieveLinePosition(aPosition, aMatrix){
+    let id=buildPosition(aPosition.line, aPosition.column, aMatrix)//this is to know later which cell of the table to adress
     let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, aMatrix)
     var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
     for(let j=1; j<preRetriveMatrixLine.length; j++){
       if(preRetriveMatrixLine[j]){
         let statePos=preRetriveMatrixLine[j]
         switch(statePos){
-          case "in":{ligne1=<React.Fragment>{ligne1}<td  className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+          case "in":{ligne1=<React.Fragment>{ligne1}<td  id={""+id[0].line+id[0].column+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
           break;
-          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="out">&#x21D9;</td></React.Fragment>}
+          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td id={""+id[0].line+id[0].column+id[0].rank}  className="out">&#x21D9;</td></React.Fragment>}
           break
-          case "inout":{ligne1=<React.Fragment>{ligne1}<td className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="out">&#x21D9;</td></React.Fragment>}
+          case "inout":{ligne1=<React.Fragment>{ligne1}<td id={""+id[0].line+id[0].column+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td id={""+id[1].line+id[1].column+id[1].rank} className="out">&#x21D9;</td></React.Fragment>}
           break
         }
       }
@@ -252,7 +253,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   return aTableSuffixe.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(anInstruction.length-currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(anInstruction.length-e.length).match(e.toUpperCase())).length>currentPre.length))
   }
   function consPath(aPosition,  aMatrix){
-    return forwardPathPosition(aPosition,  aMatrix).concat(consPreviousPos(aPosition,aMatrix))
+    return forwardPathPosition(aPosition,  aMatrix).concat(backwardPathPosition(aPosition,aMatrix))
   }
   function nextPos(aPosition, aMatrix){
     var pathNextpos=[]
@@ -282,10 +283,33 @@ function matrixPath(aMatrix){
 }
 
   function forwardPathPosition(aPosition, aMatrix){
-    return nextPos(aPosition, aMatrix).length==1?nextPos(aPosition, aMatrix):nextPos(aPosition, aMatrix).map(e=>forwardPathPosition(e, aMatrix))
+    var forwardPathOfPosition=nextPos(aPosition, aMatrix)
+    let level=1
+    while(level<aMatrix.length){
+      //forwardPathOfPosition=forwardPathOfPosition.map((e, i,t)=>nextPos(e, aMatrix)).flat()
+      forwardPathOfPosition=forwardPathOfPosition.concat(forwardPathOfPosition.map((e, i,t)=>nextPos(e, aMatrix).filter(x=>!t.find(y=>y.rank==x.rank&&y.column==x.column&&y.line==x.line))).flat())
+      level++
+    }
+    return forwardPathOfPosition
   }
-  function consPreviousPos(aPosition, aMatrix){
-
+  /*function comptuteNextPositionsTab(tabOfPositions){
+    return tabOfPositions.length==1||!Array.isArray(tabOfPositions)?[tabOfPositions].flat():tabOfPositions.map(e=>comptuteNextPositionsTab(e))
+  }*/
+  function backwardPathPosition(aPosition, aMatrix){
+    var backwardPathOfPosition=[]
+    for(let i=1; i<aPosition.line; i++){
+      let positionsLine=buildNonNulPositionsLine(i, aMatrix)
+      for(let j=0; j<positionsLine.length; j++){
+        let forwardPathOfPositionj=forwardPathPosition(positionsLine[j], aMatrix)
+        backwardPathOfPosition=forwardPathOfPositionj.some(x=>x.rank == aPosition.rank && x.column == aPosition.column && x.line == aPosition.line)?backwardPathOfPosition.concat(positionsLine[j]):backwardPathOfPosition
+      }
+    }
+    let positionsLine=buildNonNulPositionsLine(aPosition.line, aMatrix)
+    for(let j=0; j<aPosition.rank; j++){
+      let forwardPathOfPositionj=forwardPathPosition(positionsLine[j], aMatrix)
+      backwardPathOfPosition=forwardPathOfPositionj.some(x=>x.rank==aPosition.rank&&x.column==aPosition.column&&x.line==aPosition.line)?backwardPathOfPosition.concat(positionsLine[j]):backwardPathOfPosition
+    }
+    return backwardPathOfPosition
   }
 class VectorRegister extends React.Component {
     constructor(props) {
@@ -368,7 +392,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){console.log("test path", matrixPath(this.matrix))
+    render(){//console.log("test path", consPath(this.state.position, this.matrix), "position", this.state.position)
         if (this.hightlightedline) this.hightlightedline.clear();
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
