@@ -143,7 +143,7 @@ class App extends Component {
             code: clearCode === true ? '' : code
         }));
     };
-
+  
     visualize = () => {
         this.setState({compiling: true});
         if (this.state.codeWasModifiedSinceLastCompile) {

@@ -131,6 +131,16 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function preRetrieveLinePosition(aPosition, aMatrix){
     return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))
   }
+  function handleBlur(anEvent, aMatrix){
+    console.log("reactif")
+    let id=anEvent.target.getAttribute("id")
+    let aPosition=extractPositionFromId(id)
+    let pathPosition=consPath(aPosition,  aMatrix)
+    let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank)
+    let pathHtml=listOfPathId.map(e=>document.getElementById(e))
+    pathHtml.map(e=>console.log(e))
+
+  }
   function retrieveLinePosition(aPosition, aMatrix){
     let id=buildPosition(aPosition.line, aPosition.column, aMatrix)//this is to know later which cell of the table to adress
     let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, aMatrix)
@@ -139,11 +149,11 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       if(preRetriveMatrixLine[j]){
         let statePos=preRetriveMatrixLine[j]
         switch(statePos){
-          case "in":{ligne1=<React.Fragment>{ligne1}<td  id={""+id[0].line+id[0].column+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+          case "in":{ligne1=<React.Fragment>{ligne1}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
           break;
-          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td id={""+id[0].line+id[0].column+id[0].rank}  className="out">&#x21D9;</td></React.Fragment>}
+          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank}  className="out">&#x21D9;</td></React.Fragment>}
           break
-          case "inout":{ligne1=<React.Fragment>{ligne1}<td id={""+id[0].line+id[0].column+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td id={""+id[1].line+id[1].column+id[1].rank} className="out">&#x21D9;</td></React.Fragment>}
+          case "inout":{ligne1=<React.Fragment>{ligne1}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onBlur={handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank} className="out">&#x21D9;</td></React.Fragment>}
           break
         }
       }
@@ -311,12 +321,16 @@ function matrixPath(aMatrix){
     }
     return backwardPathOfPosition
   }
+  function extractPositionFromId(aGivenId){
+
+  }
 class VectorRegister extends React.Component {
     constructor(props) {
         super(props);
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
+        this.handleBlur=this.handleBlur.bind(this, this.matrix)
         this.tableBodyInit=this.renameInstrunctionMatrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
@@ -355,7 +369,9 @@ class VectorRegister extends React.Component {
 
       }
       
-      
+      handleBlur=(e)=>{
+        return handleBlur(e, this.matrix)
+      }
       highlightCode = (isHover = false) => {
         let line =this.state.position.codeLine-1
         let cm = this.props.cm.current;
@@ -393,7 +409,7 @@ class VectorRegister extends React.Component {
     }*/
 
     render(){//console.log("test path", consPath(this.state.position, this.matrix), "position", this.state.position)
-        if (this.hightlightedline) this.hightlightedline.clear();
+        if (this.hightlightedline) this.hightlightedline.clear();console.log("id document",document.querySelectorAll("td[id]"));
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
         return(
@@ -408,7 +424,14 @@ class VectorRegister extends React.Component {
             </div>
    )
     }
-
+    componentDidUpdate(prevProps) {console.log("id document",document.querySelectorAll("td[id]"));
+      // Typical usage (don't forget to compare props):
+     // if (this.props.userID !== prevProps.userID) {
+      //  this.fetchData(this.props.userID);
+     // }
+    }
 }
+
+
 
 export default VectorRegister;
