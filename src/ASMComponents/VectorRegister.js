@@ -131,7 +131,8 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function preRetrieveLinePosition(aPosition, aMatrix){
     return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))
   }
-  function handleBlur(anEvent, aMatrix){
+  /*
+  function handleBlurDef(anEvent, aMatrix){
     console.log("reactif")
     let id=anEvent.target.getAttribute("id")
     let aPosition=extractPositionFromId(id)
@@ -141,6 +142,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
     pathHtml.map(e=>console.log(e))
 
   }
+  
   function retrieveLinePosition(aPosition, aMatrix){
     let id=buildPosition(aPosition.line, aPosition.column, aMatrix)//this is to know later which cell of the table to adress
     let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, aMatrix)
@@ -149,11 +151,11 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       if(preRetriveMatrixLine[j]){
         let statePos=preRetriveMatrixLine[j]
         switch(statePos){
-          case "in":{ligne1=<React.Fragment>{ligne1}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+          case "in":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
           break;
-          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank}  className="out">&#x21D9;</td></React.Fragment>}
+          case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank}  className="out">&#x21D9;</td></React.Fragment>}
           break
-          case "inout":{ligne1=<React.Fragment>{ligne1}<td onBlur={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onBlur={handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank} className="out">&#x21D9;</td></React.Fragment>}
+          case "inout":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank} className="out">&#x21D9;</td></React.Fragment>}
           break
         }
       }
@@ -163,7 +165,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
 
     }
     return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
-  }
+  }*/
   function initializeLinesMatrix(aLine, aMatrix){
     var ligne1=<th rowspan="3" scope="rowgroup" className="empty"></th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[aLine].length; j++){
@@ -322,7 +324,13 @@ function matrixPath(aMatrix){
     return backwardPathOfPosition
   }
   function extractPositionFromId(aGivenId){
-
+    let positionPropertiesArray=aGivenId.split(/[lcrz]/)
+    return {line:parseInt(positionPropertiesArray[1]), column:parseInt(positionPropertiesArray[2]), rank:parseInt(positionPropertiesArray[3]), codeLine:parseInt(positionPropertiesArray[4])}
+  }
+  function maxPosition(aMatrix){
+    let pos=buildNonNulPositionsLine(aMatrix.length-1, aMatrix)[buildNonNulPositionsLine(aMatrix.length-1, aMatrix).length-1]
+    console.log(pos)
+    return pos
   }
 class VectorRegister extends React.Component {
     constructor(props) {
@@ -330,7 +338,7 @@ class VectorRegister extends React.Component {
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
-        this.handleBlur=this.handleBlur.bind(this, this.matrix)
+        this.handleBlur=this.handleBlur.bind(this)
         this.tableBodyInit=this.renameInstrunctionMatrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
@@ -360,17 +368,23 @@ class VectorRegister extends React.Component {
           let position=state.position
           let tableBody=state.tableBody
           position=advancePosition(position, this.matrix)
-          tableBody=tableBody.map((e,i)=>i!=position.line?e:retrieveLinePosition(position, this.renameInstrunctionMatrix))
-          if(position.line==1 && position.rank==0){
-            tableBody=this.tableBodyInit
+          tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position))
+          if(position.line==1 && position.rank==0){clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
+           //tableBody=this.tableBodyInit
+
           }
         return{position:position, tableBody:tableBody}
         });
 
       }
       
-      handleBlur=(e)=>{
-        return handleBlur(e, this.matrix)
+      handleBlur=(anEvent)=>{
+        let id=anEvent.target.getAttribute("id")
+        let thisPosition=extractPositionFromId(id)
+        let pathPosition=consPath(thisPosition,  this.matrix)
+        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("pathid", listOfPathId)
+        let pathHtml=listOfPathId.map(e=>document.getElementById(e))
+        pathHtml.map(e=>console.log(e))
       }
       highlightCode = (isHover = false) => {
         let line =this.state.position.codeLine-1
@@ -383,6 +397,29 @@ class VectorRegister extends React.Component {
         }
         return null
     };
+    retrieveLinePosition(aPosition){console.log("matrix", this.matrix)
+      let id=buildPosition(aPosition.line, aPosition.column,  this.matrix)//this is to know later which cell of the table to adress
+      let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix);console.log("aPositionsid", id)
+      var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
+      for(let j=1; j<preRetriveMatrixLine.length; j++){
+        if(preRetriveMatrixLine[j]){
+          let statePos=preRetriveMatrixLine[j]
+          switch(statePos){
+            case "in":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            break;
+            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
+            break
+            case "inout":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            break
+          }
+        }
+        else{
+          {ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+        }
+  
+      }
+      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
+    }
     
 /*
       buildGraphicStack = () => {
@@ -408,8 +445,8 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){//console.log("test path", consPath(this.state.position, this.matrix), "position", this.state.position)
-        if (this.hightlightedline) this.hightlightedline.clear();console.log("id document",document.querySelectorAll("td[id]"));
+    render(){console.log("test path", consPath(this.state.position, this.matrix), "position", this.state.position)
+        if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
         return(
