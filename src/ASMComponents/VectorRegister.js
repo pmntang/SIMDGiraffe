@@ -129,7 +129,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
 
   function preRetrieveLinePosition(aPosition, aMatrix){
-    return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))
+    return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))//in, out or inout is put where necessary
   }
   /*
   function handleBlurDef(anEvent, aMatrix){
@@ -167,7 +167,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
     return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
   }*/
   function initializeLinesMatrix(aLine, aMatrix){
-    var ligne1=<th rowspan="3" scope="rowgroup" className="empty"></th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowSpan="3" scope="rowgroup" className="empty"></th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[aLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
       ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>
@@ -176,7 +176,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
   }
   function initializeFirstLineMatrix(firstLine, aMatrix){
-    var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
+    var ligne1=<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[firstLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
       ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>
@@ -192,20 +192,20 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       if(indexPosition){
         let l=indexPosition.length
         switch(l){
-          case 1: if(indexPosition[0].rank==buildNonNulPositionsLine(aPosition.line, aMatrix).length-1&&indexPosition[0].rank<=aPosition.rank){
-            statePos="out"
+          case 1: if(indexPosition[0].rank==buildNonNulPositionsLine(aPosition.line, aMatrix).length-1&&indexPosition[0].rank<=aPosition.rank){//rank are ordered and if indexPosition[0] is the last position, it is an out position
+            statePos="out"// is the last step, the last position
           }
                   else
-                    if(indexPosition[0].rank<=aPosition.rank){
-                      statePos="in"
+                    if(indexPosition[0].rank<=aPosition.rank){//indexPosition[0] isn't the last position, it is an in
+                      statePos="in"+indexPosition[0].rank//add indexPosition[0].rank to intentify the step being executed (the position reach by the program execution or more precisely the flow of the program)
                     }
                     break;
           case 2: if(indexPosition[1].rank<=aPosition.rank){
-            statePos="inout"
+            statePos="inout"+indexPosition[0].rank// the last step but they are two steps in this i,j index (two positions) (they are two steps which means the instruction has two steps on the corresponding register, necessarily an in and an out) and it is important to know the rank (number) of the first step (the last being an out=the last step of the line)
           }
                   else
                     if(indexPosition[0].rank<=aPosition.rank){
-                      statePos="in"
+                      statePos="in"+indexPosition[0].rank// this rank indicate the position or the number of the this step
                     }
                     break;
                   
@@ -218,7 +218,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
-    return (searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank):
+    return (searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
             (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null)
   }
   
@@ -382,7 +382,7 @@ class VectorRegister extends React.Component {
         let id=anEvent.target.getAttribute("id")
         let thisPosition=extractPositionFromId(id)
         let pathPosition=consPath(thisPosition,  this.matrix)
-        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("pathid", listOfPathId)
+        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("path",pathPosition, "pathid", listOfPathId)
         let pathHtml=listOfPathId.map(e=>document.getElementById(e))
         pathHtml.map(e=>console.log(e))
       }
@@ -398,18 +398,26 @@ class VectorRegister extends React.Component {
         return null
     };
     retrieveLinePosition(aPosition){console.log("matrix", this.matrix)
-      let id=buildPosition(aPosition.line, aPosition.column,  this.matrix)//this is to know later which cell of the table to adress
-      let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix);console.log("aPositionsid", id)
+      let id=buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
+      let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix);console.log("aPositionsid", id, "aPosition", aPosition)
       var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
       for(let j=1; j<preRetriveMatrixLine.length; j++){
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
           switch(statePos){
-            case "in":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in1":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
+            case "in2":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            break;
+            case "in3":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            break;
+            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
             break
-            case "inout":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[0].line+"c"+id[0].column+"r"+id[0].rank+"z"+id[0].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            break
+            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            break
+            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onMouseEnter={this.handleBlur} id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onMouseEnter={this.handleBlur} id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
             break
           }
         }
