@@ -2,10 +2,11 @@ import React, {Component} from "react";
 import * as _ from "lodash";
 import "../css/VectorRegister.css";
 import 'array-flat-polyfill';
+import 'underscore';
 //import {convertToStrings} from "../Utils/Converter";
 
 const prefix=["vp", "v","p"]
-const suffix=["dqa","ps", "sb", "dq","ss","pd","sd","ud","q","w", "b", "d","s"]
+const suffix=["dqa","ps", "sb", "ss","pd","sd","ud","q","w", "b", "d","s"]//"dq",
 function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
             var newArray=[]
             arrayOfObject.map(function (anIntrObj){          
@@ -332,6 +333,32 @@ function matrixPath(aMatrix){
     console.log(pos)
     return pos
   }
+  function updateListOfPath(anArrayListOfPath, anElementId, aMatrix){
+   // let p=consPath(extractPositionFromId(anElementId), aMatrix)
+    if(anArrayListOfPath.find(e=>e.iDTarget.find(x=>x==anElementId))){
+      let anEltObject=anArrayListOfPath.find(e=>e.iDTarget.find(x=>x==anElementId))
+      let indexOfanElementId=anArrayListOfPath.indexOf(anEltObject)
+      if(anEltObject.iDTarget.length==1){
+        anArrayListOfPath.splice(indexOfanElementId,1)
+      }
+      else{
+        anArrayListOfPath[indexOfanElementId].iDTarget.splice(anEltObject.iDTarget.indexOf(anElementId),1)
+      }
+    }
+    else{
+      let p=consPath(extractPositionFromId(anElementId), aMatrix)
+      if(anArrayListOfPath.find(e=>e.path.length==p.length&&!e.path.some(x=>!p.find(y=>y.rank==x.rank&&y.line==x.line&&y.column==x.column&&y.codeLine==x.codeLine)))){
+        let pathOfanElementId=anArrayListOfPath.find(e=>e.path.length==p.length&&!e.path.some(x=>!p.find(y=>y.rank==x.rank&&y.line==x.line&&y.column==x.column&&y.codeLine==x.codeLine)))
+        let indexOfPath=anArrayListOfPath.indexOf(pathOfanElementId)
+        anArrayListOfPath[indexOfPath].iDTarget=[...anArrayListOfPath[indexOfPath].iDTarget, anElementId]
+      }
+      else{
+        anArrayListOfPath=[...anArrayListOfPath,{path:p, iDTarget:[anElementId]}]
+      }
+    }
+    return anArrayListOfPath
+  }
+
 class VectorRegister extends React.Component {
     constructor(props) {
         super(props);
@@ -344,7 +371,8 @@ class VectorRegister extends React.Component {
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
-            tableBody:this.tableBodyInit
+            tableBody:this.tableBodyInit,
+            listOfPath:[]
     };
     }
 
@@ -384,6 +412,7 @@ class VectorRegister extends React.Component {
         let pathPosition=consPath(thisPosition,  this.matrix)
         let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("path",pathPosition, "pathid", listOfPathId)
         let pathHtml=listOfPathId.map(e=>document.getElementById(e))
+        pathHtml.map(e=>e?e.style.color="red":null)
         pathHtml.map(e=>console.log(e))
       }
       highlightCode = (isHover = false) => {
@@ -453,7 +482,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){console.log("test path", consPath(this.state.position, this.matrix), "position", this.state.position)
+    render(){let pos=this.state.position.rank==0? advancePosition(this.state.position, this.matrix):this.state.position;console.log("update",updateListOfPath(this.state.listOfPath,consPath(pos, this.matrix).map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine)[0], this.matrix))
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();

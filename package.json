@@ -30,7 +30,8 @@
     "reactstrap": "^6.5.0",
     "request": "^2.88.0",
     "styled-components": "^4.0.2",
-    "uint32": "^0.2.1"
+    "uint32": "^0.2.1",
+    "underscore": "^1.9.1"
   },
   "scripts": {
     "start": "react-scripts start",
