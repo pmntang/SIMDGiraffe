@@ -105,7 +105,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   
   function retrievePosition(aPosition, aMatrix){
     if (aPosition.rank==0){//we are at the first column (index 0)
-      return <th className="intrinsicName"   rowspan="3" scope="rowgroup"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></th>
+      return <th className="intrinsicName"   rowSpan="3" scope="rowgroup"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></th>
     }
     else 
       if(aMatrix[aPosition.line][aPosition.column].length==1){
@@ -429,7 +429,7 @@ class VectorRegister extends React.Component {
     retrieveLinePosition(aPosition){console.log("matrix", this.matrix)
       let id=buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
       let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix);console.log("aPositionsid", id, "aPosition", aPosition)
-      var ligne1=<th rowspan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
+      var ligne1=<th rowSpan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
       for(let j=1; j<preRetriveMatrixLine.length; j++){
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
