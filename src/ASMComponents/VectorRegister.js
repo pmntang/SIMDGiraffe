@@ -358,6 +358,23 @@ function matrixPath(aMatrix){
     }
     return anArrayListOfPath
   }
+  function advanceAselectPosition(aPath, aCurrentPosition){
+    let sortPath=aPath.sort((a,b)=>a.line>=b.line&&a.rank>=b.rank)
+    let currentIndex=sortPath.indexOf(sortPath.find(x=>x.line==aCurrentPosition.line&&x.rank==aCurrentPosition.rank))
+    return aCurrentPosition.line==sortPath[sortPath.length-1].line&&aCurrentPosition.rank==sortPath[sortPath.length-1].rank?sortPath[0]:sortPath[currentIndex+1]
+  }
+  function advanceSelectPositions(anArrayListOfPath, aListOfCurrentPosition){//aListOfCurrentPosition={aPosition:..., anElementId:...} anElementId is an id corresponding to aPosition
+    for(let i=0; i<aListOfCurrentPosition.length; i++){
+      let currentElement=anArrayListOfPath.find(e=>e.iDTarget.find(x=>x==aListOfCurrentPosition[i].anElementId))
+      if(_.isEqual(advanceAselectPosition(anArrayListOfPath[anArrayListOfPath.indexOf(currentElement)].path, aListOfCurrentPosition[i].aPosition), extractPositionFromId(aListOfCurrentPosition[i].anElementId))){
+        aListOfCurrentPosition[i].aPosition=advanceAselectPosition(anArrayListOfPath[anArrayListOfPath.indexOf(currentElement)].path, extractPositionFromId(aListOfCurrentPosition[i].anElementId))
+      }
+      else{
+        aListOfCurrentPosition[i].aPosition=advanceAselectPosition(anArrayListOfPath[anArrayListOfPath.indexOf(currentElement)].path,  aListOfCurrentPosition[i].aPosition)
+      }
+    }
+    return aListOfCurrentPosition
+  }
 
 class VectorRegister extends React.Component {
     constructor(props) {
@@ -372,7 +389,8 @@ class VectorRegister extends React.Component {
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
             tableBody:this.tableBodyInit,
-            listOfPath:[]
+            listOfPath:[],
+            listOfCurrentPositions:[]
     };
     }
 
@@ -404,6 +422,11 @@ class VectorRegister extends React.Component {
         return{position:position, tableBody:tableBody}
         });
 
+      }
+      processPath(){
+        this.setState(function(state){
+          
+        });
       }
       
       handleBlur=(anEvent)=>{
