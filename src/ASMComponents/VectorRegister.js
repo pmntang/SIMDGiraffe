@@ -330,7 +330,6 @@ function matrixPath(aMatrix){
   }
   function maxPosition(aMatrix){
     let pos=buildNonNulPositionsLine(aMatrix.length-1, aMatrix)[buildNonNulPositionsLine(aMatrix.length-1, aMatrix).length-1]
-    console.log("maxPos",pos)
     return pos
   }
   function updateListOfPath(anArrayListOfPath, anElementId, aMatrix){
@@ -386,9 +385,11 @@ function matrixPath(aMatrix){
   function updateSelectElt(listOfCurrentElt){
     listOfCurrentElt=listOfCurrentElt.map(e=>{return {aPosition:"l"+e.aPosition.line+"c"+e.aPosition.column+"r"+e.aPosition.rank+"z"+e.aPosition.codeLine, anElementId:e.anElementId}})
     listOfCurrentElt=listOfCurrentElt.map(e=>{return {aPosition:document.getElementById(e.aPosition), anElementId:document.getElementById(e.anElementId)}})
-    listOfCurrentElt=listOfCurrentElt.map((e,i)=>e.anElementId.getAttribute("className").substring(e.anElementId.getAttribute("className").length-3, e.anElementId.getAttribute("className").length-1)=="id"?
-                                                  {aPosition:e.aPosition.setAttribute("className", "el"+e.anElementId.getAttribute("className").substring(e.anElementId.getAttribute("className").length-1)), anElementId:document.getElementById(e.anElementId)}:
-                                                  {aPosition:e.aPosition.setAttribute("className","el"+i), anElementId:e.anElementId.setAttribute("className","id"+i)})
+   // listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition",e))
+    listOfCurrentElt=listOfCurrentElt.map(e=>e? e.aPosition:"aaaaaaa")
+    listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition1",e))
+    console.log("listOfCurrentElt", listOfCurrentElt)
+    listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition2",e))
 
   }
 
@@ -399,23 +400,28 @@ class VectorRegister extends React.Component {
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
         this.handleMouseEnter=this.handleMouseEnter.bind(this)
+        this.processEvent=this.processEvent.bind(this)
         this.tableBodyInit=this.renameInstrunctionMatrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
-            tableBody:this.displayFullMatrix (),//this.tableBodyInit,
+            tableBody:this.tableBodyInit,
             listOfPath:[],
             listOfCurrentPositions:[]
     };
     }
 
     componentDidMount() {
- this.displayFullMatrix ()
-       /* this.timerID = setInterval(
-          () => this.process(),
+        this.displayFullMatrix ()
+         this.timerID = setInterval(
+          () => this.processPath(),
           1500
-        );*/
+        );
+        //this.timerID = setInterval(
+         // () => this.process(),
+        //  1500
+        //);
     }/*
       componentDidUpdate(prevProps, prevState, snapshot){
         const list = this.listRef.current;
@@ -464,16 +470,15 @@ class VectorRegister extends React.Component {
         })
       }
       displayFullMatrix (){
-        
-          let position={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
-          let tableBody=this.tableBodyInit
-          for(let line=1;line<=this.matrix.length; line++){
-            for(position; _.isEqual(position, maxPosition(this.matrix));advancePosition(position, this.matrix)){
-              tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position))
-            }
-          }console.log("tablebody", tableBody)
-          return tableBody
-        
+        this.setState(function(state){
+          let position=state.position
+          let tableBody=state.tableBody
+          do{
+            position=advancePosition(position, this.matrix)
+            tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position)) 
+          }while(!_.isEqual(position, maxPosition(this.matrix)))
+          return{position:position, tableBody:tableBody}
+        });
       }
       handleMouseEnter=(anEvent)=>{
         let id=anEvent.target.getAttribute("id")
@@ -482,7 +487,7 @@ class VectorRegister extends React.Component {
         let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("path",pathPosition, "pathid", listOfPathId)
         let pathHtml=listOfPathId.map(e=>document.getElementById(e))
         pathHtml.map(e=>e?e.style.color="red":null)
-        pathHtml.map(e=>console.log(e))
+        //pathHtml.map(e=>console.log(e))
       }
       handleonMouseLeave=(anEvent)=>{
         let id=anEvent.target.getAttribute("id")
@@ -491,7 +496,7 @@ class VectorRegister extends React.Component {
         let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine);console.log("path",pathPosition, "pathid", listOfPathId)
         let pathHtml=listOfPathId.map(e=>document.getElementById(e))
         pathHtml.map(e=>e?e.style.color="red":null)
-        pathHtml.map(e=>console.log(e))
+       // pathHtml.map(e=>console.log(e))
       }
       handleClick=(anEvent)=>{
         let id=anEvent.target.getAttribute("id")
@@ -521,19 +526,19 @@ class VectorRegister extends React.Component {
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
           switch(statePos){
-            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
+            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
             break
-            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
             break
-            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
             break
-            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.handleClick} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
             break
           }
         }
@@ -569,7 +574,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){console.log("thistablebody render", this.state.tableBody)
+    render(){console.log("this.state.listOfPath", this.state.listOfPath, "this.state.listOfCurrentPositions", this.state.listOfCurrentPositions)
       
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
@@ -586,7 +591,7 @@ class VectorRegister extends React.Component {
             </div>
    )
     }
-    componentDidUpdate(prevProps) {console.log("id document",document.querySelectorAll("td[id]"));
+    componentDidUpdate(prevProps) {//console.log("id document",document.querySelectorAll("td[id]"));
       // Typical usage (don't forget to compare props):
      // if (this.props.userID !== prevProps.userID) {
       //  this.fetchData(this.props.userID);
