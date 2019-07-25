@@ -183,6 +183,72 @@ td[className$="id1"]
     text-align: center;
     padding: 0;
 }
+td[className$="el2"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    background: #FFFFFF;
+    border: 1px solid#263238;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
+td[className$="id2"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    /*!background: #FFFFFF;*/
+    border: 1px solid#FFFFFF;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
+td[className$="el3"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    background: #2F9599;
+    border: 1px solid#263238;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
+td[className$="id4"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    /*!background: #FFFFFF;*/
+    border: 1px solid#2F9599;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
+td[className$="el5"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    background: #2F9599;
+    border: 1px solid#263238;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
+td[className$="id5"]
+{  
+    text-align: center;
+    width: 1.5cm;
+    height: 1cm;
+    /*!background: #FFFFFF;*/
+    border: 1px solid#2F9599;
+    color :#263238;
+    text-align: center;
+    padding: 0;
+}
 caption {
     caption-side: top; 
     color: black;

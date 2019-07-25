@@ -193,11 +193,11 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       if(indexPosition){
         let l=indexPosition.length
         switch(l){
-          case 1: if(indexPosition[0].rank==buildNonNulPositionsLine(aPosition.line, aMatrix).length-1&&indexPosition[0].rank<=aPosition.rank){//rank are ordered and if indexPosition[0] is the last position, it is an out position
+          case 1: if(indexPosition[0].rank==buildNonNulPositionsLine(aPosition.line, aMatrix).length-1&&indexPosition[0].rank<=aPosition.rank){//rank are ordered and if indexPosition[0] is the last position of the line, it is an out position
             statePos="out"// is the last step, the last position
           }
                   else
-                    if(indexPosition[0].rank<=aPosition.rank){//indexPosition[0] isn't the last position, it is an in
+                    if(indexPosition[0].rank<=aPosition.rank){//indexPosition[0] isn't the last position of the line, it is an in
                       statePos="in"+indexPosition[0].rank//add indexPosition[0].rank to intentify the step being executed (the position reach by the program execution or more precisely the flow of the program)
                     }
                     break;
@@ -357,9 +357,30 @@ function matrixPath(aMatrix){
     }
     return anArrayListOfPath
   }
-  function updateListOfCurrentPosition(aListOfCurrentPosition, idOfEventElt, aMatrix){
+  function minFreePosition(aListOfCurrentPosition){
+    let sortedList=aListOfCurrentPosition.sort((a,b)=>a.idPosition<b.idPosition)
+    var freePos=null
+    if(sortedList.length==0||(sortedList.length==1&&sortedList[0].idPosition>1)){
+      freePos=1
+    }
+    else
+      if(sortedList.length==1){
+        freePos=2
+      }
+    else{
+      for(let i=sortedList.length; i>1; i--){console.log("sortedList.length", sortedList.length)
+        if(sortedList[i-1].idPosition-sortedList[i-2].idPosition>1&&!sortedList.some(x=>x.idPosition==sortedList[i-2].idPosition)){
+          freePos=sortedList[i-2].idPosition+1
+        }
+      }
+    }
+    freePos=freePos?freePos:sortedList.length+1
+    return freePos
+  }
+  function updateListOfCurrentPosition(aListOfCurrentPosition, idOfEventElt, aMatrix){console.log("idofevent", idOfEventElt)
     let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
-    return [...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
+    let eltId=aListOfCurrentPosition.find(e=>e.anElementId==idOfEventElt) //[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
+    return eltId&&aListOfCurrentPosition.splice(aListOfCurrentPosition.indexOf(eltId), 1).length>0?aListOfCurrentPosition:[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt, idPosition:minFreePosition(aListOfCurrentPosition)}] 
   }
   function advanceAselectPosition(aPath, aCurrentPosition){
     let sortPath=aPath.sort((a,b)=>a.line>=b.line&&a.rank>=b.rank)
@@ -381,16 +402,25 @@ function matrixPath(aMatrix){
   function processSelectElt (anArrayListOfPath, eltEventId, aMatrix){
     anArrayListOfPath=updateListOfPath(anArrayListOfPath, eltEventId, aMatrix)
 
-  }*/
-  function updateSelectElt(listOfCurrentElt){
+  }
+  function udapteAttributsElt(anElt,anEltIndex){console.log("visualise", anElt.anElementId)
+    return anElt.anElementId.className.substring(anElt.anElementId.className.length-3, anElt.anElementId.className.length-1)=="id"?
+    {aPosition:anElt.aPosition.setAttribute("className", "el"+anElt.anElementId.getAttribute("className").substring(anElt.anElementId.getAttribute("className").length-1)), anElementId:document.getElementById(anElt.anElementId)}:
+    {aPosition:anElt.aPosition.setAttribute("className","el"+anEltIndex), anElementId:anElt.anElementId.setAttribute("className","id"+anEltIndex)}
+  }
+  function updateSelectElt(listOfCurrentElt){console.log("a l'entrée", listOfCurrentElt)
     listOfCurrentElt=listOfCurrentElt.map(e=>{return {aPosition:"l"+e.aPosition.line+"c"+e.aPosition.column+"r"+e.aPosition.rank+"z"+e.aPosition.codeLine, anElementId:e.anElementId}})
     listOfCurrentElt=listOfCurrentElt.map(e=>{return {aPosition:document.getElementById(e.aPosition), anElementId:document.getElementById(e.anElementId)}})
    // listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition",e))
-    listOfCurrentElt=listOfCurrentElt.map(e=>e? e.aPosition:"aaaaaaa")
+    listOfCurrentElt=listOfCurrentElt.map((e,i)=>udapteAttributsElt(e,i))
     listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition1",e))
     console.log("listOfCurrentElt", listOfCurrentElt)
-    listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition2",e))
-
+    listOfCurrentElt=listOfCurrentElt.map(e=>e?console.log("aPosition2",e):console.log("aPosition2","bbbbbb"))
+  }*/
+  function computeSuffix(aPosition, aListOfCurrentPosition){
+    let isInCurrentPos=aListOfCurrentPosition.find(e=>_.isEqual(e.aPosition, aPosition))
+    let isCurrentPos=aListOfCurrentPosition.find(e=>e.anElementId=="l"+aPosition.line+"c"+aPosition.column+"r"+aPosition.rank+"z"+aPosition.codeLine)
+    return isInCurrentPos?"el"+isInCurrentPos.idPosition:(isCurrentPos?"id"+isCurrentPos:"")
   }
 
 class VectorRegister extends React.Component {
@@ -413,9 +443,9 @@ class VectorRegister extends React.Component {
     }
 
     componentDidMount() {
-        this.displayFullMatrix ()
+         this.displayFullMatrix ()
          this.timerID = setInterval(
-          () => this.processPath(),
+          () => this.processPath (),
           1500
         );
         //this.timerID = setInterval(
@@ -448,6 +478,8 @@ class VectorRegister extends React.Component {
       }
       processPath(){
         this.setState(function(state){
+          let position=state.position
+          let tableBody=state.tableBody
           let listOfCurrentPositions=state.listOfCurrentPositions
           let listOfPath=state.listOfPath
           let absentElts=listOfCurrentPositions.filter(e=>!listOfPath.some(x=>x.iDTarget.find(u=>u==e.anElementId)))
@@ -455,29 +487,37 @@ class VectorRegister extends React.Component {
             for(let i=0; i<absentElts.length; i++){
               listOfCurrentPositions.splice(listOfCurrentPositions.indexOf(listOfCurrentPositions.find(x=>x.anElementId==absentElts[i])),1)
             }
-          }
+          }console.log("tableBody", tableBody)
           listOfCurrentPositions=advanceSelectPositions(listOfPath, listOfCurrentPositions)
-          return {listOfPath:listOfPath, listOfCurrentPositions:listOfCurrentPositions}
+          tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) //modifier ici
+          return {listOfCurrentPositions:listOfCurrentPositions}
         });
-        updateSelectElt(this.state.listOfCurrentPositions)
       }
       processEvent(anEvent){
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
           let listOfCurrentPositions=updateListOfCurrentPosition(state.listOfCurrentPositions, id, this.matrix)
           let listOfPath=updateListOfPath(state.listOfPath, id, this.matrix)
+          let absentElts=listOfCurrentPositions.filter(e=>!listOfPath.some(x=>x.iDTarget.find(u=>u==e.anElementId)))
+          if(absentElts.length>1){
+            for(let i=0; i<absentElts.length; i++){
+              listOfCurrentPositions.splice(listOfCurrentPositions.indexOf(listOfCurrentPositions.find(x=>x.anElementId==absentElts[i])),1)
+            }
+          }
           return {listOfPath:listOfPath, listOfCurrentPositions:listOfCurrentPositions}
         })
       }
+
       displayFullMatrix (){
         this.setState(function(state){
           let position=state.position
           let tableBody=state.tableBody
+          let listOfCurrentPositions=state.listOfCurrentPositions
           do{
             position=advancePosition(position, this.matrix)
-            tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position)) 
+            tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) 
           }while(!_.isEqual(position, maxPosition(this.matrix)))
-          return{position:position, tableBody:tableBody}
+          return{position:position, tableBody:tableBody, listOfCurrentPositions:listOfCurrentPositions}
         });
       }
       handleMouseEnter=(anEvent)=>{
@@ -518,27 +558,32 @@ class VectorRegister extends React.Component {
         }
         return null
     };
-    retrieveLinePosition(aPosition){
+    retrieveLinePosition(aPosition, listOfCurrentPositions){
+      let suffix=computeSuffix(aPosition, listOfCurrentPositions)//computeSuffix(aPosition, listOfCurrentPositions, aListOfPosition)
       let id=buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
+      let id1=id.length>=2?"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine:null //"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine
+      let id2=id.length>=3?"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine:null //"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine
+      let id3=id.length>=4?"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine:null  //"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine
+      let idl=id.length>0?"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine:null //"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine
       let preRetriveMatrixLine=preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix)
       var ligne1=<th rowSpan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
       for(let j=1; j<preRetriveMatrixLine.length; j++){
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
           switch(statePos){
-            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id1} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id2} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id3} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine}  className="out">&#x21D9;</td></React.Fragment>}
+            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl}  className={"out"+suffix}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id1} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+suffix}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id2} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+suffix}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine} className="in">&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine} className="out">&#x21D9;</td></React.Fragment>}
+            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id3} className={"in"+suffix}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+suffix}>&#x21D9;</td></React.Fragment>}
             break
           }
         }
