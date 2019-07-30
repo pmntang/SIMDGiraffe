@@ -383,9 +383,10 @@ function matrixPath(aMatrix){
     return eltId&&aListOfCurrentPosition.splice(aListOfCurrentPosition.indexOf(eltId), 1).length>0?aListOfCurrentPosition:[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt, idPosition:minFreePosition(aListOfCurrentPosition)}] 
   }
   function advanceAselectPosition(aPath, aCurrentPosition){
-    let sortPath=aPath.sort((a,b)=>a.line>=b.line&&a.rank>=b.rank)
+    let sortPath=aPath.sort((a,b)=>compare(a,b))
     let currentIndex=sortPath.indexOf(sortPath.find(x=>x.line==aCurrentPosition.line&&x.rank==aCurrentPosition.rank))
-    return aCurrentPosition.line==sortPath[sortPath.length-1].line&&aCurrentPosition.rank==sortPath[sortPath.length-1].rank?sortPath[0]:sortPath[currentIndex+1]
+    let advancePos=aCurrentPosition.line==sortPath[sortPath.length-1].line&&aCurrentPosition.rank==sortPath[sortPath.length-1].rank?sortPath[0]:sortPath[currentIndex+1]
+    return advancePos
   }
   function advanceSelectPositions(anArrayListOfPath, aListOfCurrentPosition){//aListOfCurrentPosition={aPosition:..., anElementId:...} anElementId is an id corresponding to aPosition
     for(let i=0; i<aListOfCurrentPosition.length; i++){
@@ -398,6 +399,17 @@ function matrixPath(aMatrix){
       }
     }
     return aListOfCurrentPosition
+  }
+  
+  function compare(a, b) {
+    if ((a.line<b.line)||((a.line==b.line)&&a.rank<b.rank)) {
+      return -1;
+    }
+    if (a.line>b.line) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
   }/*
   function processSelectElt (anArrayListOfPath, eltEventId, aMatrix){
     anArrayListOfPath=updateListOfPath(anArrayListOfPath, eltEventId, aMatrix)
@@ -420,7 +432,13 @@ function matrixPath(aMatrix){
   function computeSuffix(aPosition, aListOfCurrentPosition){
     let isInCurrentPos=aListOfCurrentPosition.find(e=>_.isEqual(e.aPosition, aPosition))
     let isCurrentPos=aListOfCurrentPosition.find(e=>e.anElementId=="l"+aPosition.line+"c"+aPosition.column+"r"+aPosition.rank+"z"+aPosition.codeLine)
-    return isInCurrentPos?"el"+isInCurrentPos.idPosition:(isCurrentPos?"id"+isCurrentPos.idPosition:"")
+    let suffix=isInCurrentPos?"el"+isInCurrentPos.idPosition:(isCurrentPos?"id"+isCurrentPos.idPosition:""); console.log("suffix", suffix, "aPosition",aPosition,"aListOfcurrent", aListOfCurrentPosition)
+    return suffix
+  }
+  function findPositionInCurrentPositions(indexLine, aListOfCurrentPosition){
+    return aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine||extractPositionFromId(e.anElementId).line==indexLine)?
+            (aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine)? aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine).aPosition:
+            extractPositionFromId(aListOfCurrentPosition.find(e=>extractPositionFromId(e.anElementId).line==indexLine).anElementId)):null
   }
 
 class VectorRegister extends React.Component {
@@ -478,24 +496,25 @@ class VectorRegister extends React.Component {
       }
       processPath(){
         this.setState(function(state){
-          let position=state.position
           let tableBody=state.tableBody
-          let listOfCurrentPositions=state.listOfCurrentPositions
+          let listOfCurrentPositions=state.listOfCurrentPositions//; console.log("curent", listOfCurrentPositions)
           let listOfPath=state.listOfPath
           let absentElts=listOfCurrentPositions.filter(e=>!listOfPath.some(x=>x.iDTarget.find(u=>u==e.anElementId)))
           if(absentElts.length>1){
             for(let i=0; i<absentElts.length; i++){
               listOfCurrentPositions.splice(listOfCurrentPositions.indexOf(listOfCurrentPositions.find(x=>x.anElementId==absentElts[i])),1)
             }
-          }//console.log("tableBody", tableBody)
-          listOfCurrentPositions=advanceSelectPositions(listOfPath, listOfCurrentPositions)
-          tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) //modifier ici
-          return {listOfCurrentPositions:listOfCurrentPositions}
+          }//console.log("tableBody", tableBody) 
+                  
+          tableBody=tableBody.map((e,i)=>findPositionInCurrentPositions(i,listOfCurrentPositions)?this.retrieveLinePosition(buildNonNulPositionsLine(i, this.matrix)[buildNonNulPositionsLine(i, this.matrix).length-1], listOfCurrentPositions):e) //modifier ici
+          listOfCurrentPositions=advanceSelectPositions(listOfPath, listOfCurrentPositions) 
+          return {listOfCurrentPositions:listOfCurrentPositions, tableBody:tableBody}
         });
       }
       processEvent(anEvent){
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
+          let tableBody=state.tableBody
           let listOfCurrentPositions=updateListOfCurrentPosition(state.listOfCurrentPositions, id, this.matrix)
           let listOfPath=updateListOfPath(state.listOfPath, id, this.matrix)
           let absentElts=listOfCurrentPositions.filter(e=>!listOfPath.some(x=>x.iDTarget.find(u=>u==e.anElementId)))
@@ -504,7 +523,8 @@ class VectorRegister extends React.Component {
               listOfCurrentPositions.splice(listOfCurrentPositions.indexOf(listOfCurrentPositions.find(x=>x.anElementId==absentElts[i])),1)
             }
           }
-          return {listOfPath:listOfPath, listOfCurrentPositions:listOfCurrentPositions}
+          //tableBody=tableBody.map((e,i)=>findPositionInCurrentPositions(i,listOfCurrentPositions)?this.retrieveLinePosition(buildNonNulPositionsLine(i, this.matrix)[buildNonNulPositionsLine(i, this.matrix).length-1], listOfCurrentPositions):e); console.log("tablebidyPE", tableBody)
+          return {listOfPath:listOfPath, listOfCurrentPositions:listOfCurrentPositions, tableBody:tableBody}
         })
       }
 
@@ -516,7 +536,7 @@ class VectorRegister extends React.Component {
           do{
             position=advancePosition(position, this.matrix)
             tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) 
-          }while(!_.isEqual(position, maxPosition(this.matrix)))
+          }while(!_.isEqual(position, maxPosition(this.matrix))); console.log("tablebidyDM", tableBody)
           return{position:position, tableBody:tableBody, listOfCurrentPositions:listOfCurrentPositions}
         });
       }
@@ -591,7 +611,7 @@ class VectorRegister extends React.Component {
           {ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
         }
   
-      }console.log("lignes", ligne1, ligne2, ligne3, "aPosition", aPosition, "listOfCurrentPos", listOfCurrentPositions)
+      }//console.log("lignes", ligne1, ligne2, ligne3, "aPosition", aPosition, "listOfCurrentPos", listOfCurrentPositions)
       return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
     }
     
