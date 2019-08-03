@@ -219,14 +219,16 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
-    return (searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
+    let positionsLineCol=(searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
             (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null)
+    return positionsLineCol
   }
   
   
 
   function buildNonNulPositionsLine(indexLine, aMatrix){
-      return  aMatrix[indexLine].map((e,i)=>searchStep(indexLine, i, aMatrix)?buildPosition(indexLine, i, aMatrix):null).flat().filter(e=>e).sort((a,b)=>a.rank>b.rank)
+      let positionsLine=aMatrix[indexLine].map((e,i)=>searchStep(indexLine, i, aMatrix)?buildPosition(indexLine, i, aMatrix):null).flat().filter(e=>e).sort((a,b)=>a.rank>b.rank)
+      return positionsLine
   }
   
   
@@ -276,7 +278,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
       let lastPositionLine=buildNonNulPositionsLine(aPosition.line, aMatrix)[buildNonNulPositionsLine(aPosition.line, aMatrix).length-1]
       if(aPosition.rank<lastPositionLine.rank){// the last position is always the successor of all the position of the same line
         pathNextpos.push(lastPositionLine)
-        forbidenColumn=lastPositionLine.column
+        forbidenColumn=lastPositionLine.column //
       }
      for(let i=aPosition.line; i<aMatrix.length; i++){
        let positionsLine=buildNonNulPositionsLine(i, aMatrix)
@@ -440,7 +442,33 @@ function matrixPath(aMatrix){
             (aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine)? aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine).aPosition:
             extractPositionFromId(aListOfCurrentPosition.find(e=>extractPositionFromId(e.anElementId).line==indexLine).anElementId)):null
   }
+function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){
+  let matrixCoordinate= aMatrx.map((e,i)=>i==0?e.map((x,j)=>Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures)):
+                                e.map((x,j)=>j==0?Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures):
+                                                  Array.of(Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures,widthOfFigures,heightOfFigures/3), 
+                                                           Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+1)*heightOfFigures/3,widthOfFigures,heightOfFigures/3),
+                                                           Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3))))
+      return matrixCoordinate
+}
+function matrixToPosition(aMatrix){
+  let matrixPosition=aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0?x:(buildPosition(i,j, aMatrix)?(buildPosition(i,j, aMatrix).length==1?Array.of(Array.of(buildPosition(i,j,aMatrix)[0]), Array.of(), Array.of()):
+                                                                                                                                      Array.of(Array.of(buildPosition(i,j,aMatrix)[0]), Array.of(), Array.of(buildPosition(i,j,aMatrix)[1]))):
+                                                                                                Array.of(Array.of(), Array.of(), Array.of()))))
+  return matrixPosition
+}
 
+function positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
+  let matrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                                                                                                 <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
+                                                    (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                     <text className="texthead" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>) ):
+                                  e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="intrinsicName" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                     <text className="textintrinsicName" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x.name.toUpperCase()}</text></g>):
+                                                  x.map((t,l)=>t.length==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                          (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t.line+"c"+t.column+"r"+t.rank+"z"+t.codeLine} className={"in"+t.line+t.rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                          (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t.line+"c"+t.column+"r"+t.rank+"z"+t.codeLine} className={"out"+t.line+t.rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
+  return matrixFigures
+}
 class VectorRegister extends React.Component {
     constructor(props) {
         super(props);
@@ -460,7 +488,7 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() {
+    componentDidMount() {console.log("this.renameInstrunctionMatrix",matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20), "thismatrix", matrixToPosition(this.matrix), "matrixFigures", positionsAndCoordinateToFigures(matrixToPosition(this.matrix), matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20)))
          this.displayFullMatrix ()
          this.timerID = setInterval(
           () => this.processPath (),
