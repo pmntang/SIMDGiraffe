@@ -460,15 +460,48 @@ function matrixToPosition(aMatrix){
 function positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
   let matrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
                                                                                                                                                  <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
-                                                    (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
-                                                     <text className="texthead" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>) ):
-                                  e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="intrinsicName" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
-                                                     <text className="textintrinsicName" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x.name.toUpperCase()}</text></g>):
-                                                  x.map((t,l)=>t.length==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
-                                                                          (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t.line+"c"+t.column+"r"+t.rank+"z"+t.codeLine} className={"in"+t.line+t.rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
-                                                                          (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t.line+"c"+t.column+"r"+t.rank+"z"+t.codeLine} className={"out"+t.line+t.rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
+                                                                      (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                      <text className="texthead" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>) ):
+                                                   e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="intrinsicName" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                      <text className="textintrinsicName" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x.name.toUpperCase()}</text></g>):
+                                                                      x.map((t,l)=>t.length==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                          (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+t[0].line+t[0].rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                          (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+t[0].line+t[0].rank} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
   return matrixFigures
 }
+
+function emptyPositionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
+  let emptyMatrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                                                                                                                      <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
+                                                                           (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                           <text className="texthead" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>) ):
+                                                         e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="emptyIntrinsicName" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
+                                                                            <text className="emptyTextintrinsicName" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}></text></g>):
+                                                                      x.map((t,l)=>t.length==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                                (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect  className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                                      (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect  className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
+  return emptyMatrixFigures
+}
+
+function positionsToTable(aMatrixPosition){//table version of
+  let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
+                                                  e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
+                                                                      x.map((t,l)=>t.length==0?(<td className="empty"></td>):
+                                                                                                 (l==0?(<td id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+t[0].line+t[0].rank}></td>):
+                                                                                                   (<td id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+t[0].line+t[0].rank}></td> )))))
+  return matrixTable
+}
+
+
+function emptyPositionsToTable(aMatrixPosition){
+  let emptyMatrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<th className="name" >{x}</th>): <th className="head" >{x}</th> ):
+                                                  e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="emptyIntrinsicName"></th>):
+                                                                      x.map((t,l)=>t.length==0?(<td className="empty"></td>):
+                                                                                                 (l==0?(<td  className="empty"></td>):
+                                                                                                   (<td className="empty"></td> )))))
+  return emptyMatrixTable
+}
+
 class VectorRegister extends React.Component {
     constructor(props) {
         super(props);
@@ -477,7 +510,7 @@ class VectorRegister extends React.Component {
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
         this.handleMouseEnter=this.handleMouseEnter.bind(this)
         this.processEvent=this.processEvent.bind(this)
-        this.tableBodyInit=this.renameInstrunctionMatrix.map((e,i)=>i==0?<tr>{e.map((x,j)=>j==0?<th className="name" >{x}</th>:<th className="head" >{x}</th>)}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
                                                  (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
@@ -488,16 +521,16 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() {console.log("this.renameInstrunctionMatrix",matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20), "thismatrix", matrixToPosition(this.matrix), "matrixFigures", positionsAndCoordinateToFigures(matrixToPosition(this.matrix), matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20)))
-         this.displayFullMatrix ()
+    componentDidMount() {console.log("this.renameInstrunctionMatrix",matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20), "thismatrix", matrixToPosition(this.matrix), "matrixFigures", emptyPositionsAndCoordinateToFigures(matrixToPosition(this.matrix), matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20)))
+        /*this.displayFull ()
          this.timerID = setInterval(
           () => this.processPath (),
           15500
+         );*/
+        this.timerID = setInterval(
+         () => this.display(),
+         1500
         );
-        //this.timerID = setInterval(
-         // () => this.process(),
-        //  1500
-        //);
     }/*
       componentDidUpdate(prevProps, prevState, snapshot){
         const list = this.listRef.current;
@@ -508,17 +541,18 @@ class VectorRegister extends React.Component {
         clearInterval(this.timerID);
       }
     
-      process() {
+      display() {
         this.setState(function(state){
           let position=state.position
           let tableBody=state.tableBody
+          let listOfCurrentPositions=state.listOfCurrentPositions
           position=advancePosition(position, this.matrix)
-          tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position))
-          if(position.line==1 && position.rank==0){clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
-           //tableBody=this.tableBodyInit
+          tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions))
+          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
+           tableBody=this.tableBodyInit
 
           }
-        return{position:position, tableBody:tableBody}
+        return{position:position,tableBody:tableBody,listOfCurrentPositions:listOfCurrentPositions}
         });
 
       }
@@ -556,6 +590,18 @@ class VectorRegister extends React.Component {
         })
       }
 
+      displayFull (){
+        this.setState(function(state){
+          let position=state.position
+          let tableBody=state.tableBody
+          let listOfCurrentPositions=state.listOfCurrentPositions
+          do{
+            position=advancePosition(position, this.matrix)
+            tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) 
+          }while(!_.isEqual(position, maxPosition(this.matrix))); console.log("tablebidyDM", tableBody)
+          return{position:position, tableBody:tableBody, listOfCurrentPositions:listOfCurrentPositions}
+        });
+      }
       displayFullMatrix (){
         this.setState(function(state){
           let position=state.position
