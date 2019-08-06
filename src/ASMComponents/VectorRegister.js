@@ -442,7 +442,7 @@ function matrixPath(aMatrix){
             (aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine)? aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine).aPosition:
             extractPositionFromId(aListOfCurrentPosition.find(e=>extractPositionFromId(e.anElementId).line==indexLine).anElementId)):null
   }
-function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){
+function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){//build a matrix of coordinates with a given matrix, origin, width and height of figures
   let matrixCoordinate= aMatrx.map((e,i)=>i==0?e.map((x,j)=>Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures)):
                                 e.map((x,j)=>j==0?Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures):
                                                   Array.of(Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures,widthOfFigures,heightOfFigures/3), 
@@ -450,14 +450,16 @@ function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){
                                                            Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3))))
       return matrixCoordinate
 }
-function matrixToPosition(aMatrix){
-  let matrixPosition=aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0?x:(buildPosition(i,j, aMatrix)?(buildPosition(i,j, aMatrix).length==1?Array.of(Array.of(buildPosition(i,j,aMatrix)[0]), Array.of(), Array.of()):
+function matrixToPosition(aMatrix){// build a matrix of position with a given matrix
+  let matrixPosition=aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0?x:(buildPosition(i,j, aMatrix)?(buildPosition(i,j, aMatrix).length==1?
+              (_.isEqual(buildPosition(i,j, aMatrix)[0], buildNonNulPositionsLine(i, aMatrix)[buildNonNulPositionsLine(i, aMatrix).length-1])? Array.of(Array.of(), Array.of(),Array.of(buildPosition(i,j,aMatrix)[0])):
+                                                                                                                                               Array.of(Array.of( buildPosition(i,j,aMatrix)[0]), Array.of(),Array.of())):
                                                                                                                                       Array.of(Array.of(buildPosition(i,j,aMatrix)[0]), Array.of(), Array.of(buildPosition(i,j,aMatrix)[1]))):
                                                                                                 Array.of(Array.of(), Array.of(), Array.of()))))
   return matrixPosition
 }
 
-function positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
+function positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){// build a matrix of figures (svg elements) with a given matrix of positions and a matrix of coordinates (with appropriate classNames)
   let matrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
                                                                                                                                                  <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
                                                                       (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
@@ -470,7 +472,7 @@ function positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
   return matrixFigures
 }
 
-function emptyPositionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){
+function emptyPositionsAndCoordinateOfFigures(aMatrixPosition, aMatrixCoordinate){// build a matrix of figures (svg elements) with a given matrix of positions and a matrix of coordinates (with empty classNames)
   let emptyMatrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
                                                                                                                                                                       <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
                                                                            (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
@@ -483,7 +485,7 @@ function emptyPositionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate
   return emptyMatrixFigures
 }
 
-function positionsToTable(aMatrixPosition){//table version of
+function positionsToTable(aMatrixPosition){//table version of positionsAndCoordinateToFigures
   let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
                                                   e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
                                                                       x.map((t,l)=>t.length==0?(<td className="empty"></td>):
@@ -493,14 +495,12 @@ function positionsToTable(aMatrixPosition){//table version of
 }
 
 
-function emptyPositionsToTable(aMatrixPosition){
+function emptyPositionsOfTable(aMatrixPosition){//table version of emptyPositionsAndCoordinateOfFigures
   let emptyMatrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<th className="name" >{x}</th>): <th className="head" >{x}</th> ):
-                                                  e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="emptyIntrinsicName"></th>):
-                                                                      x.map((t,l)=>t.length==0?(<td className="empty"></td>):
-                                                                                                 (l==0?(<td  className="empty"></td>):
-                                                                                                   (<td className="empty"></td> )))))
+                                                  e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="emptyIntrinsicName"></th>): x.map(t=><td className="empty"></td>)))
   return emptyMatrixTable
 }
+
 
 class VectorRegister extends React.Component {
     constructor(props) {
@@ -510,27 +510,28 @@ class VectorRegister extends React.Component {
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
         this.handleMouseEnter=this.handleMouseEnter.bind(this)
         this.processEvent=this.processEvent.bind(this)
+        this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
         this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                 (i==1? initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix)))//e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
+                                                 (i==1?this.retrieveUntilAPosition(this.positionInit, matrixToPosition(this.renameInstrunctionMatrix)):this.retrieveLine(emptyPositionsOfTable(matrixToPosition(this.renameInstrunctionMatrix))[i]))) //initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix) e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
-            position: {line:1,column:0, rank:0, codeLine:this.matrix[1][0].line},
+            position: this.positionInit,
             tableBody:this.tableBodyInit,
             listOfPath:[],
             listOfCurrentPositions:[]
     };
     }
 
-    componentDidMount() {console.log("this.renameInstrunctionMatrix",matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20), "thismatrix", matrixToPosition(this.matrix), "matrixFigures", emptyPositionsAndCoordinateToFigures(matrixToPosition(this.matrix), matrixToCoordinate(this.renameInstrunctionMatrix, 0, 50, 20)))
-        /*this.displayFull ()
+    componentDidMount() { 
+        this.displayFullMatrix ()
          this.timerID = setInterval(
           () => this.processPath (),
           15500
-         );*/
+         );/*
         this.timerID = setInterval(
          () => this.display(),
          1500
-        );
+        );*/
     }/*
       componentDidUpdate(prevProps, prevState, snapshot){
         const list = this.listRef.current;
@@ -548,6 +549,23 @@ class VectorRegister extends React.Component {
           let listOfCurrentPositions=state.listOfCurrentPositions
           position=advancePosition(position, this.matrix)
           tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions))
+          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
+           tableBody=this.tableBodyInit
+
+          }
+        return{position:position,tableBody:tableBody,listOfCurrentPositions:listOfCurrentPositions}
+        });
+
+      }
+
+      displayMatrix() {
+        this.setState(function(state){
+          let position=state.position
+          let tableBody=state.tableBody
+          let listOfCurrentPositions=state.listOfCurrentPositions
+          position=advancePosition(position, this.matrix)
+          tableBody=tableBody.map((e,i)=>i<position.line?e:
+                                        (i==position.line?this.retrieveUntilAPosition(position, matrixToPosition(this.renameInstrunctionMatrix)):e))
           if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
            tableBody=this.tableBodyInit
 
@@ -604,14 +622,9 @@ class VectorRegister extends React.Component {
       }
       displayFullMatrix (){
         this.setState(function(state){
-          let position=state.position
           let tableBody=state.tableBody
-          let listOfCurrentPositions=state.listOfCurrentPositions
-          do{
-            position=advancePosition(position, this.matrix)
-            tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, listOfCurrentPositions)) 
-          }while(!_.isEqual(position, maxPosition(this.matrix))); console.log("tablebidyDM", tableBody)
-          return{position:position, tableBody:tableBody, listOfCurrentPositions:listOfCurrentPositions}
+          tableBody=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]}</tr>:this.retrieveLine(positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]))
+          return {tableBody:tableBody}
         });
       }
       handleMouseEnter=(anEvent)=>{
@@ -652,6 +665,38 @@ class VectorRegister extends React.Component {
         }
         return null
     };
+     retrieveLine(aLigne){ 
+      let ligne1=<React.Fragment>{aLigne[0]}</React.Fragment>
+      let ligne2=null
+      let ligne3=null
+      for(let i=1; i<aLigne.length; i++){
+        ligne1=<React.Fragment>{ligne1}{aLigne[i][0]}</React.Fragment>
+        ligne2=<React.Fragment>{ligne2}{aLigne[i][1]}</React.Fragment>
+        ligne3=<React.Fragment>{ligne3}{aLigne[i][2]}</React.Fragment>
+      }
+      let retrieveLine=<tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody> 
+      return retrieveLine
+    
+     /* return <tbody> {aLigne.map((x,j)=>j==0?ligne1:(j==aLigne.length-1?<tr>{x.map((u,l)=>l==0?<React.Fragment>{ligne1}{u}</React.Fragment>:(l==1?<React.Fragment>{ligne2}{u}</React.Fragment>:<React.Fragment>{ligne3}{u}</React.Fragment>))}</tr>:
+                                                             x.map((u,l)=>l==0?ligne1=<React.Fragment>{ligne1}{u}</React.Fragment>:
+                                                                          (l==1?ligne2=<React.Fragment>{ligne2}{u}</React.Fragment>:ligne3=<React.Fragment>{ligne3}{u}</React.Fragment>))))}</tbody>*/
+    }
+    
+     retrieveUntilAPosition(aPosition, aMatrixOfPositions){ 
+      let aLigne=aMatrixOfPositions[aPosition.line]
+      let aLigneOfPositionsTable=positionsToTable(aMatrixOfPositions)[aPosition.line]
+      let aLigneOfEmptyPositions=emptyPositionsOfTable(aMatrixOfPositions)[aPosition.line]
+      let ligne1=<React.Fragment>{aLigneOfPositionsTable[0]}</React.Fragment>
+      let ligne2=null
+      let ligne3=null
+      for(let i=1; i<aLigne.length; i++){
+        ligne1=aLigne[i][0].length>0&&aLigne[i][0][0].rank<=aPosition.rank?<React.Fragment>{ligne1}{aLigneOfPositionsTable[i][0]}</React.Fragment>:<React.Fragment>{ligne1}{aLigneOfEmptyPositions[i][0]}</React.Fragment>
+        ligne2=<React.Fragment>{ligne2}{aLigneOfEmptyPositions[i][1]}</React.Fragment>
+        ligne3=aLigne[i][2].length>0&&aLigne[i][2][0].rank<=aPosition.rank?<React.Fragment>{ligne3}{aLigneOfPositionsTable[i][2]}</React.Fragment>:<React.Fragment>{ligne3}{aLigneOfEmptyPositions[i][2]}</React.Fragment>
+      }
+      let retrieveUntilAPosition=<tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
+      return retrieveUntilAPosition
+    }
     retrieveLinePosition(aPosition, listOfCurrentPositions){
       //computeSuffix(aPosition, listOfCurrentPositions, aListOfPosition)
       let id=buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
@@ -718,7 +763,7 @@ class VectorRegister extends React.Component {
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
-        return(
+        return( 
             <div className="registerUsed"> 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
@@ -735,6 +780,7 @@ class VectorRegister extends React.Component {
      // if (this.props.userID !== prevProps.userID) {
       //  this.fetchData(this.props.userID);
      // }
+     //console.log(this.matrix,"this.renameInstrunctionMatrix", matrixToPosition(this.matrix), "this.tableBodyInit", this.tableBodyInit, "test",this.retrieveUntilAPosition(this.state.position, matrixToPosition(this.matrix)), "position",this.state.position)
     }
 }
 
