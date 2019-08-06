@@ -220,7 +220,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
     let positionsLineCol=(searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
-            (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null)
+            (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null);console.log("position", positionsLineCol, "matrix", aMatrix)
     return positionsLineCol
   }
   
@@ -253,7 +253,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
     return aMatrix.map((e,i)=>i==0?e.map((x,j)=>j==0?x:renameReg(x)):e)
   }
   function removePrefix(aTablePrefix, aMatrix){
-  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findPrefix(aTablePrefix, x.name.toUpperCase())?{name:x.name.slice(findPrefix(aTablePrefix, x.name.toUpperCase()).length)}:x))
+  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findPrefix(aTablePrefix, x.name.toUpperCase())?{name:x.name.slice(findPrefix(aTablePrefix, x.name.toUpperCase()).length), line:x.line}:x))
   }
 
   function findPrefix(aTablePrefix,anInstruction){
@@ -261,7 +261,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
 
   function removeSuffix(aTableSuffix, aMatrix){
-  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findSuffix(aTableSuffix, x.name.toUpperCase())?{name:x.name.slice(0, x.name.length-findSuffix(aTableSuffix, x.name.toUpperCase()).length)}:x))
+  return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findSuffix(aTableSuffix, x.name.toUpperCase())?{name:x.name.slice(0, x.name.length-findSuffix(aTableSuffix, x.name.toUpperCase()).length), line:x.line}:x))
   }
 
   function findSuffix(aTableSuffixe, anInstruction){
@@ -508,11 +508,12 @@ class VectorRegister extends React.Component {
         this.registers=instructionsByRegisterBySteps(props.instructions)
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
+        this.matrixPosition=matrixToPosition(this.renameInstrunctionMatrix)
         this.handleMouseEnter=this.handleMouseEnter.bind(this)
         this.processEvent=this.processEvent.bind(this)
         this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                 (i==1?this.retrieveUntilAPosition(this.positionInit, matrixToPosition(this.renameInstrunctionMatrix)):this.retrieveLine(emptyPositionsOfTable(matrixToPosition(this.renameInstrunctionMatrix))[i]))) //initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix) e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(this.matrixPosition)[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+                                                 (i==1?this.retrieveUntilAPosition(this.positionInit, this.matrixPosition):this.retrieveLine(emptyPositionsOfTable(this.matrixPosition)[i]))) //initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix) e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: this.positionInit,
@@ -522,7 +523,7 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() { 
+    componentDidMount() { //console.log("matrixposition", this.matrixPosition[1][2][0], "et", this.matrix)
         this.displayFullMatrix ()
          this.timerID = setInterval(
           () => this.processPath (),
@@ -565,7 +566,7 @@ class VectorRegister extends React.Component {
           let listOfCurrentPositions=state.listOfCurrentPositions
           position=advancePosition(position, this.matrix)
           tableBody=tableBody.map((e,i)=>i<position.line?e:
-                                        (i==position.line?this.retrieveUntilAPosition(position, matrixToPosition(this.renameInstrunctionMatrix)):e))
+                                        (i==position.line?this.retrieveUntilAPosition(position, this.matrixPosition):e))
           if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
            tableBody=this.tableBodyInit
 
@@ -623,7 +624,7 @@ class VectorRegister extends React.Component {
       displayFullMatrix (){
         this.setState(function(state){
           let tableBody=state.tableBody
-          tableBody=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]}</tr>:this.retrieveLine(positionsToTable(matrixToPosition(this.renameInstrunctionMatrix))[i]))
+          tableBody=this.matrix.map((e,i)=>i==0?<tr>{positionsToTable(this.matrixPosition)[i]}</tr>:this.retrieveLine(positionsToTable(this.matrixPosition)[i]))
           return {tableBody:tableBody}
         });
       }
@@ -758,7 +759,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){//console.log("this.state.listOfPath", this.state.listOfPath, "this.state.listOfCurrentPositions", this.state.listOfCurrentPositions, "id document",document.querySelectorAll("td[class$='2']"))
+    render(){
       
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
