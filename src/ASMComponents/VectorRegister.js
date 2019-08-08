@@ -384,26 +384,37 @@ function matrixPath(aMatrix){
     }
     else{
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
-      updateList=[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt, idPosition:minFreePosition(aListOfCurrentPosition), listOfPath:pathElt}]
+      pathElt=pathElt.sort((a,b)=>compare(a,b))
+      updateList=[...aListOfCurrentPosition, {aCurrentPosition:initialPosition(pathElt, pathElt[0], aMatrix), anElementId:idOfEventElt, idPosition:minFreePosition(aListOfCurrentPosition), listOfPath:pathElt}]
     }
     return updateList
   }
 
-  function advanceAselectPosition(aListOfCurrentPosition){
+
+  function initialPosition(aPath,aPosition,aMatrix){
+    let positionLine=aPath.filter(e=>e.line==aPosition.line && e.rank!=buildNonNulPositionsLine(aPosition.line, aMatrix)[buildNonNulPositionsLine(aPosition.line, aMatrix).length-1].rank)
+    return positionLine
+  }
+
+  function advanceAselectPosition(aListOfCurrentPosition, aMatrix){
     let sortPath=aListOfCurrentPosition.listOfPath.sort((a,b)=>compare(a,b))
-    let nextIndex=sortPath.indexOf(sortPath.find(x=>x.line==aListOfCurrentPosition.aPosition.line+1))
-    let advancePos=null
-    if(aListOfCurrentPosition.aPosition.line==sortPath[sortPath.length-1].line){
-      advancePos=sortPath[0]
+    let sortCurrentList=aListOfCurrentPosition.aCurrentPosition.sort((a,b)=>compare(a,b))
+    let outPosition=sortPath.find(e=>e.line==sortCurrentList[sortCurrentList.length-1].line&&e.rank>sortCurrentList[sortCurrentList.length-1].rank)
+    if(outPosition){
+      aListOfCurrentPosition.aCurrentPosition=[outPosition]
     }
     else{
-      advancePos=sortPath[nextIndex]
+      if(aListOfCurrentPosition.aCurrentPosition[0].line==sortPath[sortPath.length-1].line){
+        aListOfCurrentPosition.aCurrentPosition=initialPosition(sortPath, sortPath[0],aMatrix)
+      }
+      else{
+        aListOfCurrentPosition.aCurrentPosition=initialPosition(sortPath,sortPath.find(e=>e.line>sortCurrentList[0].line), aMatrix)
+      }
     }
-    aListOfCurrentPosition.aPosition=advancePos
     return aListOfCurrentPosition
   }
-  function advanceSelectPositions(aListOfCurrentPositions){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
-    return aListOfCurrentPositions.map(e=>advanceAselectPosition(e))
+  function advanceSelectPositions(aListOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
+    return aListOfCurrentPositions.map(e=>advanceAselectPosition(e, aMatrix))
   }
   
   function compare(a, b) {
@@ -564,8 +575,8 @@ class VectorRegister extends React.Component {
       }
       processPath(){
         this.setState(function(state){
-          let listOfCurrentPositions=state.listOfCurrentPositions; console.log("curent", listOfCurrentPositions)
-          listOfCurrentPositions=advanceSelectPositions(listOfCurrentPositions) 
+          let listOfCurrentPositions=state.listOfCurrentPositions//; console.log("curent", listOfCurrentPositions)
+          listOfCurrentPositions=advanceSelectPositions(listOfCurrentPositions, this.renameInstrunctionMatrix) 
           return {listOfCurrentPositions:listOfCurrentPositions}
         });
       }
@@ -748,7 +759,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){
+    render(){console.log("cureentlist",this.state.listOfCurrentPositions )
       
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
