@@ -335,17 +335,39 @@ function matrixPath(aMatrix){
     return pos
   }
 
-  function minFreePosition(aListOfCurrentPositions){
-      let i=1
-      while(i<aListOfCurrentPositions.length+1){
-        let notFree=aListOfCurrentPositions.find(e=>e.aPosition==i)
-        if(!notFree){console.log("i", i)
-          return i
-        }
-        i++
+  function minFreePosition(aListOfCurrentPosition){
+    let anArray=aListOfCurrentPosition.map(e=>e.idPosition)
+    anArray=anArray.map(e=>parseInt(e, 10))
+    anArray=anArray.sort((a,b)=>a-b)
+   let freePos=null
+   let l=anArray.length
+   switch(l){
+       case 0: freePos=1
+           break
+       case 1: if(anArray[0]!=1){
+            freePos=1
+        } 
+           else{
+               freePos=2
+           }
+           break
+       default:{
+          if(anArray[0]!=1){
+              freePos=1
+          }
+           else{
+               for(let i=1; i<l; i++){
+                   if(anArray[i]-anArray[i-1]>1){
+                       freePos=anArray[i-1]+1
+                       break
+                   }
+               }
+           }
       }
-      return i
-  }
+   }
+    freePos=freePos?freePos:l+1
+    return freePos
+}
   /*
   function updateListOfCurrentPosition(aListOfCurrentPosition, idOfEventElt, aMatrix){
     let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
@@ -363,7 +385,7 @@ function matrixPath(aMatrix){
     else{
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
       updateList=[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt, idPosition:minFreePosition(aListOfCurrentPosition), listOfPath:pathElt}]
-    }console.log(updateList)
+    }
     return updateList
   }
 
@@ -542,7 +564,7 @@ class VectorRegister extends React.Component {
       }
       processPath(){
         this.setState(function(state){
-          let listOfCurrentPositions=state.listOfCurrentPositions//; console.log("curent", listOfCurrentPositions)
+          let listOfCurrentPositions=state.listOfCurrentPositions; console.log("curent", listOfCurrentPositions)
           listOfCurrentPositions=advanceSelectPositions(listOfCurrentPositions) 
           return {listOfCurrentPositions:listOfCurrentPositions}
         });
