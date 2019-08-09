@@ -268,7 +268,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   return aTableSuffixe.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(anInstruction.length-currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(anInstruction.length-e.length).match(e.toUpperCase())).length>currentPre.length))
   }
   function consPath(aPosition,  aMatrix){
-    return forwardPathPosition(aPosition,  aMatrix).concat(backwardPathPosition(aPosition,aMatrix)).sort((a,b)=>a.line>=b.line&&a.rank>=b.rank)
+    return (forwardPathPosition(aPosition,  aMatrix).concat(backwardPathPosition(aPosition,aMatrix))).sort((a,b)=>compare(a,b))
   }
   function nextPos(aPosition, aMatrix){
     var pathNextpos=[]
