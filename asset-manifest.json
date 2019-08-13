@@ -1,15 +1,17 @@
 {
-  "main.css": "/SIMDGiraffe/static/css/main.eb844598.chunk.css",
-  "main.js": "/SIMDGiraffe/static/js/main.ed39da58.chunk.js",
-  "main.js.map": "/SIMDGiraffe/static/js/main.ed39da58.chunk.js.map",
-  "static/css/1.53a13c3a.chunk.css": "/SIMDGiraffe/static/css/1.53a13c3a.chunk.css",
-  "static/js/1.b2ed63f1.chunk.js": "/SIMDGiraffe/static/js/1.b2ed63f1.chunk.js",
-  "static/js/1.b2ed63f1.chunk.js.map": "/SIMDGiraffe/static/js/1.b2ed63f1.chunk.js.map",
-  "runtime~main.js": "/SIMDGiraffe/static/js/runtime~main.92c738e1.js",
-  "runtime~main.js.map": "/SIMDGiraffe/static/js/runtime~main.92c738e1.js.map",
-  "static/css/1.53a13c3a.chunk.css.map": "/SIMDGiraffe/static/css/1.53a13c3a.chunk.css.map",
-  "static/css/main.eb844598.chunk.css.map": "/SIMDGiraffe/static/css/main.eb844598.chunk.css.map",
-  "index.html": "/SIMDGiraffe/index.html",
-  "precache-manifest.4e0a5cff8d8777aaca85d0e696dc5744.js": "/SIMDGiraffe/precache-manifest.4e0a5cff8d8777aaca85d0e696dc5744.js",
-  "service-worker.js": "/SIMDGiraffe/service-worker.js"
+  "files": {
+    "main.css": "/SIMDGiraffe/static/css/main.9eb82b6c.chunk.css",
+    "main.js": "/SIMDGiraffe/static/js/main.ddb76c17.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.ddb76c17.chunk.js.map",
+    "runtime~main.js": "/SIMDGiraffe/static/js/runtime~main.421c06c7.js",
+    "runtime~main.js.map": "/SIMDGiraffe/static/js/runtime~main.421c06c7.js.map",
+    "static/css/2.0fde4cac.chunk.css": "/SIMDGiraffe/static/css/2.0fde4cac.chunk.css",
+    "static/js/2.b34e20dd.chunk.js": "/SIMDGiraffe/static/js/2.b34e20dd.chunk.js",
+    "static/js/2.b34e20dd.chunk.js.map": "/SIMDGiraffe/static/js/2.b34e20dd.chunk.js.map",
+    "index.html": "/SIMDGiraffe/index.html",
+    "precache-manifest.ad5e791d49e803bf4cbd1bb014d447a1.js": "/SIMDGiraffe/precache-manifest.ad5e791d49e803bf4cbd1bb014d447a1.js",
+    "service-worker.js": "/SIMDGiraffe/service-worker.js",
+    "static/css/2.0fde4cac.chunk.css.map": "/SIMDGiraffe/static/css/2.0fde4cac.chunk.css.map",
+    "static/css/main.9eb82b6c.chunk.css.map": "/SIMDGiraffe/static/css/main.9eb82b6c.chunk.css.map"
+  }
 }
