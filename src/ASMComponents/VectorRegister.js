@@ -514,7 +514,7 @@ function matrixPath(aMatrix){
         else{
           suffix=""
         }
-      }console.log("suffix",suffix,"aPosition",aPosition,"aListOfcurrent", anArrayOfCurrentPositions)
+      }//console.log("suffix",suffix,"aPosition",aPosition,"aListOfcurrent", anArrayOfCurrentPositions)
     }
     return suffix
   }
@@ -575,7 +575,6 @@ class VectorRegister extends React.Component {
         this.matrix=renameRegister(buildMatrixRegInt(this.registers, props.instructions))
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
         this.matrixPosition=matrixToPosition(this.renameInstrunctionMatrix)
-        this.handleMouseEnter=this.handleMouseEnter.bind(this)
         this.processEvent=this.processEvent.bind(this)
         this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
         this.arrayOfSelectePositionsInit=[]
@@ -594,7 +593,7 @@ class VectorRegister extends React.Component {
         this.displayFullMatrix ()
          this.timerID = setInterval(
           () => this.processPath (),
-          15500
+          1000
          );/*
         this.timerID = setInterval(
          () => this.display(),
@@ -645,15 +644,16 @@ class VectorRegister extends React.Component {
       processPath(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) ;console.log( "dans process path")
+          arrayOfCurrentPositions=advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
+        this.displayFullMatrix()
       }
       processEvent(anEvent){
           let id=anEvent.target.getAttribute("id")
           this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix); console.log( "apres p curent", arrayOfCurrentPositions)
+          arrayOfCurrentPositions=updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         })
         this.processPath()
@@ -679,33 +679,7 @@ class VectorRegister extends React.Component {
           return {tableBody:tableBody}
         });
       }
-      handleMouseEnter=(anEvent)=>{
-        let id=anEvent.target.getAttribute("id")
-        let thisPosition=extractPositionFromId(id)
-        let pathPosition=consPath(thisPosition,  this.matrix)
-        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine)//;console.log("path",pathPosition, "pathid", listOfPathId)
-        let pathHtml=listOfPathId.map(e=>document.getElementById(e))
-        pathHtml.map(e=>e?e.style.color="red":null)
-        //pathHtml.map(e=>console.log(e))
-      }
-      handleonMouseLeave=(anEvent)=>{
-        let id=anEvent.target.getAttribute("id")
-        let thisPosition=extractPositionFromId(id)
-        let pathPosition=consPath(thisPosition,  this.matrix)
-        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine)//;console.log("path",pathPosition, "pathid", listOfPathId)
-        let pathHtml=listOfPathId.map(e=>document.getElementById(e))
-        pathHtml.map(e=>e?e.style.color="red":null)
-       // pathHtml.map(e=>console.log(e))
-      }
-      handleClick=(anEvent)=>{
-        let id=anEvent.target.getAttribute("id")
-        let thisPosition=extractPositionFromId(id)
-        let pathPosition=consPath(thisPosition,  this.matrix)
-        let listOfPathId=pathPosition.map(e=>"l"+e.line+"c"+e.column+"r"+e.rank+"z"+e.codeLine)//;console.log("path",pathPosition, "pathid", listOfPathId)
-        let pathHtml=listOfPathId.map(e=>document.getElementById(e))
-        pathHtml.map(e=>e?e.style.color="red":null)
-        //pathHtml.map(e=>console.log(e))
-      }
+
       highlightCode = (isHover = false) => {
         let line =this.state.position.codeLine-1
         let cm = this.props.cm.current;
@@ -750,8 +724,8 @@ class VectorRegister extends React.Component {
       let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
                                                   e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
                                                                       x.map((t,l)=>t.length==0?(<td className="empty"></td>):
-                                                                                                 (l==0?(<td onClick= {this.processEvent} id={"inl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td>):
-                                                                                                   (<td onClick= {this.processEvent} id={"outl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td> )))))
+                                                                                                 (l==0?(<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"inl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td>):
+                                                                                                   (<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"outl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td> )))))
       return matrixTable
     }
 
@@ -791,19 +765,19 @@ class VectorRegister extends React.Component {
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
           switch(statePos){
-            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id1} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id2} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id3} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
             case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl}  className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id1} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id2} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={id3} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={idl} className={"out"+computeSuffix(buildPosition(aPosition.line, j, this.matrix)[buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
           }
         }
@@ -839,7 +813,7 @@ class VectorRegister extends React.Component {
         }
     }*/
 
-    render(){
+    render(){//console.log("id document",document.querySelectorAll("td[class*='in']"))
       
         if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
         this.hightlightedline=this.highlightCode();
@@ -856,13 +830,13 @@ class VectorRegister extends React.Component {
             </div>
    )
     }
-    componentDidUpdate(prevProps) {//console.log("id document",document.querySelectorAll("td[className$='out']"));
+    componentDidUpdate(prevProps) {
       // Typical usage (don't forget to compare props):
      // if (this.props.userID !== prevProps.userID) {
       //  this.fetchData(this.props.userID);
      // }
      //console.log(this.matrix,"this.renameInstrunctionMatrix", matrixToPosition(this.matrix), "this.tableBodyInit", this.tableBodyInit, "test",this.retrieveUntilAPosition(this.state.position, matrixToPosition(this.matrix)), "position",this.state.position)
-     console.log("les positions",this.positionsToTableColor(this.matrixPosition,this.state.arrayOfCurrentPositions ))
+     //console.log("les positions",this.positionsToTableColor(this.matrixPosition,this.state.arrayOfCurrentPositions ))
     }
 }
 
