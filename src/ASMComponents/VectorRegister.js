@@ -380,8 +380,8 @@ function matrixPath(aMatrix){
     let eltId=anArrayOfCurrentPositions.find(e=>e.anElementId==idOfEventElt) //[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
     if(!eltId){
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
-      let linePositions=buildNonNulPositionsLine(pathElt[0].line,aMatrix)
-      let restictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[linePositions[linePositions.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+      let positionsOfThisLine=buildNonNulPositionsLine(pathElt[0].line,aMatrix).filter(e=>e.rank>=1)
+      let restictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restictPositions, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions), listOfPath:pathElt}]
     }
     else{
@@ -419,7 +419,7 @@ function matrixPath(aMatrix){
     return anObjectOfCurrentPosition
   }*/
 
-  function advanceAselectPosition(anObjectOfCurrentPosition, aMatrix){console.log("1a", anObjectOfCurrentPosition, "et", anObjectOfCurrentPosition.aCurrentPosition)
+  function advanceAselectPosition(anObjectOfCurrentPosition, aMatrix){
 
     let thisPosition=extractPositionFromId(anObjectOfCurrentPosition.anElementId)
     let linePositions=buildNonNulPositionsLine(anObjectOfCurrentPosition.listOfPath[0].line,aMatrix)
@@ -427,24 +427,24 @@ function matrixPath(aMatrix){
                                    [linePositions[linePositions.length-1]]:linePosition(anObjectOfCurrentPosition.listOfPath, anObjectOfCurrentPosition.listOfPath[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
 
     if(_.isEqual(anObjectOfCurrentPosition.aCurrentPosition[anObjectOfCurrentPosition.aCurrentPosition.length-1], anObjectOfCurrentPosition.listOfPath[anObjectOfCurrentPosition.listOfPath.length-1])){
-      anObjectOfCurrentPosition.aCurrentPosition=firstPosition;console.log(anObjectOfCurrentPosition,"drnierer", firstPosition)
+      anObjectOfCurrentPosition.aCurrentPosition=firstPosition
     }
     else{
       let anextPosition=anObjectOfCurrentPosition.listOfPath.find(e=>(e.line>anObjectOfCurrentPosition.aCurrentPosition[0].line||(e.line==anObjectOfCurrentPosition.aCurrentPosition[0].line && e.rank>anObjectOfCurrentPosition.aCurrentPosition[0].rank))  && !anObjectOfCurrentPosition.aCurrentPosition.some(x=>_.isEqual(x,e)))
       let nextPositions=linePosition(anObjectOfCurrentPosition.listOfPath, anextPosition, aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       if(nextPositions.length>0){
-        anObjectOfCurrentPosition.aCurrentPosition=nextPositions;console.log(anObjectOfCurrentPosition,"prochaine non nulle après filtrage",nextPositions)
+        anObjectOfCurrentPosition.aCurrentPosition=nextPositions
       }
-      else{console.log("prochaine nulle après filtrage")
+      else{
         let followingPosition=anObjectOfCurrentPosition.listOfPath.find(e=>(e.line>thisPosition.line||(e.line==thisPosition.line && e.rank>thisPosition.rank)) && !linePosition(anObjectOfCurrentPosition.listOfPath, thisPosition, aMatrix).some(x=>_.isEqual(x,e)))
         if(followingPosition){
-          anObjectOfCurrentPosition.aCurrentPosition=linePosition(anObjectOfCurrentPosition.listOfPath, followingPosition, aMatrix);console.log(anObjectOfCurrentPosition,"une position apres le this",linePosition(anObjectOfCurrentPosition.listOfPath, followingPosition, aMatrix))
+          anObjectOfCurrentPosition.aCurrentPosition=linePosition(anObjectOfCurrentPosition.listOfPath, followingPosition, aMatrix)
         }
         else{
-          anObjectOfCurrentPosition.aCurrentPosition=firstPosition;console.log(anObjectOfCurrentPosition,"pas de position apres le this donc dernier",firstPosition)
+          anObjectOfCurrentPosition.aCurrentPosition=firstPosition
         }
       }      
-    }console.log("2a", anObjectOfCurrentPosition, "et", anObjectOfCurrentPosition.aCurrentPosition)
+    }
     return anObjectOfCurrentPosition
   }
 
@@ -493,13 +493,32 @@ function matrixPath(aMatrix){
     listOfCurrentElt=listOfCurrentElt.map(e=>console.log("aPosition1",e))
     console.log("listOfCurrentElt", listOfCurrentElt)
     listOfCurrentElt=listOfCurrentElt.map(e=>e?console.log("aPosition2",e):console.log("aPosition2","bbbbbb"))
-  }*/
+  }
   function computeSuffix(aPosition, aListOfCurrentPosition){
     let isInCurrentPos=aListOfCurrentPosition.find(e=>_.isEqual(e.aPosition, aPosition))
     let isCurrentPos=aListOfCurrentPosition.find(e=>e.anElementId=="l"+aPosition.line+"c"+aPosition.column+"r"+aPosition.rank+"z"+aPosition.codeLine)
     let suffix=isInCurrentPos?"el"+isInCurrentPos.idPosition:(isCurrentPos?"id"+isCurrentPos.idPosition:""); console.log("suffix", suffix, "aPosition",aPosition,"aListOfcurrent", aListOfCurrentPosition)
     return suffix
+  }*/
+
+  function computeSuffix(aPosition, anArrayOfCurrentPositions){
+    let suffix=null
+    if(anArrayOfCurrentPositions){
+      if(anArrayOfCurrentPositions.find(e=>_.isEqual(extractPositionFromId(e.anElementId),aPosition))){
+        suffix="id"+anArrayOfCurrentPositions.find(e=>_.isEqual(extractPositionFromId(e.anElementId),aPosition)).idPosition
+      }
+      else{
+        if(anArrayOfCurrentPositions.find(e=>e.aCurrentPosition.find(x=>_.isEqual(x, aPosition)))){
+          suffix="el"+anArrayOfCurrentPositions.find(e=>e.aCurrentPosition.find(x=>_.isEqual(x, aPosition))).idPosition
+        }
+        else{
+          suffix=""
+        }
+      }console.log("suffix",suffix,"aPosition",aPosition,"aListOfcurrent", anArrayOfCurrentPositions)
+    }
+    return suffix
   }
+
   function findPositionInCurrentPositions(indexLine, aListOfCurrentPosition){
     return aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine||extractPositionFromId(e.anElementId).line==indexLine)?
             (aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine)? aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine).aPosition:
@@ -559,14 +578,15 @@ class VectorRegister extends React.Component {
         this.handleMouseEnter=this.handleMouseEnter.bind(this)
         this.processEvent=this.processEvent.bind(this)
         this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
-        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{this.positionsToTable(this.matrixPosition)[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
-                                                 (i==1?this.retrieveUntilAPosition(this.positionInit, this.matrixPosition):this.retrieveLine(this.emptyPositionsOfTable(this.matrixPosition)[i]))) //initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix) e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
+        this.arrayOfSelectePositionsInit=[]
+        this.tableBodyInit=this.matrix.map((e,i)=>i==0?<tr>{this.positionsToTableColor(this.matrixPosition, this.arrayOfSelectePositionsInit)[i]}</tr>://initialization of a matrix (tableBodyInit)with empty cells except the first line which receives a cell with the name of registers.
+                                                 (i==1?this.retrieveUntilAPosition(this.positionInit, this.matrixPosition, this.arrayOfSelectePositionsInit):this.retrieveLine(this.emptyPositionsOfTable(this.matrixPosition)[i]))) //initializeFirstLineMatrix(i, this.renameInstrunctionMatrix):initializeLinesMatrix(i, this.renameInstrunctionMatrix) e.map((x,j)=>j==0?<tr><th className="intrinsicName" rowspan="3" scope="rowgroup"><span className="intrinsicName">{this.matrix[1][0].name.toUpperCase()}</span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>):
                                                        //(e.map((x,j)=>j==0?<tr><th className="empty"   rowspan="3" scope="rowgroup"><span className="empty"></span></th><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>:<tr><td ><span className="empty"></span></td><td ><span className="empty"></span></td><td ><span className="empty"></span></td></tr>))))
         this.state = {
             position: this.positionInit,
             tableBody:this.tableBodyInit,
             listOfPath:[],
-            arrayOfCurrentPositions:[]
+            arrayOfCurrentPositions:this.arrayOfSelectePositionsInit
     };
     }
 
@@ -610,15 +630,15 @@ class VectorRegister extends React.Component {
         this.setState(function(state){
           let position=state.position
           let tableBody=state.tableBody
-          let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+          let arrayOfSelectePositions=state.arrayOfCurrentPositions
           position=advancePosition(position, this.matrix)
           tableBody=tableBody.map((e,i)=>i<position.line?e:
-                                        (i==position.line?this.retrieveUntilAPosition(position, this.matrixPosition):e))
+                                        (i==position.line?this.retrieveUntilAPosition(position, this.matrixPosition, arrayOfSelectePositions):e))
           if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=maxPosition(this.matrix);tableBody=state.tableBody
            tableBody=this.tableBodyInit
 
           }
-        return{position:position,tableBody:tableBody,arrayOfCurrentPositions:arrayOfCurrentPositions}
+        return{position:position,tableBody:tableBody,arrayOfCurrentPositions:arrayOfSelectePositions}
         });
 
       }
@@ -654,7 +674,8 @@ class VectorRegister extends React.Component {
       displayFullMatrix (){
         this.setState(function(state){
           let tableBody=state.tableBody
-          tableBody=this.matrix.map((e,i)=>i==0?<tr>{this.positionsToTable(this.matrixPosition)[i]}</tr>:this.retrieveLine(this.positionsToTable(this.matrixPosition)[i]))
+          let arrayOfSelectePositions=state.arrayOfCurrentPositions
+          tableBody=this.matrix.map((e,i)=>i==0?<tr>{this.positionsToTableColor(this.matrixPosition, arrayOfSelectePositions)[i]}</tr>:this.retrieveLine(this.positionsToTableColor(this.matrixPosition, arrayOfSelectePositions)[i]))
           return {tableBody:tableBody}
         });
       }
@@ -725,6 +746,16 @@ class VectorRegister extends React.Component {
     }
 
 
+    positionsToTableColor(aMatrixPosition, anArrayOfCurrentPositions){//table version of positionsAndCoordinateToFigures
+      let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
+                                                  e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
+                                                                      x.map((t,l)=>t.length==0?(<td className="empty"></td>):
+                                                                                                 (l==0?(<td onClick= {this.processEvent} id={"inl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td>):
+                                                                                                   (<td onClick= {this.processEvent} id={"outl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+computeSuffix(t[0], anArrayOfCurrentPositions)}></td> )))))
+      return matrixTable
+    }
+
+
     emptyPositionsOfTable(aMatrixPosition){//table version of emptyPositionsAndCoordinateOfFigures
       let emptyMatrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<th className="name" >{x}</th>): <th className="head" >{x}</th> ):
                                                   e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="emptyIntrinsicName"></th>): x.map(t=><td className="empty"></td>)))
@@ -732,9 +763,9 @@ class VectorRegister extends React.Component {
     }
 
     
-     retrieveUntilAPosition(aPosition, aMatrixOfPositions){ 
+     retrieveUntilAPosition(aPosition, aMatrixOfPositions, anArrayOfCurrentPositions){ 
       let aLigne=aMatrixOfPositions[aPosition.line]
-      let aLigneOfPositionsTable=this.positionsToTable(aMatrixOfPositions)[aPosition.line]
+      let aLigneOfPositionsTable=this.positionsToTableColor(aMatrixOfPositions, anArrayOfCurrentPositions)[aPosition.line]
       let aLigneOfEmptyPositions=this.emptyPositionsOfTable(aMatrixOfPositions)[aPosition.line]
       let ligne1=<React.Fragment>{aLigneOfPositionsTable[0]}</React.Fragment>
       let ligne2=null
@@ -831,7 +862,7 @@ class VectorRegister extends React.Component {
       //  this.fetchData(this.props.userID);
      // }
      //console.log(this.matrix,"this.renameInstrunctionMatrix", matrixToPosition(this.matrix), "this.tableBodyInit", this.tableBodyInit, "test",this.retrieveUntilAPosition(this.state.position, matrixToPosition(this.matrix)), "position",this.state.position)
-     console.log("cureentlist",this.state.arrayOfCurrentPositions )
+     console.log("les positions",this.positionsToTableColor(this.matrixPosition,this.state.arrayOfCurrentPositions ))
     }
 }
 
