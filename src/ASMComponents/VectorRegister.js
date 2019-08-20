@@ -589,11 +589,11 @@ class VectorRegister extends React.Component {
     };
     }
 
-    componentDidMount() { //console.log("matrixposition", this.matrixPosition[1][2][0], "et", this.matrix)
+    componentDidMount() { console.log(positionsAndCoordinateToFigures(this.matrixPosition, matrixToCoordinate(this.renameInstrunctionMatrix, 0, 100, 25)), "tailles",window.innerHeight, window.innerWidth)
         this.displayFullMatrix ()
          this.timerID = setInterval(
           () => this.processPath (),
-          1000
+          500
          );/*
         this.timerID = setInterval(
          () => this.display(),
@@ -822,7 +822,7 @@ class VectorRegister extends React.Component {
             <div className="registerUsed"> 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                <table className="visualization"><thead>{this.state.tableBody.map((e,i)=>i==0?e:null)}</thead> {this.state.tableBody.map((e,i)=>i==0?null:e)}</table>
+                <svg width="100%" height="100%" id="svgTable" className="svgVisualization">{positionsAndCoordinateToFigures(this.matrixPosition, matrixToCoordinate(this.renameInstrunctionMatrix, 0, 200, 75))}</svg>
                 </div>
                 <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
               </div>
