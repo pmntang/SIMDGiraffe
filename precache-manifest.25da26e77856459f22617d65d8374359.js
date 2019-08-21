@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ca79cdb453cb751f2a76e261b398cd27",
+    "revision": "57955563df0e7684bb05841da0b8cd0d",
     "url": "/SIMDGiraffe/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/SIMDGiraffe/static/css/2.0fde4cac.chunk.css"
   },
   {
-    "revision": "206d49ed43bdb5d9e98e",
+    "revision": "c33deb6d158b19ead625",
     "url": "/SIMDGiraffe/static/css/main.9eb82b6c.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/SIMDGiraffe/static/js/2.b34e20dd.chunk.js"
   },
   {
-    "revision": "206d49ed43bdb5d9e98e",
-    "url": "/SIMDGiraffe/static/js/main.c7dbc5d6.chunk.js"
+    "revision": "c33deb6d158b19ead625",
+    "url": "/SIMDGiraffe/static/js/main.2963f3c3.chunk.js"
   },
   {
     "revision": "3daab9fef607e40b1bfa",
