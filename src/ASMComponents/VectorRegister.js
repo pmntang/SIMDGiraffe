@@ -219,7 +219,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
-    let positionsLineCol=(searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank>b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
+    let positionsLineCol=(searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank-b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
             (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null)
     return positionsLineCol
   }
@@ -227,7 +227,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   
 
   function buildNonNulPositionsLine(indexLine, aMatrix){
-      let positionsLine=aMatrix[indexLine].map((e,i)=>searchStep(indexLine, i, aMatrix)?buildPosition(indexLine, i, aMatrix):null).flat().filter(e=>e).sort((a,b)=>a.rank>b.rank)
+      let positionsLine=aMatrix[indexLine].map((e,i)=>searchStep(indexLine, i, aMatrix)?buildPosition(indexLine, i, aMatrix):null).flat().filter(e=>e).sort((a,b)=>a.rank-b.rank)
       return positionsLine
   }
   
@@ -533,11 +533,12 @@ function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){/
       return matrixCoordinate
 }
 function matrixToPosition(aMatrix){// build a matrix of position with a given matrix
+  console.log(aMatrix)
   let matrixPosition=aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0?x:(buildPosition(i,j, aMatrix)?(buildPosition(i,j, aMatrix).length==1?
               (_.isEqual(buildPosition(i,j, aMatrix)[0], buildNonNulPositionsLine(i, aMatrix)[buildNonNulPositionsLine(i, aMatrix).length-1])? Array.of(Array.of(), Array.of(),Array.of(buildPosition(i,j,aMatrix)[0])):
                                                                                                                                                Array.of(Array.of( buildPosition(i,j,aMatrix)[0]), Array.of(),Array.of())):
                                                                                                                                       Array.of(Array.of(buildPosition(i,j,aMatrix)[0]), Array.of(), Array.of(buildPosition(i,j,aMatrix)[1]))):
-                                                                                                Array.of(Array.of(), Array.of(), Array.of()))))
+                                                                                                Array.of(Array.of(), Array.of(), Array.of())))); console.log(matrixPosition)
   return matrixPosition
 }
 
