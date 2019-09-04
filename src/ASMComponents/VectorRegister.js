@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
 import "../css/VectorRegister.css";
+import "../css/ViewOnTable.css";
+import "../css/ViewOnSvg.css";
 import 'array-flat-polyfill';
 import 'underscore';
 //import {convertToStrings} from "../Utils/Converter";
