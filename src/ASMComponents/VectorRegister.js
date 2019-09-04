@@ -1,9 +1,11 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
 import "../css/VectorRegister.css";
+import "../css/ViewOnTable.css";
+import "../css/ViewOnSvg.css";
 import 'array-flat-polyfill';
 import 'underscore';
-import SimpleDiagramWidget from "./SimpleDiagramWidget";
+
 
 
 const prefix=["vp", "v","p"]
@@ -824,7 +826,7 @@ class VectorRegister extends React.Component {
             <div className="registerUsed"> 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                <svg width="100%" height="100%" id="svgTable" className="svgVisualization">{positionsAndCoordinateToFigures(this.matrixPosition, matrixToCoordinate(this.renameInstrunctionMatrix, 0, 200, 75))}</svg>
+                <table className="visualization"><thead>{this.state.tableBody.map((e,i)=>i==0?e:null)}</thead> {this.state.tableBody.map((e,i)=>i==0?null:e)}</table>
                 </div>
                 <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
               </div>
