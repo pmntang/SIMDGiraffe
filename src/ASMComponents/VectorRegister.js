@@ -3,7 +3,8 @@ import * as _ from "lodash";
 import "../css/VectorRegister.css";
 import 'array-flat-polyfill';
 import 'underscore';
-//import {convertToStrings} from "../Utils/Converter";
+import SimpleDiagramWidget from "./SimpleDiagramWidget";
+
 
 const prefix=["vp", "v","p"]
 const suffix=["dqa","ps", "sb", "ss","pd","sd","ud","q","w", "b", "d","s"]//"dq",
@@ -819,6 +820,7 @@ class VectorRegister extends React.Component {
         this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
         return( 
+        
             <div className="registerUsed"> 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
