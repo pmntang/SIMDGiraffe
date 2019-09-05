@@ -1,0 +1,71 @@
+.visualization svg{
+    /*background-color: beige;
+    width: 100%;
+    height:100%;
+    height: 100%;
+    border: 1px solid red;*/
+    margin-left: 1em;
+    margin-bottom: 0.5em;
+
+}
+
+.visualization svg g{
+    background-color: beige;
+    stroke: beige;
+    /*width: 100%;*/
+}
+
+rect[class^="out"]{
+    /* vertical-align: bottom;*/
+     text-align: center;
+     font-size: 24px;
+     color: #DE7663;
+     fill: #DE7663;
+ 
+ } 
+ 
+ rect[class^="in"] {
+    /* vertical-align: top;*/
+     text-align: center;
+     font-size: 24px;
+     color:#6BB1F3;
+     fill :#6BB1F3;
+    
+ } 
+ rect[class$="el1"]
+ {  
+     fill :#DECB6B;
+     border: 1px solid#263238;
+     color :#2F9599;
+
+ }
+ rect[class$="id1"]
+ {  
+     /*background: #2F9599;;*/
+     stroke: 4px solid #DECB6B;
+     color :#2F9599;
+ }
+ rect[class$="el2"]
+ {  
+     fill :#C792EA;
+     border: 1px solid#263238;
+     color :#2F9599;
+ }
+ rect[class$="id2"]
+ {  
+     /*background: #2F9599;;*/
+     stroke: 4px solid #C792EA;
+     color :#2F9599;
+ }
+ rect[class$="el3"]
+ {  
+     fill :#2F9599;
+     border: 1px solid#263238;
+     color :#2F9599;
+ }
+ rect[class$="id3"]
+ {  
+     /*background: #2F9599;;*/
+     stroke: 4px solid #2F9599;
+     color :#2F9599;
+ }

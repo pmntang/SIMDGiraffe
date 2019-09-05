@@ -147,7 +147,7 @@ class ViewOnTable extends React.Component {
     }
 
 
-    positionsToTableColor(aMatrixPosition, anArrayOfCurrentPositions){//table version of positionsAndCoordinateToFigures
+    positionsToTableColor(aMatrixPosition, anArrayOfCurrentPositions){//table version of positionsAndCoordinateToFigures, animate version
       let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
                                                   e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
                                                                       x.map((t,l)=>t.length==0?(<td className="empty"></td>):
