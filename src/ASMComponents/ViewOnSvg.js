@@ -20,6 +20,23 @@ function widthOfSvg(aMatrix, aWidthOfFigures){
 function heightOfSvg(aMatrix, aHeightOfFigures){
   return ""+aMatrix.length*aHeightOfFigures
 }
+function updateFieldOfObject(anObject, aField){
+  if( Object.keys(anObject).find(x=>x==aField)){
+    return anObject
+  }
+  else{
+    anObject.aField=[]
+    return anObject
+  }
+}
+
+function updateFieldsOfObject(anObject, anArrayOfFields){
+  return anArrayOfFields.reduce((acc, e)=>updateFieldOfObject(acc,e), anObject)
+}
+
+function udpateFieldOfCurrentsPositions(arrayOfCurrentPositions, anArrayOfFields){
+  return arrayOfCurrentPositions.map(e=>updateFieldsOfObject(e,anArrayOfFields))
+}
 
 class ViewOnSvg extends React.Component {
     constructor(props) {
@@ -87,16 +104,36 @@ class ViewOnSvg extends React.Component {
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
       }
-      processEvent(anEvent){console.log("event", anEvent.target, "type", anEvent.type)
-          let id=anEvent.target.getAttribute("id")
-          this.setState(function(state){
+
+
+      processEvent(anEvent){
+        let id=anEvent.target.getAttribute("id")
+        this.setState(function(state){
+        let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix);console.log("arrayOfCurrentPositions", arrayOfCurrentPositions)
+        return {arrayOfCurrentPositions:arrayOfCurrentPositions}
+      })
+      this.processPath()
+    }
+
+      processPathLink(){
+        this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
+          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
-        })
-        this.processPath()
+        });
       }
 
+      processEventLink(anEvent){
+        let id=anEvent.target.getAttribute("id")
+        this.setState(function(state){
+        let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
+        
+        return {arrayOfCurrentPositions:arrayOfCurrentPositions}
+      })
+      this.processPath()
+    }
      
 
     render(){

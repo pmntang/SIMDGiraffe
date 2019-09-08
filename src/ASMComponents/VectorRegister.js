@@ -346,8 +346,8 @@ function matrixPath(aMatrix){
     if(!eltId){
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
       let positionsOfThisLine=buildNonNulPositionsLine(pathElt[0].line,aMatrix).filter(e=>e.rank>=1)
-      let restictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
-      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restictPositions, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions), listOfPath:pathElt}]
+      let restrictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions), listOfPath:pathElt,  bufferUp:[], bufferDown:[], linkedPositionsUp:[extractPositionFromId(idOfEventElt)], linkedPositionsDown:[extractPositionFromId(idOfEventElt)]}]
     }
     else{
       anArrayOfCurrentPositions.splice(anArrayOfCurrentPositions.indexOf(eltId), 1)
@@ -536,15 +536,15 @@ class VectorRegister extends React.Component {
                 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                {(this.state.option=="table" && <ViewOnTable updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} 
-                maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition}
-                arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition}
+                {(this.state.option=="table" && <ViewOnTable updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition} 
+                maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition} backwardPathPosition={backwardPathPosition}
+                arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition} compare={compare}
                 renameInstrunctionMatrix={this.renameInstrunctionMatrix}
                 />)
                  ||
-                 (this.state.option=="svg" && <ViewOnSvg updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} 
-                 maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition}
-                 arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition}
+                 (this.state.option=="svg" && <ViewOnSvg updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition}
+                 maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition} backwardPathPosition={backwardPathPosition}
+                 arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition} compare={compare}
                  renameInstrunctionMatrix={this.renameInstrunctionMatrix}
                  />)}
                 </div>
