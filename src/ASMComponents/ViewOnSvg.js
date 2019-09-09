@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
 import "../css/VectorRegister.css";
+import "../css/ViewOnSvg.css";
 import 'array-flat-polyfill';
 import 'underscore';
 
@@ -20,22 +21,11 @@ function widthOfSvg(aMatrix, aWidthOfFigures){
 function heightOfSvg(aMatrix, aHeightOfFigures){
   return ""+aMatrix.length*aHeightOfFigures
 }
-function updateFieldOfObject(anObject, aField){
-  if( Object.keys(anObject).find(x=>x==aField)){
-    return anObject
-  }
-  else{
-    anObject.aField=[]
-    return anObject
-  }
-}
-
-function updateFieldsOfObject(anObject, anArrayOfFields){
-  return anArrayOfFields.reduce((acc, e)=>updateFieldOfObject(acc,e), anObject)
-}
-
-function udpateFieldOfCurrentsPositions(arrayOfCurrentPositions, anArrayOfFields){
-  return arrayOfCurrentPositions.map(e=>updateFieldsOfObject(e,anArrayOfFields))
+function linkPosition(position1, position2, aMatrixOfCoordinates, aMatrixOfPosition){
+  let locationPos1=_.isEqual(aMatrixOfPosition[position1.line][position1.column][0],position1)?0:3
+  let locationPos2=_.isEqual(aMatrixOfPosition[position2.line][position2.column][0], position2)?0:3
+  return <line x1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][0]} x2={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][1]} 
+  y1={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][0]} y2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][1]}></line>
 }
 
 class ViewOnSvg extends React.Component {
@@ -50,10 +40,10 @@ class ViewOnSvg extends React.Component {
         this.arrayOfSelectePositionsInit=[]
         this.heightOfFigures=75
         this.widthOfFigures=150
+        this.matrixCoordinate=matrixToCoordinate(this.renameInstrunctionMatrix, 0, this.widthOfFigures, this.heightOfFigures)
 
         this.state = {
             position:this.position,
-            listOfPath:[],
             arrayOfCurrentPositions:this.arrayOfSelectePositionsInit,
             widthOfSvg:widthOfSvg(this.matrix, this.widthOfFigures),
             heightOfSvg:heightOfSvg(this.matrix, this.heightOfFigures)
@@ -100,7 +90,7 @@ class ViewOnSvg extends React.Component {
       processPath(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
+          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix)//;console.log("arrayOfCurrentPositionsnn", JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
       }
@@ -110,7 +100,7 @@ class ViewOnSvg extends React.Component {
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix);console.log("arrayOfCurrentPositions", arrayOfCurrentPositions)
+        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
       this.processPath()
@@ -119,7 +109,7 @@ class ViewOnSvg extends React.Component {
       processPathLink(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
+          arrayOfCurrentPositions=this.props.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
       }
@@ -129,20 +119,20 @@ class ViewOnSvg extends React.Component {
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
         arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
-        
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
       this.processPath()
     }
      
 
-    render(){
-      var figures=this.positionsAndCoordinateToFiguresColor(this.matrixPosition, matrixToCoordinate(this.renameInstrunctionMatrix, 0, this.widthOfFigures, this.heightOfFigures), this.state.arrayOfCurrentPositions)
+    render(){console.log("coord", matrixToCoordinate(this.renameInstrunctionMatrix, 0, this.widthOfFigures, this.heightOfFigures), "posi", this.matrixPosition)
+      var figures=this.positionsAndCoordinateToFiguresColor(this.matrixPosition, this.matrixCoordinate, this.state.arrayOfCurrentPositions)
+      var line=<line className="test" x1="0" y1="0" x2="300" y2="300"  ></line>
 
         return( 
         
             
-                <svg width={this.state.widthOfSvg} height={this.state.heightOfSvg} id="svgTable" className="svgVisualization">{figures}</svg>
+                <svg width={this.state.widthOfSvg} height={this.state.heightOfSvg} id="svgTable" className="svgVisualization">{figures}{line}</svg>
 
    )
     }

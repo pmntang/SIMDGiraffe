@@ -275,7 +275,7 @@ function matrixPath(aMatrix){
       forwardPathOfPosition=forwardPathOfPosition.concat(forwardPathOfPosition.map((e, i,t)=>nextPos(e, aMatrix).filter(x=>!t.find(y=>y.rank==x.rank&&y.column==x.column&&y.line==x.line&&y.codeLine==x.codeLine))).flat())
       level++
     }
-    return forwardPathOfPosition
+    return forwardPathOfPosition.sort((a,b)=>compare(a,b))
   }
   /*function comptuteNextPositionsTab(tabOfPositions){
     return tabOfPositions.length==1||!Array.isArray(tabOfPositions)?[tabOfPositions].flat():tabOfPositions.map(e=>comptuteNextPositionsTab(e))
@@ -294,7 +294,7 @@ function matrixPath(aMatrix){
       let forwardPathOfPositionj=forwardPathPosition(positionsLine[j], aMatrix)
       backwardPathOfPosition=forwardPathOfPositionj.some(x=>x.rank==aPosition.rank&&x.column==aPosition.column&&x.line==aPosition.line&& x.codeLine==aPosition.codeLine)?backwardPathOfPosition.concat(positionsLine[j]):backwardPathOfPosition
     }
-    return backwardPathOfPosition
+    return backwardPathOfPosition.sort((a,b)=>compare(a,b))
   }
 
   function extractPositionFromId(aGivenId){
@@ -345,9 +345,16 @@ function matrixPath(aMatrix){
     let eltId=anArrayOfCurrentPositions.find(e=>e.anElementId==idOfEventElt) //[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
     if(!eltId){
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)
+      let pathEltDown=forwardPathPosition(extractPositionFromId(idOfEventElt), aMatrix)
+      let pathEltUp=backwardPathPosition(extractPositionFromId(idOfEventElt), aMatrix).concat(thisPosition)
       let positionsOfThisLine=buildNonNulPositionsLine(pathElt[0].line,aMatrix).filter(e=>e.rank>=1)
+      let positionsOfThisLineUp=buildNonNulPositionsLine(pathEltUp[0].line,aMatrix).filter(e=>e.rank>=1)
+      let positionsOfThisLineDown=buildNonNulPositionsLine(pathEltDown[0].line,aMatrix).filter(e=>e.rank>=1)
       let restrictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
-      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions), listOfPath:pathElt,  bufferUp:[], bufferDown:[], linkedPositionsUp:[extractPositionFromId(idOfEventElt)], linkedPositionsDown:[extractPositionFromId(idOfEventElt)]}]
+      let restrictPositionsup=linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineUp[positionsOfThisLineUp.length-1]]:linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+      let restrictPositionsDown=linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineDown[positionsOfThisLineDown.length-1]]:linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions,aCurrentPositionup:restrictPositionsup,aCurrentPositionDown:restrictPositionsDown, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions),
+         listOfPath:pathElt,  listOfPathUp:pathEltUp, listOfPathDown:pathEltDown,linkedPositionsUp:[extractPositionFromId(idOfEventElt)], linkedPositionsDown:[extractPositionFromId(idOfEventElt)]}]
     }
     else{
       anArrayOfCurrentPositions.splice(anArrayOfCurrentPositions.indexOf(eltId), 1)
@@ -398,6 +405,38 @@ function matrixPath(aMatrix){
   }
 
 
+  function advanceAselectPositionFoward(anObjectOfCurrentPosition, aMatrix){
+
+    let thisPosition=extractPositionFromId(anObjectOfCurrentPosition.anElementId)
+    let linePositions=buildNonNulPositionsLine(anObjectOfCurrentPosition.listOfPathDown[0].line,aMatrix)
+    let firstPosition=linePosition(anObjectOfCurrentPosition.listOfPathDown, anObjectOfCurrentPosition.listOfPathDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?
+                                   [linePositions[linePositions.length-1]]:linePosition(anObjectOfCurrentPosition.listOfPathDown, anObjectOfCurrentPosition.listOfPathDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+
+    if(_.isEqual(anObjectOfCurrentPosition.aCurrentPositionDown[anObjectOfCurrentPosition.aCurrentPositionDown.length-1], anObjectOfCurrentPosition.listOfPathDown[anObjectOfCurrentPosition.listOfPathDown.length-1])){
+      anObjectOfCurrentPosition.aCurrentPositionDown=firstPosition
+    }
+    else{
+      let anextPosition=anObjectOfCurrentPosition.listOfPathDown.find(e=>(e.line>anObjectOfCurrentPosition.aCurrentPositionDown[0].line||(e.line==anObjectOfCurrentPosition.aCurrentPositionDown[0].line && e.rank>anObjectOfCurrentPosition.aCurrentPositionDown[0].rank))  && !anObjectOfCurrentPosition.aCurrentPositionDown.some(x=>_.isEqual(x,e)))
+      let nextPositions=linePosition(anObjectOfCurrentPosition.listOfPathDown, anextPosition, aMatrix).filter(e=>!_.isEqual(e, thisPosition))
+      if(nextPositions.length>0){
+        anObjectOfCurrentPosition.aCurrentPositionDown=nextPositions
+      }
+      else{
+        let followingPosition=anObjectOfCurrentPosition.listOfPathDown.find(e=>(e.line>thisPosition.line||(e.line==thisPosition.line && e.rank>thisPosition.rank)) && !linePosition(anObjectOfCurrentPosition.listOfPathDown, thisPosition, aMatrix).some(x=>_.isEqual(x,e)))
+        if(followingPosition){
+          anObjectOfCurrentPosition.aCurrentPositionDown=linePosition(anObjectOfCurrentPosition.listOfPathDown, followingPosition, aMatrix)
+        }
+        else{
+          anObjectOfCurrentPosition.aCurrentPositionDown=firstPosition
+        }
+      }      
+    }
+    return anObjectOfCurrentPosition
+  }
+
+  function advanceSelectPositionsFoward(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
+  return anArrayOfCurrentPositions.map(e=>advanceAselectPositionFoward(e, aMatrix))
+}
   function advanceSelectPositions(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
     return anArrayOfCurrentPositions.map(e=>advanceAselectPosition(e, aMatrix))
   }
@@ -536,13 +575,13 @@ class VectorRegister extends React.Component {
                 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                {(this.state.option=="table" && <ViewOnTable updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition} 
+                {(this.state.option=="table" && <ViewOnTable updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advanceSelectPositionsFoward={advanceSelectPositionsFoward} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition} 
                 maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition} backwardPathPosition={backwardPathPosition}
                 arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition} compare={compare}
                 renameInstrunctionMatrix={this.renameInstrunctionMatrix}
                 />)
                  ||
-                 (this.state.option=="svg" && <ViewOnSvg updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition}
+                 (this.state.option=="svg" && <ViewOnSvg updateArrayOfCurrentPositions={updateArrayOfCurrentPositions} advanceSelectPositions={advanceSelectPositions} advanceSelectPositionsFoward={advanceSelectPositionsFoward} advancePosition={advancePosition} forwardPathPosition={forwardPathPosition}
                  maxPosition={maxPosition} computeSuffix={computeSuffix} buildNonNulPositionsLine={buildNonNulPositionsLine} preRetrieveLinePosition={preRetrieveLinePosition} buildPosition={buildPosition} backwardPathPosition={backwardPathPosition}
                  arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} listOfPath={this.state.listOfPath} position={this.state.position} matrix={this.matrix} matrixPosition={this.matrixPosition} compare={compare}
                  renameInstrunctionMatrix={this.renameInstrunctionMatrix}

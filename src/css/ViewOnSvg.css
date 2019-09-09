@@ -69,3 +69,11 @@ rect[class^="out"]{
      stroke: 4px solid #2F9599;
      color :#2F9599;
  }
+
+
+ line{  
+     /*background: #2F9599;;*/
+     stroke:  red;
+     color: red;
+     fill: red;
+ }
