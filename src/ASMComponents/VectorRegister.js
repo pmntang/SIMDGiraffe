@@ -522,7 +522,7 @@ class VectorRegister extends React.Component {
         this.renameInstrunctionMatrix=removeSuffix(suffix, removePrefix(prefix, this.matrix))
         this.matrixPosition=matrixToPosition(this.renameInstrunctionMatrix)
         //this.processEvent=this.processEvent.bind(this)
-        this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
+        this.positionInit={line:1,column:2, rank:2, codeLine:this.matrix[1][0].line}
         this.arrayOfSelectePositionsInit=[]
         this.state = {
             option:"svg",
