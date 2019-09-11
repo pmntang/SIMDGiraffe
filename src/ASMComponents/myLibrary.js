@@ -1,20 +1,10 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
-import "../css/VectorRegister.css";
-import "../css/ViewOnTable.css";
-import "../css/ViewOnSvg.css";
 import 'array-flat-polyfill';
 import * as myLib from "./myLibrary.js";
-import './ViewOnTable';
-import './ViewOnSvg';
 import 'underscore';
-import ViewOnSvg from "./ViewOnSvg";
-import ViewOnTable from "./ViewOnTable";
 
-const prefix=["vp", "v","p"]
-const suffix=["dqa","ps", "sb", "ss","pd","sd","ud","q","w", "b", "d","s"]//"dq",
-/*
-function myLib.instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
+export function instructionsByRegisterBySteps(arrayOfObject){//objects are quatriples {id, intrinsic, line, registers}
             var newArray=[]
             arrayOfObject.map(function (anIntrObj){          
                 for(let i=0; i<anIntrObj.registers.length; i++){
@@ -37,7 +27,8 @@ function myLib.instructionsByRegisterBySteps(arrayOfObject){//objects are quatri
         return sorted
 }
 
-function searchInstruction (id, idr, tab){//this function extracts from an array of objects (tab) { register:, instructions:} an object in the form {instruction:, register: } corresponding to the criteria passed to it as a parameter (id, idr,tab). the property instructions is an array of triples
+
+export function searchInstruction (id, idr, tab){//this function extracts from an array of objects (tab) { register:, instructions:} an object in the form {instruction:, register: } corresponding to the criteria passed to it as a parameter (id, idr,tab). the property instructions is an array of triples
     var varInstruction=null
     tab.find(function(obj){
         return obj.instructions.find(function(instruction){
@@ -48,7 +39,7 @@ function searchInstruction (id, idr, tab){//this function extracts from an array
     return varInstruction
 }
 
-function displayWindow(aWindow){// aWindow is an object {id:, idr:, tab}. This function construct an object {id:, idr:, name:, register:} based on aWindow
+export function displayWindow(aWindow){// aWindow is an object {id:, idr:, tab}. This function construct an object {id:, idr:, name:, register:} based on aWindow
     var objectTodisplay={}, currentWindow=null;
     if(searchInstruction (aWindow.id, aWindow.idr, aWindow.tab)){
         currentWindow= searchInstruction (aWindow.id, aWindow.idr, aWindow.tab);
@@ -60,10 +51,10 @@ function displayWindow(aWindow){// aWindow is an object {id:, idr:, tab}. This f
     return objectTodisplay
 }
 
-function advanceWindow(aWindow){// This function makes it possible to go from one step in the execution of an instruction to the next step, or from one instruction to the next when all the steps of the current instruction are exhausted. At the last step of the last instruction of the program been retrieved, it starts again and returns the first step of the first instruction of the program been retrieved. The continuous application of this function therefore generates cyclical data.
+export function advanceWindow(aWindow){// This function makes it possible to go from one step in the execution of an instruction to the next step, or from one instruction to the next when all the steps of the current instruction are exhausted. At the last step of the last instruction of the program been retrieved, it starts again and returns the first step of the first instruction of the program been retrieved. The continuous application of this function therefore generates cyclical data.
     return searchInstruction(aWindow.id, aWindow.idr+1, aWindow.tab)?{id:aWindow.id, idr:aWindow.idr+1, tab:aWindow.tab}:(searchInstruction(aWindow.id+1,1, aWindow.tab)?{id: aWindow.id+1 ,idr:1, tab:aWindow.tab}:{id:0,idr:1,tab:aWindow.tab})
 }
-function message(aWindow){//this function generate a message in the form of and object {head:, body}. the body contains a html element containing a text to display. The text is construct based on aWindow. the property head contains the name of the correspondant register.
+export function message(aWindow){//this function generate a message in the form of and object {head:, body}. the body contains a html element containing a text to display. The text is construct based on aWindow. the property head contains the name of the correspondant register.
     const styleText={color:"#86DE74"}//style of the text to display, except the name of the instruction (which is displaye in the same style as the id and idr)
     const styleId={color:"#FF7DE9"}
     var messageContent=displayWindow(aWindow)//Below we identify the paragraph (tag p) with the id of aWindow messageContent.id as we will use this id to set the same color for the paragraph having the same id
@@ -71,26 +62,26 @@ function message(aWindow){//this function generate a message in the form of and 
     return message
 }
 
-function pickStep(instNumber, arrayOfInstructions){//takes an array of instructions and an instruction number, then returns an array consisting of the steps of the instruction whose number was given.here an instruction is a triple {id:, name:, idr:, line}
+export function pickStep(instNumber, arrayOfInstructions){//takes an array of instructions and an instruction number, then returns an array consisting of the steps of the instruction whose number was given.here an instruction is a triple {id:, name:, idr:, line}
 return arrayOfInstructions.reduce((acc, curr)=> (curr.id==instNumber) ? [curr.idr,...acc] : acc, []); 
 }
 
-function extractStepRegAtInst(aRegister, anArrayOfRegisters, instNumber){// extract from an array of register the steps of an instruction executed on this register.this instruction is identified by its id. returns null if no step of this instruction is executed on this register.
+export function extractStepRegAtInst(aRegister, anArrayOfRegisters, instNumber){// extract from an array of register the steps of an instruction executed on this register.this instruction is identified by its id. returns null if no step of this instruction is executed on this register.
     return anArrayOfRegisters.find(e=>e.register==aRegister)?pickStep(instNumber, anArrayOfRegisters.find(e=>e.register==aRegister).instructions):null
 }
 
-function myLib.buildMatrixRegInt(anArrayOfRegisters, anArrayOfInstructions){ 
+export function buildMatrixRegInt(anArrayOfRegisters, anArrayOfInstructions){ 
     let augMentArrayOfReg=[{register:"NAME"},...anArrayOfRegisters]
     let matrix=augMentArrayOfReg.map(e=>new Array(anArrayOfInstructions.length+1).fill(e.register))
     matrix=matrix.map(r=>(r[0]=="NAME")? (r.map((c,i)=>(i==0)?r[0]:{name:""+anArrayOfInstructions[i-1].intrinsic, line:anArrayOfInstructions[i-1].line})):(r.map((c, i)=>(i==0)?r[0]:extractStepRegAtInst(c, anArrayOfRegisters, i-1))) )
     return matrix[0].map((x,i)=>matrix.map(x=>x[i])) //this is to transpose
 }
 
-function searchStep(lineIndex, columnIndex, aMatrix){
+export function searchStep(lineIndex, columnIndex, aMatrix){
     return lineIndex>0 && columnIndex>=0 && lineIndex<aMatrix.length && columnIndex<aMatrix[0].length && (aMatrix[lineIndex][columnIndex].length>0||(aMatrix[lineIndex][columnIndex]!==null && !Array.isArray(aMatrix[lineIndex][columnIndex])))
   }
   
-  function advanceMatrixWindow(lineIndex, columnIndex, aMatrix){//Advance the window to the next step of an instruction or until the next instruction.
+export function advanceMatrixWindow(lineIndex, columnIndex, aMatrix){//Advance the window to the next step of an instruction or until the next instruction.
     return {value:searchStep(lineIndex, columnIndex+1, aMatrix)?aMatrix[lineIndex][columnIndex+1]:
                   ((lineIndex>=aMatrix.length-1 && columnIndex>=aMatrix[0].length-1 && searchStep(1,0,aMatrix))?aMatrix[1][0]:
                     (((lineIndex>=aMatrix.length-1 && columnIndex>=aMatrix[0].length-1)||(lineIndex<=0 ||columnIndex<0))?advanceMatrixWindow(1,0,aMatrix).value:
@@ -110,7 +101,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
   
   
-  function retrievePosition(aPosition, aMatrix){
+export function retrievePosition(aPosition, aMatrix){
     if (aPosition.rank==0){//we are at the first column (index 0)
       return <th className="intrinsicName"   rowSpan="3" scope="rowgroup"><span className="intrinsicName">{aMatrix[aPosition.line][aPosition.column].name.toUpperCase()}</span></th>
     }
@@ -136,11 +127,11 @@ function searchStep(lineIndex, columnIndex, aMatrix){
         }
   }
 
-  function preRetrieveLinePosition(aPosition, aMatrix){//this function retrieve and return the ligne corresponding to the aPosition.line each time it is called, as aPosition move foward
+export  function preRetrieveLinePosition(aPosition, aMatrix){//this function retrieve and return the ligne corresponding to the aPosition.line each time it is called, as aPosition move foward
     return aMatrix[aPosition.line].map((x,j)=>j==0?x:retrieveIndexPositionLine(aPosition.line, j, aPosition,aMatrix))//in, out or inout is put where necessary
   }
 
-  function initializeLinesMatrix(aLine, aMatrix){
+export  function initializeLinesMatrix(aLine, aMatrix){
     var ligne1=<th rowSpan="3" scope="rowgroup" className="empty"></th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[aLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
@@ -149,7 +140,8 @@ function searchStep(lineIndex, columnIndex, aMatrix){
      }
      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
   }
-  function initializeFirstLineMatrix(firstLine, aMatrix){//should have call this initializeFirstLigneMatrix
+
+export  function initializeFirstLineMatrix(firstLine, aMatrix){//should have call this initializeFirstLigneMatrix
     var ligne1=<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrix[firstLine][0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
      for(let j=1; j<aMatrix[firstLine].length; j++){
       ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>
@@ -159,7 +151,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
      return <tbody><tr>{ligne1}</tr><tr>{ligne2}</tr><tr>{ligne3}</tr></tbody>
   }
 
-  function retrieveIndexPositionLine(aLine, aColumn, aPosition,aMatrix){//all the positions before aPosition (those wich position are <= aPosition.rank) are retrieve
+export function retrieveIndexPositionLine(aLine, aColumn, aPosition,aMatrix){//all the positions before aPosition (those wich position are <= aPosition.rank) are retrieve
     var statePos=null
     if(aLine==aPosition.line){//this condition could have been left
       let indexPosition=buildPosition(aLine,aColumn,aMatrix)
@@ -190,7 +182,8 @@ function searchStep(lineIndex, columnIndex, aMatrix){
           }
       return statePos
   }
-  function buildPosition(indexLine, indexColumn, aMatrix){
+
+export  function buildPosition(indexLine, indexColumn, aMatrix){
     let obj={}
     let positionsLineCol=(searchStep(indexLine, indexColumn, aMatrix)&&Array.isArray(aMatrix[indexLine][indexColumn]))?aMatrix[indexLine][indexColumn].map(e=>obj={line:indexLine, column:indexColumn, rank:e,codeLine:aMatrix[indexLine][0].line}).sort((a,b)=>a.rank-b.rank)://e represent the step of instruction, step 1, 2, etc.(step is associate with the register)
             (searchStep(indexLine, indexColumn, aMatrix)?new Array (obj={line:indexLine, column:indexColumn, rank:0,codeLine:aMatrix[indexLine][0].line}):null)
@@ -199,51 +192,54 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   
   
 
-  function buildNonNulPositionsLine(indexLine, aMatrix){
+export  function buildNonNulPositionsLine(indexLine, aMatrix){
       let positionsLine=aMatrix[indexLine].map((e,i)=>searchStep(indexLine, i, aMatrix)?buildPosition(indexLine, i, aMatrix):null).flat().filter(e=>e).sort((a,b)=>a.rank-b.rank)
       return positionsLine
   }
   
   
-  function buildNonNulPositions(aMatrix){
+export  function buildNonNulPositions(aMatrix){
       return  aMatrix.map((e,i)=>buildNonNulPositionsLine(i, aMatrix).length>0?buildNonNulPositionsLine(i, aMatrix):null)
   }
   
 
- function advancePosition(aPosition, aMatrix){
+export function advancePosition(aPosition, aMatrix){
     return buildNonNulPositionsLine(aPosition.line,aMatrix).find(e=>e.rank>aPosition.rank)?buildNonNulPositionsLine(aPosition.line,aMatrix).find(e=>e.rank>aPosition.rank):
              buildNonNulPositionsLine(advanceMatrixWindow(buildNonNulPositionsLine(aPosition.line,aMatrix).find((pos, i,t)=>!t.some(x=>x.column>pos.column)).line,buildNonNulPositionsLine(aPosition.line,aMatrix).find((pos, i,t)=>!t.some(x=>x.column>pos.column)).column,aMatrix).indexes[0], aMatrix)[0]
   }
 
-  function advanceLinePosition(aPosition, aMatrix){
+export  function advanceLinePosition(aPosition, aMatrix){
     return (aPosition.line===advancePosition(aPosition, aMatrix).line&& aPosition.rank!==null)?advancePosition(aPosition, aMatrix):
               (aPosition.rank!==null?{line:aPosition.line,column:aMatrix[0].length-1, rank:null, codeLine:aPosition.codeLine}:buildNonNulPositionsLine(advanceMatrixWindow(aPosition.line, aPosition.column, aMatrix).indexes[0], aMatrix)[0])
-  }
-  function renameReg(aRegister){
+}
+export function renameReg(aRegister){
     return aRegister.length==4?aRegister[0].toUpperCase()+aRegister[3]:(aRegister[0]+"M").toUpperCase()
   }
-  function myLib.renameRegister(aMatrix){
+
+
+export function renameRegister(aMatrix){
     return aMatrix.map((e,i)=>i==0?e.map((x,j)=>j==0?x:renameReg(x)):e)
   }
-  function myLib.removePrefix(linesPrefix, aMatrix){
+export function removePrefix(linesPrefix, aMatrix){
   return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findPrefix(linesPrefix, x.name.toUpperCase())?{name:x.name.slice(findPrefix(linesPrefix, x.name.toUpperCase()).length), line:x.line}:x))
   }
 
-  function findPrefix(linesPrefix,anInstruction){
+export  function findPrefix(linesPrefix,anInstruction){
   return linesPrefix.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(0, currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(0, e.length).match(e.toUpperCase())).length>currentPre.length))
   }
 
-  function myLib.removeSuffix(linesSuffix, aMatrix){
+export function removeSuffix(linesSuffix, aMatrix){
   return aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0&&findSuffix(linesSuffix, x.name.toUpperCase())?{name:x.name.slice(0, x.name.length-findSuffix(linesSuffix, x.name.toUpperCase()).length), line:x.line}:x))
   }
 
-  function findSuffix(linesSuffix, anInstruction){
+export  function findSuffix(linesSuffix, anInstruction){
   return linesSuffix.find((currentPre, indexPre, currentTa)=>anInstruction.toUpperCase().slice(anInstruction.length-currentPre.length).match(currentPre.toUpperCase())&& !(currentTa.find(e=>anInstruction.toUpperCase().slice(anInstruction.length-e.length).match(e.toUpperCase())).length>currentPre.length))
   }
-  function consPath(aPosition,  aMatrix){
+export  function consPath(aPosition,  aMatrix){
     return (forwardPathPosition(aPosition,  aMatrix).concat(backwardPathPosition(aPosition,aMatrix))).sort((a,b)=>compare(a,b))
   }
-  function nextPositions(aPosition, aMatrix){
+
+export  function nextPositions(aPosition, aMatrix){
     var pathNextpos=[]
     if (aPosition.rank>0){
       var forbidenColumn=0
@@ -266,7 +262,7 @@ function searchStep(lineIndex, columnIndex, aMatrix){
   }
 
 
-  function previousPositions(aPosition, aMatrix){
+export function previousPositions(aPosition, aMatrix){
     var pathNextpos=[]
     if (aPosition.rank>0){
       var      authorizedColumn=aPosition.column // the previous position if not on the same line (wich is always the case for an out position) is always on the same column as the position
@@ -294,10 +290,12 @@ function searchStep(lineIndex, columnIndex, aMatrix){
 
 
  
-function matrixPath(aMatrix){
+export function matrixPath(aMatrix){
   return aMatrix.map((x,i)=>i==0?[]:x.map((y,j)=>j==0?[]:(searchStep(i, j, aMatrix)?buildPosition(i,j,aMatrix).map(e=>nextPositions(e,aMatrix)):[])))
 }
-  function forwardPathPosition(aPosition, aMatrix){
+
+
+export  function forwardPathPosition(aPosition, aMatrix){
     var forwardPathOfPosition=nextPositions(aPosition, aMatrix)
     let level=1
     while(level<aMatrix.length){
@@ -309,8 +307,9 @@ function matrixPath(aMatrix){
   }
   /*function comptuteNextPositionsTab(tabOfPositions){
     return tabOfPositions.length==1||!Array.isArray(tabOfPositions)?[tabOfPositions].flat():tabOfPositions.map(e=>comptuteNextPositionsTab(e))
-  }
-  function backwardPathPosition(aPosition, aMatrix){
+  }*/
+
+export  function backwardPathPosition(aPosition, aMatrix){
     var backwardPathOfPosition=[]
     for(let i=1; i<aPosition.line; i++){
       let positionsLine=buildNonNulPositionsLine(i, aMatrix)
@@ -327,16 +326,17 @@ function matrixPath(aMatrix){
     return backwardPathOfPosition.sort((a,b)=>compare(a,b))
   }
 
-  function extractPositionFromId(aGivenId){
+export  function extractPositionFromId(aGivenId){
     let positionPropertiesArray=aGivenId.split(/[lcrz]/)
     return {line:parseInt(positionPropertiesArray[1]), column:parseInt(positionPropertiesArray[2]), rank:parseInt(positionPropertiesArray[3]), codeLine:parseInt(positionPropertiesArray[4])}
   }
-  function maxPosition(aMatrix){
+
+export  function maxPosition(aMatrix){
     let pos=buildNonNulPositionsLine(aMatrix.length-1, aMatrix)[buildNonNulPositionsLine(aMatrix.length-1, aMatrix).length-1]
     return pos
   }
 
-  function minFreePosition(aListOfCurrentPosition){
+export  function minFreePosition(aListOfCurrentPosition){
     let anArray=aListOfCurrentPosition.map(e=>e.idPosition)
     anArray=anArray.map(e=>parseInt(e, 10))
     anArray=anArray.sort((a,b)=>a-b)
@@ -370,7 +370,7 @@ function matrixPath(aMatrix){
     return freePos
 }
 
-  function updateArrayOfCurrentPositions(anArrayOfCurrentPositions, idOfEventElt,aMatrix){
+export  function updateArrayOfCurrentPositions(anArrayOfCurrentPositions, idOfEventElt,aMatrix){
     let thisPosition=extractPositionFromId(idOfEventElt); console.log("nexposition",  nextPositions(thisPosition, aMatrix), "previous", previousPositions(thisPosition, aMatrix))
     let eltId=anArrayOfCurrentPositions.find(e=>e.anElementId==idOfEventElt) //[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
     if(!eltId){
@@ -393,7 +393,7 @@ function matrixPath(aMatrix){
   }
 
 
-  function linePosition(aPath,aPosition,aMatrix){
+export  function linePosition(aPath,aPosition,aMatrix){
     let positionLine=[]
     if(aPosition.rank==buildNonNulPositionsLine(aPosition.line, aMatrix)[buildNonNulPositionsLine(aPosition.line, aMatrix).length-1].rank){
       positionLine=[...positionLine,aPosition]
@@ -405,7 +405,7 @@ function matrixPath(aMatrix){
   }
 
 
-  function advanceAselectPosition(anObjectOfCurrentPosition, aMatrix){
+export function advanceAselectPosition(anObjectOfCurrentPosition, aMatrix){
 
     let thisPosition=extractPositionFromId(anObjectOfCurrentPosition.anElementId)
     let linePositions=buildNonNulPositionsLine(anObjectOfCurrentPosition.listOfPath[0].line,aMatrix)
@@ -435,7 +435,7 @@ function matrixPath(aMatrix){
   }
 
 
-  function advanceAselectPositionFoward(anObjectOfCurrentPosition, aMatrix){
+export function advanceAselectPositionFoward(anObjectOfCurrentPosition, aMatrix){
 
     let thisPosition=extractPositionFromId(anObjectOfCurrentPosition.anElementId)
     let linePositions=buildNonNulPositionsLine(anObjectOfCurrentPosition.listOfPathDown[0].line,aMatrix)
@@ -464,14 +464,15 @@ function matrixPath(aMatrix){
     return anObjectOfCurrentPosition
   }
 
-  function advanceSelectPositionsFoward(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
+export  function advanceSelectPositionsFoward(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
   return anArrayOfCurrentPositions.map(e=>advanceAselectPositionFoward(e, aMatrix))
 }
-  function advanceSelectPositions(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
+
+export function advanceSelectPositions(anArrayOfCurrentPositions, aMatrix){//aListOfCurrentPosition={aPosition:..., anElementId:...idPosition:, listhOfPath:} anElementId is an id corresponding to aPosition
     return anArrayOfCurrentPositions.map(e=>advanceAselectPosition(e, aMatrix))
   }
   
-  function compare(a, b) {
+export  function compare(a, b) {
     if (a.line==b.line){
       if(a.rank<b.rank){
         return -1
@@ -495,7 +496,7 @@ function matrixPath(aMatrix){
     }
 }
 
-  function computeSuffix(aPosition, anArrayOfCurrentPositions){
+export function computeSuffix(aPosition, anArrayOfCurrentPositions){
     let suffix=null
     if(anArrayOfCurrentPositions){
       if(anArrayOfCurrentPositions.find(e=>_.isEqual(extractPositionFromId(e.anElementId),aPosition))){
@@ -513,13 +514,13 @@ function matrixPath(aMatrix){
     return suffix
   }
 
-  function findPositionInCurrentPositions(indexLine, aListOfCurrentPosition){
+export function findPositionInCurrentPositions(indexLine, aListOfCurrentPosition){
     return aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine||extractPositionFromId(e.anElementId).line==indexLine)?
             (aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine)? aListOfCurrentPosition.find(e=>e.aPosition.line==indexLine).aPosition:
             extractPositionFromId(aListOfCurrentPosition.find(e=>extractPositionFromId(e.anElementId).line==indexLine).anElementId)):null
   }
 
-function myLib.matrixToPosition(aMatrix){// build a matrix of position with a given matrix
+export function matrixToPosition(aMatrix){// build a matrix of position with a given matrix
   let matrixPosition=aMatrix.map((e,i)=>i==0?e:e.map((x,j)=>j==0?x:(buildPosition(i,j, aMatrix)?(buildPosition(i,j, aMatrix).length==1?
               (_.isEqual(buildPosition(i,j, aMatrix)[0], buildNonNulPositionsLine(i, aMatrix)[buildNonNulPositionsLine(i, aMatrix).length-1])? Array.of(Array.of(), Array.of(),Array.of(buildPosition(i,j,aMatrix)[0])):
                                                                                                                                                Array.of(Array.of( buildPosition(i,j,aMatrix)[0]), Array.of(),Array.of())):
@@ -530,7 +531,7 @@ function myLib.matrixToPosition(aMatrix){// build a matrix of position with a gi
 
 
 
-function emptyPositionsAndCoordinateOfFigures(aMatrixPosition, aMatrixCoordinate){// build a matrix of figures (svg elements) with a given matrix of positions and a matrix of coordinates (with empty classNames)
+export function emptyPositionsAndCoordinateOfFigures(aMatrixPosition, aMatrixCoordinate){// build a matrix of figures (svg elements) with a given matrix of positions and a matrix of coordinates (with empty classNames)
   let emptyMatrixFigures=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="name" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
                                                                                                                                                                       <text className="textname" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x}</text></g>):
                                                                            (<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="head" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
@@ -542,89 +543,12 @@ function emptyPositionsAndCoordinateOfFigures(aMatrixPosition, aMatrixCoordinate
                                                                                       (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect  className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
   return emptyMatrixFigures
 }
-*/
 
-class VectorRegister extends React.Component {
-    constructor(props) {
-        super(props);
-        this.registers=myLib.instructionsByRegisterBySteps(props.instructions)
-        this.matrix=myLib.renameRegister(myLib.buildMatrixRegInt(this.registers, props.instructions))
-        this.renameInstrunctionMatrix=myLib.removeSuffix(suffix, myLib.removePrefix(prefix, this.matrix))
-        this.matrixPosition=myLib.matrixToPosition(this.renameInstrunctionMatrix)
-        //this.processEvent=this.processEvent.bind(this)
-        this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
-        this.arrayOfSelectePositionsInit=[]
-        this.state = {
-            option:"svg",
-            position: this.positionInit,
-           // tableBody:this.tableBodyInit,
-            listOfPath:[],
-            arrayOfCurrentPositions:this.arrayOfSelectePositionsInit
-    };
-    }
-
-    componentDidMount() { //console.log(positionsAndCoordinateToFigures(this.matrixPosition, matrixToCoordinate(this.renameInstrunctionMatrix, 0, 100, 25)), "tailles",window.innerHeight, window.innerWidth)
-      /* // this.displayFullMatrix ()
-         this.timerID = setInterval(
-          () => this.processPath (),
-          500
-         );
-        this.timerID = setInterval(
-         () => this.display(),
-         1500
-        );*/
-    }/*
-      componentDidUpdate(prevProps, prevState, snapshot){
-        const list = this.listRef.current;
-        console.log(document.getElementsByTagName("p"));
-      }*/
-      componentWillUnmount() {
-        if (this.hightlightedline) this.hightlightedline.clear();
-        //clearInterval(this.timerID);
-      }
-
-      highlightCode = (isHover = false) => {
-        let line =this.state.position.codeLine-1
-        let cm = this.props.cm.current;
-        if (line && cm) {
-            const lineLength = cm.editor.getLine(line).length;
-            return cm.editor.doc.markText({line, ch: 0}, {line, ch: lineLength}, {
-                className: isHover ? 'highlighted-code' : 'sequential-highlighted-code'
-            });
-        }
-        return null
-      };
-    render(){
-      
-        if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
-        this.hightlightedline=this.highlightCode();
-        //const k=this.dhighlightCode().clear();
-        return( 
-        
-            <div className="registerUsed"> 
-                
-                <div className="controlButton">  </div>
-                <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                {(this.state.option=="table" && <ViewOnTable/>)
-                 ||
-                 (this.state.option=="svg" && <ViewOnSvg />)}
-                </div>
-                <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
-              </div>
- 
-            </div>
-   )
-    }
-    componentDidUpdate(prevProps) {
-      // Typical usage (don't forget to compare props):
-     // if (this.props.userID !== prevProps.userID) {
-      //  this.fetchData(this.props.userID);
-     // }
-     //console.log(this.matrix,"this.renameInstrunctionMatrix", myLib.matrixToPosition(this.matrix), "this.tableBodyInit", this.tableBodyInit, "test",this.retrieveUntilAPosition(this.state.position, myLib.matrixToPosition(this.matrix)), "position",this.state.position)
-     //console.log("les positions",this.positionsToTableColor(this.matrixPosition,this.state.arrayOfCurrentPositions ))
-    }
-}
-
-
-
-export default VectorRegister;
+export function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){//build a matrix of coordinates with a given matrix, origin, width and height of figures
+    let matrixCoordinate= aMatrx.map((e,i)=>i==0?e.map((x,j)=>Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures)):
+                                  e.map((x,j)=>j==0?Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures):
+                                                    Array.of(Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures,widthOfFigures,heightOfFigures/3), 
+                                                             Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+1)*heightOfFigures/3,widthOfFigures,heightOfFigures/3),
+                                                             Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3)))); console.log("lireairrr")
+        return matrixCoordinate
+  }

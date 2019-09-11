@@ -1,11 +1,12 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
+import * as myLib from "./myLibrary.js";
 import "../css/VectorRegister.css";
 import "../css/ViewOnSvg.css";
 import 'array-flat-polyfill';
 import 'underscore';
-
-function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){//build a matrix of coordinates with a given matrix, origin, width and height of figures
+/*
+function myLib.matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){//build a matrix of coordinates with a given matrix, origin, width and height of figures
   let matrixCoordinate= aMatrx.map((e,i)=>i==0?e.map((x,j)=>Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures)):
                                 e.map((x,j)=>j==0?Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures):
                                                   Array.of(Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures,widthOfFigures,heightOfFigures/3), 
@@ -13,7 +14,7 @@ function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFigures){/
                                                            Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3))))
       return matrixCoordinate
 }
-
+*/
 
 function widthOfSvg(aMatrix, aWidthOfFigures){
   return ""+aMatrix[0].length*aWidthOfFigures
@@ -21,18 +22,38 @@ function widthOfSvg(aMatrix, aWidthOfFigures){
 function heightOfSvg(aMatrix, aHeightOfFigures){
   return ""+aMatrix.length*aHeightOfFigures
 }
-function linkPosition(position1, position2, aMatrixOfCoordinates, aMatrixOfPosition){console.log("positions","pos1", position1,"pos2",position2)
+function linkPosition(position1, position2, aMatrixOfCoordinates, aMatrixOfPosition){
   let locationPos1=_.isEqual(aMatrixOfPosition[position1.line][position1.column][0][0],position1)?0:2
-  let locationPos2=_.isEqual(aMatrixOfPosition[position2.line][position2.column][0][0], position2)?0:2;console.log("matriceposition",_.isEqual(aMatrixOfPosition[position2.line][position2.column][0][0], position2), "et",aMatrixOfPosition[1][1][0])
+  let locationPos2=_.isEqual(aMatrixOfPosition[position2.line][position2.column][0][0], position2)?0:2
   let classLine=locationPos1==0&&locationPos2==0?"inin":(locationPos1==0&&locationPos2==3?"inout":"outin")
   let idLine="l"+position1.line+"c"+position1.column+"r"+position1.rank+"z"+position1.codeLine+"l"+position2.line+"c"+position2.column+"r"+position2.rank+"z"+position2.codeLine
   let line= <line id={idLine} className={classLine} x1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][0]+aMatrixOfCoordinates[position1.line][position1.column][locationPos1][2]*0.5} 
   y1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][1]+aMatrixOfCoordinates[position1.line][position1.column][locationPos1][3]*0.5} 
   x2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][0]+aMatrixOfCoordinates[position2.line][position2.column][locationPos2][2]*0.5}
-  y2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][1]+aMatrixOfCoordinates[position2.line][position2.column][locationPos2][3]*0.5}></line>; console.log("y",locationPos2)
+  y2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][1]+aMatrixOfCoordinates[position2.line][position2.column][locationPos2][3]*0.5}></line>
   return line
 }
 
+function linkPositionTonextPosition(aPosition, itsNextPositions,aMatrixOfCoordinates, aMatrixOfPosition){
+  return itsNextPositions.filter(e=>!_.isEqual(e, aPosition)).map(e=>linkPosition(aPosition, e, aMatrixOfCoordinates, aMatrixOfPosition))
+}
+
+function recursifLinkToNexPosition(aPosition, itsNextPositions, aMatrixOfCoordinates, aMatrixOfPosition){
+  
+}
+
+function linkPositionOfTwoArrays(fisrtArray, sndArray, aMatrixOfCoordinates, aMatrixOfPosition){
+  let firstElt=fisrtArray.find(e=>!sndArray.some(x=>_.isEqual(x,e))); console.log("firstElt", firstElt)
+  let link=firstElt?linkPosition(firstElt, sndArray[0],aMatrixOfCoordinates, aMatrixOfPosition):null
+  sndArray=firstElt?[firstElt,...sndArray]:sndArray 
+  return [link, sndArray]
+}
+
+function linkPositionsOfPathPosition(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition){console.log("obj1", anObjectPosition)
+  let link=linkPositionOfTwoArrays(anObjectPosition.listOfPathDown, anObjectPosition.linkedPositionsDown,aMatrixOfCoordinates, aMatrixOfPosition)[0]
+  anObjectPosition.linkedPositionsDown=linkPositionOfTwoArrays(anObjectPosition.listOfPathDown, anObjectPosition.linkedPositionsDown,aMatrixOfCoordinates, aMatrixOfPosition)[1];console.log("obj2", anObjectPosition)
+  return [link, anObjectPosition]
+}
 class ViewOnSvg extends React.Component {
     constructor(props) {
         super(props);
@@ -45,20 +66,21 @@ class ViewOnSvg extends React.Component {
         this.arrayOfSelectePositionsInit=[]
         this.heightOfFigures=75
         this.widthOfFigures=150
-        this.matrixCoordinate=matrixToCoordinate(this.renameInstrunctionMatrix, 0, this.widthOfFigures, this.heightOfFigures)
+        this.matrixCoordinate=myLib.matrixToCoordinate(this.renameInstrunctionMatrix, 0, this.widthOfFigures, this.heightOfFigures)
 
         this.state = {
             position:this.position,
             arrayOfCurrentPositions:this.arrayOfSelectePositionsInit,
             widthOfSvg:widthOfSvg(this.matrix, this.widthOfFigures),
-            heightOfSvg:heightOfSvg(this.matrix, this.heightOfFigures)
+            heightOfSvg:heightOfSvg(this.matrix, this.heightOfFigures),
+            links:[]
     };
     }
     
-    componentDidMount() { console.log(this.matrixCoordinate[1][1])
+    componentDidMount() {// console.log(this.matrixCoordinate[1][1])
       this.timerID = setInterval(
-        () => this.processPath (),
-        500
+        () => this.processPath(),
+        1500
       );
     }
     
@@ -114,8 +136,11 @@ class ViewOnSvg extends React.Component {
       processPathLink(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
-          return {arrayOfCurrentPositions:arrayOfCurrentPositions}
+          let links=state.links
+          arrayOfCurrentPositions=this.props.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix)
+          links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)//; console.log("aray1",JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)) )
+          return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
         });
       }
 
@@ -126,18 +151,18 @@ class ViewOnSvg extends React.Component {
         arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
-      this.processPath()
+      this.processPathLink()
     }
      
 
-    render(){this.state.arrayOfCurrentPositions.length>0&&console.log("position",linkPosition(this.position, this.state.arrayOfCurrentPositions[0].listOfPath[0], this.matrixCoordinate,this.matrixPosition))
+    render(){//console.log("links",this.state.links)
       var figures=this.positionsAndCoordinateToFiguresColor(this.matrixPosition, this.matrixCoordinate, this.state.arrayOfCurrentPositions)
-      var line=this.state.arrayOfCurrentPositions.length>0?linkPosition(this.position, this.state.arrayOfCurrentPositions[0].listOfPath[0], this.matrixCoordinate,this.matrixPosition):<line className="test" x1="0" y1="0" x2="300" y2="300"  ></line>
+      var line=<line className="test" x1="0" y1="0" x2="300" y2="300"  ></line>
 
         return( 
         
             
-                <svg width={this.state.widthOfSvg} height={this.state.heightOfSvg} id="svgTable" className="svgVisualization">{figures}{line}</svg>
+                <svg width={this.state.widthOfSvg} height={this.state.heightOfSvg} id="svgTable" className="svgVisualization">{figures}{this.state.links}</svg>
 
    )
     }
