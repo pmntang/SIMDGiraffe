@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
+import * as myLib from "./myLibrary.js";
 import "../css/VectorRegister.css";
 import 'array-flat-polyfill';
 import 'underscore';
