@@ -2,10 +2,9 @@ import React, {Component} from "react";
 import * as _ from "lodash";
 import * as myLib from "./myLibrary.js";
 import "../css/VectorRegister.css";
+import "../css/ViewOnTable.css";
 import 'array-flat-polyfill';
 import 'underscore';
-
-
 
 
 class ViewOnTable extends React.Component {
@@ -52,9 +51,9 @@ class ViewOnTable extends React.Component {
           let position=state.position
           let tableBody=state.tableBody
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          position=this.props.advancePosition(position, this.matrix)
+          position=myLib.advancePosition(position, this.matrix)
           tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, arrayOfCurrentPositions))
-          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=this.props.maxPosition(this.matrix);tableBody=state.tableBody
+          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=myLib.maxPosition(this.matrix);tableBody=state.tableBody
            tableBody=this.tableBodyInit
 
           }
@@ -68,10 +67,10 @@ class ViewOnTable extends React.Component {
           let position=state.position
           let tableBody=state.tableBody
           let arrayOfSelectePositions=state.arrayOfCurrentPositions
-          position=this.props.advancePosition(position, this.matrix)
+          position=myLib.advancePosition(position, this.matrix)
           tableBody=tableBody.map((e,i)=>i<position.line?e:
                                         (i==position.line?this.retrieveUntilAPosition(position, this.matrixPosition, arrayOfSelectePositions):e))
-          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=this.props.maxPosition(this.matrix);tableBody=state.tableBody
+          if(position.line==1 && position.rank==0){//clearInterval(this.timerID);position=myLib.maxPosition(this.matrix);tableBody=state.tableBody
            tableBody=this.tableBodyInit
 
           }
@@ -82,7 +81,7 @@ class ViewOnTable extends React.Component {
       processPath(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
+          arrayOfCurrentPositions=myLib.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix) 
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
         this.displayFullMatrix()
@@ -91,7 +90,7 @@ class ViewOnTable extends React.Component {
           let id=anEvent.target.getAttribute("id")
           this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
+          arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         })
         this.processPath()
@@ -103,9 +102,9 @@ class ViewOnTable extends React.Component {
           let tableBody=state.tableBody
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
           do{
-            position=this.props.advancePosition(position, this.matrix)
+            position=myLib.advancePosition(position, this.matrix)
             tableBody=tableBody.map((e,i)=>i!=position.line?e:this.retrieveLinePosition(position, arrayOfCurrentPositions)) 
-          }while(!_.isEqual(position, this.props.maxPosition(this.matrix))); console.log("tablebidyDM", tableBody)
+          }while(!_.isEqual(position, myLib.maxPosition(this.matrix)))
           return{position:position, tableBody:tableBody, arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
       }
@@ -152,8 +151,8 @@ class ViewOnTable extends React.Component {
       let matrixTable=aMatrixPosition.map((e,i)=>i==0?e.map((x,j)=>j==0?<th className="name" >{x}</th>: <th className="head" >{x}</th> ):
                                                   e.map((x,j)=>j==0?(<th rowSpan="3" scope="rowgroup" className="intrinsicName">{aMatrixPosition[i][j].name.toUpperCase()}</th>):
                                                                       x.map((t,l)=>t.length==0?(<td className="empty"></td>):
-                                                                                                 (l==0?(<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"inl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+this.props.computeSuffix(t[0], anArrayOfCurrentPositions)}></td>):
-                                                                                                   (<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"outl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+this.props.computeSuffix(t[0], anArrayOfCurrentPositions)}></td> )))))
+                                                                                                 (l==0?(<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"inl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+myLib.computeSuffix(t[0], anArrayOfCurrentPositions)}></td>):
+                                                                                                   (<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"outl"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+myLib.computeSuffix(t[0], anArrayOfCurrentPositions)}></td> )))))
       return matrixTable
     }
 
@@ -181,31 +180,31 @@ class ViewOnTable extends React.Component {
       return retrieveUntilAPosition
     }
     retrieveLinePosition(aPosition, arrayOfCurrentPositions){
-      //this.props.computeSuffix(aPosition, arrayOfCurrentPositions, aListOfPosition)
-      let id=this.props.buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
+      //myLib.computeSuffix(aPosition, arrayOfCurrentPositions, aListOfPosition)
+      let id=myLib.buildNonNulPositionsLine(aPosition.line, this.matrix)//this is to know later which cell of the table to adress
       let id1=id.length>=2?"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine:null //"l"+id[1].line+"c"+id[1].column+"r"+id[1].rank+"z"+id[1].codeLine
       let id2=id.length>=3?"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine:null //"l"+id[2].line+"c"+id[2].column+"r"+id[2].rank+"z"+id[2].codeLine
       let id3=id.length>=4?"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine:null  //"l"+id[3].line+"c"+id[3].column+"r"+id[3].rank+"z"+id[3].codeLine
       let idl=id.length>0?"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine:null //"l"+id[id.length-1].line+"c"+id[id.length-1].column+"r"+id[id.length-1].rank+"z"+id[id.length-1].codeLine
-      let preRetriveMatrixLine=this.props.preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix)//; console.log(aPosition.line, "preRetriveMatrixLine", preRetriveMatrixLine, "matrix", this.renameInstrunctionMatrix[aPosition.line])
+      let preRetriveMatrixLine=myLib.preRetrieveLinePosition(aPosition, this.renameInstrunctionMatrix)//; console.log(aPosition.line, "preRetriveMatrixLine", preRetriveMatrixLine, "matrix", this.renameInstrunctionMatrix[aPosition.line])
       var ligne1=<th rowSpan="3" scope="rowgroup" className="intrinsicName">{preRetriveMatrixLine[0].name.toUpperCase()}</th>, ligne2=null, ligne3=null;
       for(let j=1; j<preRetriveMatrixLine.length; j++){
         if(preRetriveMatrixLine[j]){
           let statePos=preRetriveMatrixLine[j]
           switch(statePos){
-            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
+            case "in3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td className="empty"></td></React.Fragment>}
             break;
-            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl}  className={"out"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[this.props.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "out":{ligne1=<React.Fragment>{ligne1}<td className="empty"></td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleonMouseLeave}  id={idl}  className={"out"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[myLib.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[this.props.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout1":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id1} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[myLib.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[this.props.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout2":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id2} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={idl} className={"out"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[myLib.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
-            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={idl} className={"out"+this.props.computeSuffix(this.props.buildPosition(aPosition.line, j, this.matrix)[this.props.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
+            case "inout3":{ligne1=<React.Fragment>{ligne1}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent}  id={id3} className={"in"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[0], arrayOfCurrentPositions)}>&#x21D7;</td></React.Fragment>; ligne2=<React.Fragment>{ligne2}<td className="empty"></td></React.Fragment>; ligne3=<React.Fragment>{ligne3}<td onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={idl} className={"out"+myLib.computeSuffix(myLib.buildPosition(aPosition.line, j, this.matrix)[myLib.buildPosition(aPosition.line, j, this.matrix).length-1], arrayOfCurrentPositions)}>&#x21D9;</td></React.Fragment>}
             break
           }
         }
@@ -220,7 +219,7 @@ class ViewOnTable extends React.Component {
 
     render(){//console.log("id document",document.querySelectorAll("td[class*='in']"))
       
-        //if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",this.props.maxPosition(this.matrix));
+        //if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",myLib.maxPosition(this.matrix));
         //this.hightlightedline=this.highlightCode();
         //const k=this.dhighlightCode().clear();
         return( 
@@ -230,8 +229,8 @@ class ViewOnTable extends React.Component {
     }
     componentDidUpdate(prevProps) {
       // Typical usage (don't forget to compare props):
-     // if (this.props.userID !== prevProps.userID) {
-      //  this.fetchData(this.props.userID);
+     // if (myLib.userID !== prevProps.userID) {
+      //  this.fetchData(myLib.userID);
      // }
      //console.log(this.matrix,"this.renameInstrunctionMatrix", matrixToPosition(this.matrix), "this.tableBodyInit", this.tableBodyInit, "test",this.retrieveUntilAPosition(this.state.position, matrixToPosition(this.matrix)), "position",this.state.position)
      //console.log("les positions",this.positionsToTableColor(this.matrixPosition,this.state.arrayOfCurrentPositions ))
