@@ -110,14 +110,14 @@ class ViewOnSvg extends React.Component {
                                                          e.map((x,j)=>j==0?(<g transform={'translate('+aMatrixCoordinate[i][j][0]+','+aMatrixCoordinate[i][j][1]+')'}><rect className="intrinsicName" x="0" y="0" width={""+aMatrixCoordinate[i][j][2]} height={""+aMatrixCoordinate[i][j][3]}></rect>
                                                                             <text className="textintrinsicName" alignmentBaseline="middle" textAnchor="middle" x={""+aMatrixCoordinate[i][j][2]/2} y={""+aMatrixCoordinate[i][j][3]/2}>{x.name.toUpperCase()}</text></g>):
                                                                             x.map((t,l)=>t.length==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect className="empty" x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
-                                                                                (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+t[0].line+t[0].rank+this.props.computeSuffix(t[0], anArrayOfCurrentPositions)} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
-                                                                                (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+t[0].line+t[0].rank+this.props.computeSuffix(t[0], anArrayOfCurrentPositions)} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
+                                                                                (l==0?(<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"in"+t[0].line+t[0].rank+myLib.computeSuffix(t[0], anArrayOfCurrentPositions)} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>):
+                                                                                (<g transform={'translate('+aMatrixCoordinate[i][j][l][0]+','+aMatrixCoordinate[i][j][l][1]+')'}><rect onClick= {this.processEvent} onMouseEnter={this.processEvent} onMouseLeave={this.processEvent} id={"l"+t[0].line+"c"+t[0].column+"r"+t[0].rank+"z"+t[0].codeLine} className={"out"+t[0].line+t[0].rank+myLib.computeSuffix(t[0], anArrayOfCurrentPositions)} x="0" y="0" width={""+aMatrixCoordinate[i][j][l][2]} height={""+aMatrixCoordinate[i][j][l][3]}></rect></g>)))))
         return matrixFigures
       }
       processPath(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-          arrayOfCurrentPositions=this.props.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix)//;console.log("arrayOfCurrentPositionsnn", JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
+          arrayOfCurrentPositions=myLib.advanceSelectPositions(arrayOfCurrentPositions, this.renameInstrunctionMatrix)//;console.log("arrayOfCurrentPositionsnn", JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
           return {arrayOfCurrentPositions:arrayOfCurrentPositions}
         });
       }
@@ -127,7 +127,7 @@ class ViewOnSvg extends React.Component {
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
+        arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
       this.processPath()
@@ -137,7 +137,7 @@ class ViewOnSvg extends React.Component {
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
           let links=state.links
-          arrayOfCurrentPositions=this.props.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix)
+          arrayOfCurrentPositions=myLib.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix)
           links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)//; console.log("aray1",JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
           arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)) )
           return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
@@ -148,7 +148,7 @@ class ViewOnSvg extends React.Component {
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-        arrayOfCurrentPositions=this.props.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
+        arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
       this.processPathLink()
