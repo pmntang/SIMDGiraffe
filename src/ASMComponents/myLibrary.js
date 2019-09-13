@@ -552,3 +552,8 @@ export function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFig
                                                              Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3))))
         return matrixCoordinate
   }
+
+
+export function removeDuplicatesFromArray(anArray){
+    return [...new Set(anArray.map(o => JSON.stringify(o)))].map(s => JSON.parse(s))
+  }

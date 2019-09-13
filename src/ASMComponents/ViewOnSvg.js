@@ -52,7 +52,10 @@ function linkPositionsOfPathPosition(anObjectPosition,aMatrixOfCoordinates, aMat
 }
 
 function retrieveAnObjectPosition(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
-  
+ let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition))
+ anObjectPosition.linkedPositionsDown=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsDown,...anObjectPosition.aCurrentPositionDown]) 
+ anObjectPosition.aCurrentPositionDown=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionDown.map(e=>myLib.nextPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(anObjectPosition)))
+ return [linkOfPosition, anObjectPosition]
 }
 
 class ViewOnSvg extends React.Component {
@@ -139,10 +142,8 @@ class ViewOnSvg extends React.Component {
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
           let links=state.links
-          arrayOfCurrentPositions=myLib.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix)
-          //links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)//; console.log("aray1",JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
-          links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)
-          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)) )
+          links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPosition(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPosition(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
           return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
         });
       }
