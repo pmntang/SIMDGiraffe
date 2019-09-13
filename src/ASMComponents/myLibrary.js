@@ -258,7 +258,7 @@ export  function nextPositions(aPosition, aMatrix){
        }
      }
     }
-    return pathNextpos
+    return pathNextpos.sort((a,b)=>compare(a,b))
   }
 
 
@@ -284,7 +284,7 @@ export function previousPositions(aPosition, aMatrix){
       }
 
     }
-    return pathNextpos
+    return pathNextpos.sort((a,b)=>compare(a,b)).reverse()
   }
 
 
@@ -383,8 +383,8 @@ export  function updateArrayOfCurrentPositions(anArrayOfCurrentPositions, idOfEv
       let restrictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       let restrictPositionsup=linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineUp[positionsOfThisLineUp.length-1]]:linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       let restrictPositionsDown=linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineDown[positionsOfThisLineDown.length-1]]:linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
-      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions,aCurrentPositionup:restrictPositionsup,aCurrentPositionDown:restrictPositionsDown, anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions),
-         listOfPath:pathElt,  listOfPathUp:pathEltUp, listOfPathDown:pathEltDown,linkedPositionsUp:[extractPositionFromId(idOfEventElt)], linkedPositionsDown:[extractPositionFromId(idOfEventElt)]}]
+      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions,aCurrentPositionup:previousPositions(thisPosition,aMatrix),aCurrentPositionDown:nextPositions(thisPosition, aMatrix), anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions),
+         listOfPath:pathElt,  listOfPathUp:pathEltUp, listOfPathDown:pathEltDown,linkedPositionsUp:[thisPosition], linkedPositionsDown:[thisPosition]}]
     }
     else{
       anArrayOfCurrentPositions.splice(anArrayOfCurrentPositions.indexOf(eltId), 1)
@@ -549,6 +549,6 @@ export function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFig
                                   e.map((x,j)=>j==0?Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures, widthOfFigures, heightOfFigures):
                                                     Array.of(Array.of(anOrigin+j*widthOfFigures,anOrigin+i*heightOfFigures,widthOfFigures,heightOfFigures/3), 
                                                              Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+1)*heightOfFigures/3,widthOfFigures,heightOfFigures/3),
-                                                             Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3)))); console.log("lireairrr")
+                                                             Array.of(anOrigin+j*widthOfFigures,anOrigin+(3*i+2)*heightOfFigures/3,widthOfFigures,heightOfFigures/3))))
         return matrixCoordinate
   }

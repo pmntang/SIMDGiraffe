@@ -25,7 +25,7 @@ class VectorRegister extends React.Component {
         this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
         this.arrayOfSelectePositionsInit=[]
         this.state = {
-            option:"table",
+            option:"svg",
             position: this.positionInit,
            // tableBody:this.tableBodyInit,
             listOfPath:[],

@@ -34,12 +34,8 @@ function linkPosition(position1, position2, aMatrixOfCoordinates, aMatrixOfPosit
   return line
 }
 
-function linkPositionTonextPosition(aPosition, itsNextPositions,aMatrixOfCoordinates, aMatrixOfPosition){
-  return itsNextPositions.filter(e=>!_.isEqual(e, aPosition)).map(e=>linkPosition(aPosition, e, aMatrixOfCoordinates, aMatrixOfPosition))
-}
-
-function recursifLinkToNexPosition(aPosition, itsNextPositions, aMatrixOfCoordinates, aMatrixOfPosition){
-  
+function linkPositionAtPositions(aPosition, arrayOfPositions,aMatrixOfCoordinates, aMatrixOfPosition){
+  return arrayOfPositions.filter(e=>!_.isEqual(e, aPosition)).map(e=>linkPosition(aPosition, e, aMatrixOfCoordinates, aMatrixOfPosition))
 }
 
 function linkPositionOfTwoArrays(fisrtArray, sndArray, aMatrixOfCoordinates, aMatrixOfPosition){
@@ -54,6 +50,11 @@ function linkPositionsOfPathPosition(anObjectPosition,aMatrixOfCoordinates, aMat
   anObjectPosition.linkedPositionsDown=linkPositionOfTwoArrays(anObjectPosition.listOfPathDown, anObjectPosition.linkedPositionsDown,aMatrixOfCoordinates, aMatrixOfPosition)[1];console.log("obj2", anObjectPosition)
   return [link, anObjectPosition]
 }
+
+function retrieveAnObjectPosition(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
+  
+}
+
 class ViewOnSvg extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +80,7 @@ class ViewOnSvg extends React.Component {
     
     componentDidMount() {// console.log(this.matrixCoordinate[1][1])
       this.timerID = setInterval(
-        () => this.processPath(),
+        () => this.processPathLink(),
         1500
       );
     }
@@ -123,35 +124,39 @@ class ViewOnSvg extends React.Component {
       }
 
 
-      processEvent(anEvent){
+      processEventLink(anEvent){
         let id=anEvent.target.getAttribute("id")
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+        let links=state.links
         arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions}
       })
       this.processPath()
-    }
+      }
 
       processPathLink(){
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
           let links=state.links
           arrayOfCurrentPositions=myLib.advanceSelectPositionsFoward(arrayOfCurrentPositions, this.renameInstrunctionMatrix)
-          links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)//; console.log("aray1",JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
+          //links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)//; console.log("aray1",JSON.parse(JSON.stringify(arrayOfCurrentPositions)))
+          links=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[0]).filter(e=>e).concat(links)
           arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>linkPositionsOfPathPosition(e, this.matrixCoordinate, this.matrixPosition)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)) )
           return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
         });
       }
 
-      processEventLink(anEvent){
+      processEvent(anEvent){
         let id=anEvent.target.getAttribute("id")
+        let position=myLib.extractPositionFromId(id)
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+        let links=state.links
         arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
-        return {arrayOfCurrentPositions:arrayOfCurrentPositions}
+        links=links.concat(linkPositionAtPositions(position, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
+        return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
       })
-      this.processPathLink()
     }
      
 
