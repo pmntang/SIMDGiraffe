@@ -59,7 +59,7 @@ function retrieveAnObjectPosition(anObjectPosition,aMatrixOfCoordinates, aMatrix
 }
 
 function removeIfAbsentId(anArrayOfObjectPositions,anArrayOfLinks){
-  anArrayOfLinks.reduce((e,))
+  //anArrayOfLinks.reduce((e,))
 }
 
 class ViewOnSvg extends React.Component {
