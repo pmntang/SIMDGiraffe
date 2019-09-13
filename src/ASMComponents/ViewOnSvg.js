@@ -22,22 +22,22 @@ function widthOfSvg(aMatrix, aWidthOfFigures){
 function heightOfSvg(aMatrix, aHeightOfFigures){
   return ""+aMatrix.length*aHeightOfFigures
 }
-function linkPosition(position1, position2, aMatrixOfCoordinates, aMatrixOfPosition){
+function linkPosition(position1, position2, classId, aMatrixOfCoordinates, aMatrixOfPosition){
   let locationPos1=_.isEqual(aMatrixOfPosition[position1.line][position1.column][0][0],position1)?0:2
   let locationPos2=_.isEqual(aMatrixOfPosition[position2.line][position2.column][0][0], position2)?0:2
   let classLine=locationPos1==0&&locationPos2==0?"inin":(locationPos1==0&&locationPos2==3?"inout":"outin")
   let idLine="l"+position1.line+"c"+position1.column+"r"+position1.rank+"z"+position1.codeLine+"l"+position2.line+"c"+position2.column+"r"+position2.rank+"z"+position2.codeLine
-  let line= <line id={idLine} className={classLine} x1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][0]+aMatrixOfCoordinates[position1.line][position1.column][locationPos1][2]*0.5} 
+  let line= <line id={idLine} className={classLine+"classid"+classId} x1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][0]+aMatrixOfCoordinates[position1.line][position1.column][locationPos1][2]*0.5} 
   y1={aMatrixOfCoordinates[position1.line][position1.column][locationPos1][1]+aMatrixOfCoordinates[position1.line][position1.column][locationPos1][3]*0.5} 
   x2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][0]+aMatrixOfCoordinates[position2.line][position2.column][locationPos2][2]*0.5}
   y2={aMatrixOfCoordinates[position2.line][position2.column][locationPos2][1]+aMatrixOfCoordinates[position2.line][position2.column][locationPos2][3]*0.5}></line>
   return line
 }
 
-function linkPositionAtPositions(aPosition, arrayOfPositions,aMatrixOfCoordinates, aMatrixOfPosition){
-  return arrayOfPositions.filter(e=>!_.isEqual(e, aPosition)).map(e=>linkPosition(aPosition, e, aMatrixOfCoordinates, aMatrixOfPosition))
+function linkPositionAtPositions(aPosition,classId,arrayOfPositions,aMatrixOfCoordinates,aMatrixOfPosition){
+  return arrayOfPositions.filter(e=>!_.isEqual(e, aPosition)).map(e=>linkPosition(aPosition, e,classId, aMatrixOfCoordinates, aMatrixOfPosition))
 }
-
+/*
 function linkPositionOfTwoArrays(fisrtArray, sndArray, aMatrixOfCoordinates, aMatrixOfPosition){
   let firstElt=fisrtArray.find(e=>!sndArray.some(x=>_.isEqual(x,e))); console.log("firstElt", firstElt)
   let link=firstElt?linkPosition(firstElt, sndArray[0],aMatrixOfCoordinates, aMatrixOfPosition):null
@@ -49,13 +49,17 @@ function linkPositionsOfPathPosition(anObjectPosition,aMatrixOfCoordinates, aMat
   let link=linkPositionOfTwoArrays(anObjectPosition.listOfPathDown, anObjectPosition.linkedPositionsDown,aMatrixOfCoordinates, aMatrixOfPosition)[0]
   anObjectPosition.linkedPositionsDown=linkPositionOfTwoArrays(anObjectPosition.listOfPathDown, anObjectPosition.linkedPositionsDown,aMatrixOfCoordinates, aMatrixOfPosition)[1];console.log("obj2", anObjectPosition)
   return [link, anObjectPosition]
-}
+}*/
 
 function retrieveAnObjectPosition(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
- let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition))
+ let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition))
  anObjectPosition.linkedPositionsDown=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsDown,...anObjectPosition.aCurrentPositionDown]) 
  anObjectPosition.aCurrentPositionDown=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionDown.map(e=>myLib.nextPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(anObjectPosition)))
  return [linkOfPosition, anObjectPosition]
+}
+
+function removeIfAbsentId(anArrayOfObjectPositions,anArrayOfLinks){
+  anArrayOfLinks.reduce((e,))
 }
 
 class ViewOnSvg extends React.Component {
@@ -154,8 +158,9 @@ class ViewOnSvg extends React.Component {
         this.setState(function(state){
         let arrayOfCurrentPositions=state.arrayOfCurrentPositions
         let links=state.links
+        let idPosition=myLib.minFreePosition(arrayOfCurrentPositions)
         arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)
-        links=links.concat(linkPositionAtPositions(position, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
+        links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
         return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
       })
     }
