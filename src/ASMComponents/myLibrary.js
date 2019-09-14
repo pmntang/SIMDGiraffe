@@ -557,3 +557,7 @@ export function matrixToCoordinate(aMatrx, anOrigin, widthOfFigures, heightOfFig
 export function removeDuplicatesFromArray(anArray){
     return [...new Set(anArray.map(o => JSON.stringify(o)))].map(s => JSON.parse(s))
   }
+
+export function removeDuplicatesEltsFromArray(anArray){
+  return anArray.reduce((acc,e)=>!acc.find(x=>x.props.id==e.props.id)?[e,...acc]:acc, [])
+}
