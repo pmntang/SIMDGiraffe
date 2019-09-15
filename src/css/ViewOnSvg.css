@@ -15,7 +15,12 @@
     /*width: 100%;*/
 }
 
-rect[class^="out"]{
+
+rect{
+    fill: #263238;
+  } 
+
+rect[class^="out"][id]{
     /* vertical-align: bottom;*/
      text-align: center;
      font-size: 24px;
@@ -24,7 +29,7 @@ rect[class^="out"]{
  
  } 
  
- rect[class^="in"] {
+ rect[class^="in"][id] {
     /* vertical-align: top;*/
      text-align: center;
      font-size: 24px;

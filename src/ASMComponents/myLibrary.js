@@ -383,7 +383,7 @@ export  function updateArrayOfCurrentPositions(anArrayOfCurrentPositions, idOfEv
       let restrictPositions=linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLine[positionsOfThisLine.length-1]]:linePosition(pathElt, pathElt[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       let restrictPositionsup=linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineUp[positionsOfThisLineUp.length-1]]:linePosition(pathEltUp, pathEltUp[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
       let restrictPositionsDown=linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition)).length==0?[positionsOfThisLineDown[positionsOfThisLineDown.length-1]]:linePosition(pathEltDown, pathEltDown[0], aMatrix).filter(e=>!_.isEqual(e, thisPosition))
-      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions,aCurrentPositionup:previousPositions(thisPosition,aMatrix),aCurrentPositionDown:nextPositions(thisPosition, aMatrix), anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions),
+      anArrayOfCurrentPositions=[...anArrayOfCurrentPositions, {aCurrentPosition:restrictPositions,aCurrentPositionUp:previousPositions(thisPosition,aMatrix),aCurrentPositionDown:nextPositions(thisPosition, aMatrix), anElementId:idOfEventElt, idPosition:minFreePosition(anArrayOfCurrentPositions),
          listOfPath:pathElt,  listOfPathUp:pathEltUp, listOfPathDown:pathEltDown,linkedPositionsUp:[thisPosition], linkedPositionsDown:[thisPosition]}]
     }
     else{

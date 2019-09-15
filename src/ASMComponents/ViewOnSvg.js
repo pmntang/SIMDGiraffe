@@ -52,13 +52,22 @@ function linkPositionsOfPathPosition(anObjectPosition,aMatrixOfCoordinates, aMat
   return [link, anObjectPosition]
 }*/
 
-function retrieveAnObjectPosition(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
- let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition)).flat();console.log("beforarobjectposition", JSON.parse(JSON.stringify(linkOfPosition[0].props.className)))
+function retrieveAnObjectPositionDown(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
+ let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition)).flat()//;console.log("beforarobjectposition", JSON.parse(JSON.stringify(linkOfPosition[0].props.className)))
  linkOfPosition=myLib.removeDuplicatesEltsFromArray(linkOfPosition)
  anObjectPosition.linkedPositionsDown=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsDown,...anObjectPosition.aCurrentPositionDown]) 
  anObjectPosition.aCurrentPositionDown=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionDown.map(e=>myLib.nextPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
  return [linkOfPosition, anObjectPosition]
 }
+
+function retrieveAnObjectPositionUp(anObjectPosition,aMatrixOfCoordinates, aMatrixOfPosition, aMatrix){
+  let linkOfPosition=anObjectPosition.aCurrentPositionUp.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.previousPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition)).flat()//;console.log("beforarobjectposition", JSON.parse(JSON.stringify(linkOfPosition[0].props.className)))
+  linkOfPosition=myLib.removeDuplicatesEltsFromArray(linkOfPosition)
+  anObjectPosition.linkedPositionsUp=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsUp,...anObjectPosition.aCurrentPositionUp]) 
+  anObjectPosition.aCurrentPositionUp=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionUp.map(e=>myLib.previousPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
+  return [linkOfPosition, anObjectPosition]
+ }
+
 
 function removeIfAbsentId(anArrayOfObjectPositions,anArrayOfLinks){
  return anArrayOfLinks.reduce((acc,e)=>anArrayOfObjectPositions.find(x=>x.idPosition==e.props.className.slice(-1))?[e,...acc]:acc, [])
@@ -90,7 +99,7 @@ class ViewOnSvg extends React.Component {
     componentDidMount() {// console.log(this.matrixCoordinate[1][1])
       this.timerID = setInterval(
         () => this.processPathLink(),
-        1500
+        3000
       );
     }
     
@@ -148,9 +157,11 @@ class ViewOnSvg extends React.Component {
         this.setState(function(state){
           let arrayOfCurrentPositions=state.arrayOfCurrentPositions
           let links=state.links
-          links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPosition(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
+          links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionDown(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
+          links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionUp(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
           links=myLib.removeDuplicatesEltsFromArray(links)
-          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPosition(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionDown(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionUp(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
           return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
         });
       }
@@ -164,6 +175,7 @@ class ViewOnSvg extends React.Component {
         let idPosition=myLib.minFreePosition(arrayOfCurrentPositions)
         arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)   
         links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
+        links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.previousPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
         links=myLib.removeDuplicatesEltsFromArray(links)
         links=removeIfAbsentId(arrayOfCurrentPositions, links)
         return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
