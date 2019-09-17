@@ -371,7 +371,7 @@ export  function minFreePosition(aListOfCurrentPosition){
 }
 
 export  function updateArrayOfCurrentPositions(anArrayOfCurrentPositions, idOfEventElt,aMatrix){
-    let thisPosition=extractPositionFromId(idOfEventElt); console.log("nexposition",  nextPositions(thisPosition, aMatrix), "previous", previousPositions(thisPosition, aMatrix))
+    let thisPosition=extractPositionFromId(idOfEventElt)//; console.log("nexposition",  nextPositions(thisPosition, aMatrix), "previous", previousPositions(thisPosition, aMatrix))
     let eltId=anArrayOfCurrentPositions.find(e=>e.anElementId==idOfEventElt) //[...aListOfCurrentPosition, {aPosition:pathElt[0], anElementId:idOfEventElt}]
     if(!eltId){
       let pathElt=consPath(extractPositionFromId(idOfEventElt), aMatrix)

@@ -56,7 +56,7 @@ function retrieveAnObjectPositionDown(anObjectPosition,aMatrixOfCoordinates, aMa
  let linkOfPosition=anObjectPosition.aCurrentPositionDown.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.nextPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition)).flat()//;console.log("beforarobjectposition", JSON.parse(JSON.stringify(linkOfPosition[0].props.className)))
  linkOfPosition=myLib.removeDuplicatesEltsFromArray(linkOfPosition)
  anObjectPosition.linkedPositionsDown=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsDown,...anObjectPosition.aCurrentPositionDown]) 
- anObjectPosition.aCurrentPositionDown=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionDown.map(e=>myLib.nextPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
+ anObjectPosition.aCurrentPositionDown=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionDown.map(e=>myLib.nextPositions(e, aMatrix)).flat())//;console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
  return [linkOfPosition, anObjectPosition]
 }
 
@@ -64,7 +64,7 @@ function retrieveAnObjectPositionUp(anObjectPosition,aMatrixOfCoordinates, aMatr
   let linkOfPosition=anObjectPosition.aCurrentPositionUp.map(e=>linkPositionAtPositions(e,anObjectPosition.anElementId+"numPos"+anObjectPosition.idPosition, myLib.previousPositions(e, aMatrix),aMatrixOfCoordinates, aMatrixOfPosition)).flat()//;console.log("beforarobjectposition", JSON.parse(JSON.stringify(linkOfPosition[0].props.className)))
   linkOfPosition=myLib.removeDuplicatesEltsFromArray(linkOfPosition)
   anObjectPosition.linkedPositionsUp=myLib.removeDuplicatesFromArray([...anObjectPosition.linkedPositionsUp,...anObjectPosition.aCurrentPositionUp]) 
-  anObjectPosition.aCurrentPositionUp=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionUp.map(e=>myLib.previousPositions(e, aMatrix)).flat());console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
+  anObjectPosition.aCurrentPositionUp=myLib.removeDuplicatesFromArray(anObjectPosition.aCurrentPositionUp.map(e=>myLib.previousPositions(e, aMatrix)).flat())//;console.log("arobjectposition", JSON.parse(JSON.stringify(linkOfPosition)))
   return [linkOfPosition, anObjectPosition]
  }
 
@@ -160,8 +160,8 @@ class ViewOnSvg extends React.Component {
           links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionDown(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
           links=[...arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionUp(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[0]).flat(),...links]
           links=myLib.removeDuplicatesEltsFromArray(links)
-          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionDown(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
-          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionUp(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1]); console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionDown(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
+          arrayOfCurrentPositions=arrayOfCurrentPositions.map(e=>retrieveAnObjectPositionUp(e,this.matrixCoordinate, this.matrixPosition, this.matrix)[1])//; console.log("aray2",JSON.parse(JSON.stringify(arrayOfCurrentPositions)),"link", links )
           return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
         });
       }
