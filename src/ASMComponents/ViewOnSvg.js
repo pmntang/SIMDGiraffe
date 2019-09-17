@@ -193,8 +193,8 @@ class ViewOnSvg extends React.Component {
 
    )
     }
-    componentDidUpdate(prevProps) {
-
+    componentDidUpdate() {
+      console.log("iss",document.querySelector('rect[class$="id1"]'))
     }
 }
 

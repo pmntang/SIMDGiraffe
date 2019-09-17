@@ -49,12 +49,7 @@ rect[class^="out"][id]{
      color :#2F9599;
 
  }
- rect[class$="id1"]
- {  
-     /*background: #2F9599;;*/
-     stroke: 4px solid #DECB6B;
-     color :#2F9599;
- }
+
  rect[class$="el2"]
  {  
      fill :#C792EA;
@@ -80,6 +75,24 @@ rect[class^="out"][id]{
      color :#2F9599;
  }
 
+
+ rect[class$="id1"][id]
+ {  
+     /*background: #2F9599;;*/
+     stroke: #DECB6B;
+     color : #DECB6B;
+     /*fill:  #DECB6B;*/
+     stroke-width:4;
+ }
+
+ rect[class$="id2"][id]
+ {  
+     /*background: #2F9599;;*/
+     stroke: #2F9599;
+     color : #2F9599;
+     /*fill:  #2F9599;*/
+     stroke-width:4;
+ }
 
  .empty {  
      /*background: #2F9599;;*/
