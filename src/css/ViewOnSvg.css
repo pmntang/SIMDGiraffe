@@ -16,6 +16,11 @@
 }
 
 
+text{
+    stroke: #FFFFFF;
+    font-family: monospace;
+  } 
+
 rect{
     fill: #263238;
   } 
@@ -76,9 +81,24 @@ rect[class^="out"][id]{
  }
 
 
- line{  
+ .empty {  
      /*background: #2F9599;;*/
-     stroke:  red;
-     color: red;
-     fill: red;
+     stroke:  none;
  }
+
+
+ line[class$="numPos1"]{  
+     /*background: #2F9599;;*/
+     stroke:#DECB6B;
+     stroke-width:2;
+     color:#DECB6B;
+     fill: #DECB6B;
+ }
+
+ line[class$="numPos2"]{  
+    /*background: #2F9599;;*/
+    stroke:#2F9599;
+    stroke-width:2;
+    color:#2F9599;
+    fill: #2F9599;
+}
