@@ -71,7 +71,127 @@ const codeSample=[{name:"PrefixSum", code:`__m128i PrefixSum(__m128i curr) {
               _mm_xor_si128(_mm_xor_si128(s1, s0),
                       _mm_srli_epi64(s1, 18)), _mm_srli_epi64(s0, 5));
       return _mm_add_epi64(*part2, s0);
-  }`}]
+  }`},{name:"find_structural_bits_64", code:`void find_structural_bits_64(
+        const uint8_t *buf, size_t idx, uint32_t *base_ptr, uint32_t &base,
+        uint64_t &prev_iter_ends_odd_backslash, uint64_t &prev_iter_inside_quote,
+        uint64_t &prev_iter_ends_pseudo_pred, uint64_t &structurals,
+        uint64_t &error_mask,
+        utf8_checker<ARCHITECTURE> &utf8_state) {
+      simd_input<ARCHITECTURE> in(buf);
+      utf8_state.check_next_input(in);
+      /* detect odd sequences of backslashes */
+      uint64_t odd_ends = find_odd_backslash_sequences(
+          in, prev_iter_ends_odd_backslash);
+    
+      /* detect insides of quote pairs ("quote_mask") and also our quote_bits
+       * themselves */
+      uint64_t quote_bits;
+      uint64_t quote_mask = find_quote_mask_and_bits(
+          in, odd_ends, prev_iter_inside_quote, quote_bits, error_mask);
+    
+      /* take the previous iterations structural bits, not our current
+       * iteration,
+       * and flatten */
+      flatten_bits(base_ptr, base, idx, structurals);
+    
+      uint64_t whitespace;
+      find_whitespace_and_structurals(in, whitespace, structurals);
+    
+      /* fixup structurals to reflect quotes and add pseudo-structural
+       * characters */
+      structurals = finalize_structurals(structurals, whitespace, quote_mask,
+                                         quote_bits, prev_iter_ends_pseudo_pred);
+    }`},{name:"find_structural_bits",code:`int find_structural_bits(const uint8_t *buf, size_t len, simdjson::ParsedJson &pj) {
+        if (len > pj.byte_capacity) {
+          std::cerr << "Your ParsedJson object only supports documents up to "
+                    << pj.byte_capacity << " bytes but you are trying to process "
+                    << len << " bytes" << std::endl;
+          return simdjson::CAPACITY;
+        }
+        uint32_t *base_ptr = pj.structural_indexes;
+        uint32_t base = 0;
+        utf8_checker<ARCHITECTURE> utf8_state;
+      
+        /* we have padded the input out to 64 byte multiple with the remainder
+         * being zeros persistent state across loop does the last iteration end
+         * with an odd-length sequence of backslashes? */
+      
+        /* either 0 or 1, but a 64-bit value */
+        uint64_t prev_iter_ends_odd_backslash = 0ULL;
+        /* does the previous iteration end inside a double-quote pair? */
+        uint64_t prev_iter_inside_quote =
+            0ULL; /* either all zeros or all ones
+                   * does the previous iteration end on something that is a
+                   * predecessor of a pseudo-structural character - i.e.
+                   * whitespace or a structural character effectively the very
+                   * first char is considered to follow "whitespace" for the
+                   * purposes of pseudo-structural character detection so we
+                   * initialize to 1 */
+        uint64_t prev_iter_ends_pseudo_pred = 1ULL;
+      
+        /* structurals are persistent state across loop as we flatten them on the
+         * subsequent iteration into our array pointed to be base_ptr.
+         * This is harmless on the first iteration as structurals==0
+         * and is done for performance reasons; we can hide some of the latency of
+         * the
+         * expensive carryless multiply in the previous step with this work */
+        uint64_t structurals = 0;
+      
+        size_t lenminus64 = len < 64 ? 0 : len - 64;
+        size_t idx = 0;
+        uint64_t error_mask = 0; /* for unescaped characters within strings (ASCII
+                                    code points < 0x20) */
+      
+        for (; idx < lenminus64; idx += 64) {
+          find_structural_bits_64(&buf[idx], idx, base_ptr, base,
+                                  prev_iter_ends_odd_backslash,
+                                  prev_iter_inside_quote, prev_iter_ends_pseudo_pred,
+                                  structurals, error_mask, utf8_state);
+        }
+        /* If we have a final chunk of less than 64 bytes, pad it to 64 with
+         * spaces  before processing it (otherwise, we risk invalidating the UTF-8
+         * checks). */
+        if (idx < len) {
+          uint8_t tmp_buf[64];
+          memset(tmp_buf, 0x20, 64);
+          memcpy(tmp_buf, buf + idx, len - idx);
+          find_structural_bits_64(&tmp_buf[0], idx, base_ptr, base,
+                                  prev_iter_ends_odd_backslash,
+                                  prev_iter_inside_quote, prev_iter_ends_pseudo_pred,
+                                  structurals, error_mask, utf8_state);
+          idx += 64;
+        }
+      
+        /* is last string quote closed? */
+        if (prev_iter_inside_quote) {
+          return simdjson::UNCLOSED_STRING;
+        }
+      
+        /* finally, flatten out the remaining structurals from the last iteration
+         */
+        flatten_bits(base_ptr, base, idx, structurals);
+      
+        pj.n_structural_indexes = base;
+        /* a valid JSON file cannot have zero structural indexes - we should have
+         * found something */
+        if (pj.n_structural_indexes == 0u) {
+          return simdjson::EMPTY;
+        }
+        if (base_ptr[pj.n_structural_indexes - 1] > len) {
+          return simdjson::UNEXPECTED_ERROR;
+        }
+        if (len != base_ptr[pj.n_structural_indexes - 1]) {
+          /* the string might not be NULL terminated, but we add a virtual NULL
+           * ending character. */
+          base_ptr[pj.n_structural_indexes++] = len;
+        }
+        /* make it safe to dereference one beyond this array */
+        base_ptr[pj.n_structural_indexes] = 0;
+        if (error_mask) {
+          return simdjson::UNESCAPED_CHARS;
+        }
+        return utf8_state.errors();
+      }`}]
 
 const Container = styled.div`
   display: flex;
