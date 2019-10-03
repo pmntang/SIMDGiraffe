@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/SIMDGiraffe/static/css/main.9eb82b6c.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.2963f3c3.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.2963f3c3.chunk.js.map",
-    "runtime~main.js": "/SIMDGiraffe/static/js/runtime~main.421c06c7.js",
-    "runtime~main.js.map": "/SIMDGiraffe/static/js/runtime~main.421c06c7.js.map",
-    "static/css/2.0fde4cac.chunk.css": "/SIMDGiraffe/static/css/2.0fde4cac.chunk.css",
-    "static/js/2.b34e20dd.chunk.js": "/SIMDGiraffe/static/js/2.b34e20dd.chunk.js",
-    "static/js/2.b34e20dd.chunk.js.map": "/SIMDGiraffe/static/js/2.b34e20dd.chunk.js.map",
+    "main.css": "/SIMDGiraffe/static/css/main.95a3e069.chunk.css",
+    "main.js": "/SIMDGiraffe/static/js/main.82ebc24b.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.82ebc24b.chunk.js.map",
+    "runtime~main.js": "/SIMDGiraffe/static/js/runtime~main.7fee225f.js",
+    "runtime~main.js.map": "/SIMDGiraffe/static/js/runtime~main.7fee225f.js.map",
+    "static/css/2.96397d4d.chunk.css": "/SIMDGiraffe/static/css/2.96397d4d.chunk.css",
+    "static/js/2.f3d481f9.chunk.js": "/SIMDGiraffe/static/js/2.f3d481f9.chunk.js",
+    "static/js/2.f3d481f9.chunk.js.map": "/SIMDGiraffe/static/js/2.f3d481f9.chunk.js.map",
     "index.html": "/SIMDGiraffe/index.html",
-    "precache-manifest.25da26e77856459f22617d65d8374359.js": "/SIMDGiraffe/precache-manifest.25da26e77856459f22617d65d8374359.js",
+    "precache-manifest.8c2e6461b54f6ce7041c921d0ccf48b9.js": "/SIMDGiraffe/precache-manifest.8c2e6461b54f6ce7041c921d0ccf48b9.js",
     "service-worker.js": "/SIMDGiraffe/service-worker.js",
-    "static/css/2.0fde4cac.chunk.css.map": "/SIMDGiraffe/static/css/2.0fde4cac.chunk.css.map",
-    "static/css/main.9eb82b6c.chunk.css.map": "/SIMDGiraffe/static/css/main.9eb82b6c.chunk.css.map"
+    "static/css/2.96397d4d.chunk.css.map": "/SIMDGiraffe/static/css/2.96397d4d.chunk.css.map",
+    "static/css/main.95a3e069.chunk.css.map": "/SIMDGiraffe/static/css/main.95a3e069.chunk.css.map"
   }
 }
