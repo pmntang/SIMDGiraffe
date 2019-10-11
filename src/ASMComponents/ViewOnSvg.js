@@ -106,6 +106,7 @@ class ViewOnSvg extends React.Component {
     
     componentWillUnmount() {
       clearInterval(this.timerID);
+      if (this.hightlightedline) this.hightlightedline.clear();
       }
     
     positionsAndCoordinateToFigures(aMatrixPosition, aMatrixCoordinate){// build a matrix of figures (svg elements) with a given matrix of positions and a matrix of coordinates (with appropriate classNames)
@@ -181,16 +182,37 @@ class ViewOnSvg extends React.Component {
         return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
       })
     }
-     
+   
+    highlightCode = (isHover = false) => {
+      let currentPosition=this.state.arrayOfCurrentPositions[this.state.arrayOfCurrentPositions.length-1]?myLib.extractPositionFromId(this.state.arrayOfCurrentPositions[this.state.arrayOfCurrentPositions.length-1].anElementId):this.state.position
+      let line =currentPosition.codeLine-1
+      let cm = this.props.cm.current;
+      if (line && cm) {
+          const lineLength = cm.editor.getLine(line).length;
+          return cm.editor.doc.markText({line, ch: 0}, {line, ch: lineLength}, {
+              className: isHover ? 'highlighted-code' : 'sequential-highlighted-code'
+          });
+      }
+      return null
+    };
 
-    render(){//console.log("links",this.state.links)
+    render(){         
+    if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
+    this.hightlightedline=this.highlightCode();
+    //const k=this.dhighlightCode().clear();
       var figures=this.positionsAndCoordinateToFiguresColor(this.matrixPosition, this.matrixCoordinate, this.state.arrayOfCurrentPositions)
-      
-        return( 
-        
+      var currentPosition=this.state.arrayOfCurrentPositions[this.state.arrayOfCurrentPositions.length-1]?myLib.extractPositionFromId(this.state.arrayOfCurrentPositions[this.state.arrayOfCurrentPositions.length-1].anElementId):this.state.position
             
+        return( 
+        <React.Fragment>
+          <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} 
+          <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
                 <svg width={this.state.widthOfSvg} height={this.state.heightOfSvg} id="svgTable" className="svgVisualization">{figures}{this.state.links}</svg>
-
+          </div>
+          <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[currentPosition.line][0].name).intrinsic}</span> :
+            {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[currentPosition.line][0].name).description}</strong></h6>
+          </div>
+        </React.Fragment>
    )
     }
     componentDidUpdate() {

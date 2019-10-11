@@ -47,39 +47,19 @@ class VectorRegister extends React.Component {
         const list = this.listRef.current;
         console.log(document.getElementsByTagName("p"));
       }*/
-      componentWillUnmount() {
-        if (this.hightlightedline) this.hightlightedline.clear();
-        //clearInterval(this.timerID);
-      }
 
-      highlightCode = (isHover = false) => {
-        let line =this.state.position.codeLine-1
-        let cm = this.props.cm.current;
-        if (line && cm) {
-            const lineLength = cm.editor.getLine(line).length;
-            return cm.editor.doc.markText({line, ch: 0}, {line, ch: lineLength}, {
-                className: isHover ? 'highlighted-code' : 'sequential-highlighted-code'
-            });
-        }
-        return null
-      };
+
+
     render(){
-      
-        if (this.hightlightedline) this.hightlightedline.clear();//console.log("id document",maxPosition(this.matrix));
-        this.hightlightedline=this.highlightCode();
-        //const k=this.dhighlightCode().clear();
+
         return( 
         
             <div className="registerUsed"> 
                 
                 <div className="controlButton">  </div>
-                <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                 <ViewOnSvg registers={this.registers} matrix={this.matrix} 
-                 renameInstrunctionMatrix={this.renameInstrunctionMatrix} matrixPosition={this.matrixPosition}
-                  position={this.state.position} arrayOfCurrentPositions={this.state.arrayOfCurrentPositions}/>
-                </div>
-                <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
-              </div>
+                 <ViewOnSvg registers={this.registers} matrix={this.matrix} asm={this.props.asm} instructions={this.props.instructions}
+                 renameInstrunctionMatrix={this.renameInstrunctionMatrix} matrixPosition={this.matrixPosition} cm={this.props.cm}
+                  position={this.state.position} arrayOfCurrentPositions={this.state.arrayOfCurrentPositions} description={this.props.description}/>
  
             </div>
    )
