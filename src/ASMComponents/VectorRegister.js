@@ -25,7 +25,6 @@ class VectorRegister extends React.Component {
         this.positionInit={line:1,column:0, rank:0, codeLine:this.matrix[1][0].line}
         this.arrayOfSelectePositionsInit=[]
         this.state = {
-            option:"svg",
             position: this.positionInit,
            // tableBody:this.tableBodyInit,
             listOfPath:[],
@@ -75,13 +74,9 @@ class VectorRegister extends React.Component {
                 
                 <div className="controlButton">  </div>
                 <div className="visualization"><h6 className="text">Semantic visualization of the execution of the program {this.props.asm[0].name} <br/>Executed on <span className="registers">{this.registers.length} registers</span> in <span className="instructions">{this.props.instructions.length} instructions</span></h6>
-                {(this.state.option=="table" && <ViewOnTable registers={this.registers} matrix={this.matrix} 
-                renameInstrunctionMatrix={this.renameInstrunctionMatrix} matrixPosition={this.matrixPosition} 
-                position={this.state.position} arrayOfCurrentPositions={this.state.arrayOfCurrentPositions}/>)
-                 ||
-                 (this.state.option=="svg" && <ViewOnSvg registers={this.registers} matrix={this.matrix} 
+                 <ViewOnSvg registers={this.registers} matrix={this.matrix} 
                  renameInstrunctionMatrix={this.renameInstrunctionMatrix} matrixPosition={this.matrixPosition}
-                  position={this.state.position} arrayOfCurrentPositions={this.state.arrayOfCurrentPositions}/>)}
+                  position={this.state.position} arrayOfCurrentPositions={this.state.arrayOfCurrentPositions}/>
                 </div>
                 <div className="presentation" className="text"><h6><strong><span className="description">{this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).intrinsic}</span> : {this.props.description.find(x=>x.intrinsic.toLowerCase()==this.matrix[this.state.position.line][0].name).description}</strong></h6>
               </div>
