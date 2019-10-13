@@ -106,7 +106,7 @@ export function generateASM(rawAsm) {
             node.params = params;
             currentFunction.body.push(node);
         }
-    });console.log("asm", asm)
+    })
     return asm
 }
 

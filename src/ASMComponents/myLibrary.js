@@ -562,3 +562,9 @@ export function removeDuplicatesEltsFromArray(anArray){
   return anArray.reduce((acc,e)=>!acc.find(x=>x.props.id==e.props.id)?[e,...acc]:acc, [])
 }
 
+export function constructPositionFromId(anIdOfFirstColumnPosition){
+  let myArray = /(\d+)name\S*line(\d+)/g.exec(anIdOfFirstColumnPosition)
+  let line=parseInt(myArray[1], 10) 
+  let codeLine=parseInt(myArray[2],10)
+  return {line:line, column:0, rank:0, codeLine:codeLine}
+}
