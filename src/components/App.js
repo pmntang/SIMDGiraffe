@@ -283,7 +283,7 @@ class App extends Component {
                  <Pane label="Register Matrix">
                     <ViewRegister cm={this.cm} asm={this.state.asm}
                                    onGoToParameters={() => this.setState({parametersChosen: false})}/>
-                </Pane>
+                </Pane>  
                 <Pane label="AST">
                     <AstVisualizer cm={this.cm} ast={this.state.ast}/>
                 </Pane>

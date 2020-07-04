@@ -169,19 +169,26 @@ class ViewOnSvg extends React.Component {
       }
 
       processEvent(anEvent){
-        let id=anEvent.target.getAttribute("id"); console.log("id", id)
-        let position=myLib.extractPositionFromId(id)
-        this.setState(function(state){
-        let arrayOfCurrentPositions=state.arrayOfCurrentPositions
-        let links=state.links 
-        let idPosition=myLib.minFreePosition(arrayOfCurrentPositions)
-        arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)   
-        links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
-        links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.previousPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
-        links=myLib.removeDuplicatesEltsFromArray(links)
-        links=removeIfAbsentId(arrayOfCurrentPositions, links)
-        return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
-      })
+        let id=anEvent.target.getAttribute("id")  
+        if(id.includes("name",1)){
+          let position=myLib.constructPositionFromId(id)
+          this.setState({position:position})
+        }
+        else{
+          let position=myLib.extractPositionFromId(id)
+          this.setState(function(state){
+            let arrayOfCurrentPositions=state.arrayOfCurrentPositions
+            let links=state.links 
+            let idPosition=myLib.minFreePosition(arrayOfCurrentPositions)
+            arrayOfCurrentPositions=myLib.updateArrayOfCurrentPositions(arrayOfCurrentPositions, id, this.matrix)   
+            links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.nextPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
+            links=links.concat(linkPositionAtPositions(position,id+"numPos"+idPosition, myLib.previousPositions(position, this.matrix),this.matrixCoordinate, this.matrixPosition))
+            links=myLib.removeDuplicatesEltsFromArray(links)
+            links=removeIfAbsentId(arrayOfCurrentPositions, links)
+            return {arrayOfCurrentPositions:arrayOfCurrentPositions, links:links}
+          })          
+        }       
+
     }
    
     highlightCode = (isHover = false) => {
