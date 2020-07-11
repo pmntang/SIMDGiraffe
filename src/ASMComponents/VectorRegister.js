@@ -11,8 +11,8 @@ import 'underscore';
 import ViewOnSvg from "./ViewOnSvg";
 import ViewOnTable from "./ViewOnTable";
 
-const prefix=["vp", "v","p"]
-const suffix=["dqa","ps", "sb", "ss","pd","sd","ud","q","w", "b", "d","s"]//"dq",
+const prefix=[""]//["vp", "v","p"] we don't want anymore to remove prefix or suffix
+const suffix=[""]//["dqa","ps", "sb", "ss","pd","sd","ud","q","w", "b", "d","s"]//"dq",
 
 class VectorRegister extends React.Component {
     constructor(props) {

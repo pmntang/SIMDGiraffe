@@ -126,3 +126,15 @@ strong {
 .label, .button, label, button {
     font-family: monospace;
 }
+
+text[class*="texthead"] {
+    /* vertical-align: top;*/
+    stroke :#DECB6B;
+    
+ } 
+
+ text[class*="textintrinsicName"] {
+    /* vertical-align: top;*/
+    stroke :#C792EA;
+    
+ } 
