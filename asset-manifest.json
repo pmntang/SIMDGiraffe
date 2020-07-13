@@ -1,17 +1,25 @@
 {
   "files": {
-    "main.css": "/SIMDGiraffe/static/css/main.94d2f96c.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.c315db30.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.c315db30.chunk.js.map",
-    "runtime~main.js": "/SIMDGiraffe/static/js/runtime~main.7fee225f.js",
-    "runtime~main.js.map": "/SIMDGiraffe/static/js/runtime~main.7fee225f.js.map",
-    "static/css/2.a48a1cf7.chunk.css": "/SIMDGiraffe/static/css/2.a48a1cf7.chunk.css",
-    "static/js/2.836ff8a7.chunk.js": "/SIMDGiraffe/static/js/2.836ff8a7.chunk.js",
-    "static/js/2.836ff8a7.chunk.js.map": "/SIMDGiraffe/static/js/2.836ff8a7.chunk.js.map",
+    "main.css": "/SIMDGiraffe/static/css/main.7e79b078.chunk.css",
+    "main.js": "/SIMDGiraffe/static/js/main.4a5ad6dd.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.4a5ad6dd.chunk.js.map",
+    "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.aa86f6a9.js",
+    "runtime-main.js.map": "/SIMDGiraffe/static/js/runtime-main.aa86f6a9.js.map",
+    "static/css/2.4bae304a.chunk.css": "/SIMDGiraffe/static/css/2.4bae304a.chunk.css",
+    "static/js/2.3f2d7628.chunk.js": "/SIMDGiraffe/static/js/2.3f2d7628.chunk.js",
+    "static/js/2.3f2d7628.chunk.js.map": "/SIMDGiraffe/static/js/2.3f2d7628.chunk.js.map",
     "index.html": "/SIMDGiraffe/index.html",
-    "precache-manifest.acedf284f0efdafc3fea1c2dcd42abc5.js": "/SIMDGiraffe/precache-manifest.acedf284f0efdafc3fea1c2dcd42abc5.js",
+    "precache-manifest.8759a770320a207b4098b9b08897822e.js": "/SIMDGiraffe/precache-manifest.8759a770320a207b4098b9b08897822e.js",
     "service-worker.js": "/SIMDGiraffe/service-worker.js",
-    "static/css/2.a48a1cf7.chunk.css.map": "/SIMDGiraffe/static/css/2.a48a1cf7.chunk.css.map",
-    "static/css/main.94d2f96c.chunk.css.map": "/SIMDGiraffe/static/css/main.94d2f96c.chunk.css.map"
-  }
+    "static/css/2.4bae304a.chunk.css.map": "/SIMDGiraffe/static/css/2.4bae304a.chunk.css.map",
+    "static/css/main.7e79b078.chunk.css.map": "/SIMDGiraffe/static/css/main.7e79b078.chunk.css.map",
+    "static/js/2.3f2d7628.chunk.js.LICENSE.txt": "/SIMDGiraffe/static/js/2.3f2d7628.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.aa86f6a9.js",
+    "static/css/2.4bae304a.chunk.css",
+    "static/js/2.3f2d7628.chunk.js",
+    "static/css/main.7e79b078.chunk.css",
+    "static/js/main.4a5ad6dd.chunk.js"
+  ]
 }
