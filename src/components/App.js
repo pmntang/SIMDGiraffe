@@ -15,6 +15,7 @@ import {compile} from "../Utils/Compiler";
 import ErrorHandler from "./ErrorHandler";
 import {Pane, Tabs} from "../Utils/Tabs";
 import ViewRegister from "./ViewRegister";
+import ViewIntrinsics from "./ViewIntrinsics";
 import {createBrowserHistory} from 'history';
 import * as qs from 'qs';
 import ParametersPage from "./ParametersPage";
@@ -280,13 +281,17 @@ class App extends Component {
         }
         else if (visualize && parametersChosen) {
             rightPage = <Tabs selected={0}>
-                 <Pane label="Register Matrix">
+                 <Pane label="Visualize SIMD Codes">
                     <ViewRegister cm={this.cm} asm={this.state.asm}
                                    onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>  
-                <Pane label="AST">
-                    <AstVisualizer cm={this.cm} ast={this.state.ast}/>
+                <Pane label="Visualize Intrinsics">
+                    <ViewIntrinsics cm={this.cm} asm={this.state.asm}
+                                    onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>
+            {/*    <Pane label="AST">
+                    <AstVisualizer cm={this.cm} ast={this.state.ast}/>
+        </Pane>*/}
             </Tabs>
         }
         else if (visualize) {
