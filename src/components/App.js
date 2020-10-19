@@ -73,6 +73,22 @@ const codeSample=[{name:"PrefixSum", code:`__m128i PrefixSum(__m128i curr) {
                       _mm_srli_epi64(s1, 18)), _mm_srli_epi64(s0, 5));
       return _mm_add_epi64(*part2, s0);
   }`}]
+const funcSample=[{"head":
+{"name":"_mm_add_epi8",
+ "operandBitCount": [128, 128],
+ "operandType": ["__m128i", "__m128i"],
+ "resultBitCount": 128,
+ "resultType": "__m128i",
+ "fieldOperandCount":[16, 16],
+ "fieldResultCount": 16
+},
+"operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],
+          
+          [11,2, 4, 76, 56,3, 26,12,11,32, 3,  7,45, 9, 24, 87 ]
+        ],
+"LinkingIndex":[[[[15,1,null]],[[15,2,"+"]]],[[[14,1,null]],[[14,2,"+"]]],[[[13,1,null]],[[13,2,"+"]]],[[[12,1,null]],[[12,2,"+"]]],[[[11,1,null]],[[11,2,"+"]]],[[[10,1,null]],[[10,2,"+"]]],[[[9,1,null]],[[9,2,"+"]]],[[[8,1,null]],[[8,2,"+"]]],[[[7,1,null]],[[7,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[6,1,null]],[[6,2,"+"]]],[[[5,1,null]],[[5,2,"+"]]],[[[4,1,null]],[[4,2,"+"]]],[[[3,1,null]],[[3,2,"+"]]],[[[2,1,null]],[[2,2,"+"]]],[[[1,1,null]],[[1,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]]],
+"result": []
+}]
 
 const Container = styled.div`
   display: flex;
