@@ -114,7 +114,7 @@ export default class ButtonPanel extends Component {
                         <p style={style}><br/><br/>
                         <label htmlFor="chooseCode"><span className="button">Choose Code</span></label><br/>
                         <select name="chooseCode" id="chooseCode" onChange={(e)=>chooseCode(e.target.value)} >
-                          {this.props.codeSample.map(e=><option value={e.name}>{e.name}</option>)}
+                          {this.props.codeSample.map(e=>e.hasOwnProperty('head')?<option value={e.head.name}>{e.head.name}</option>: <option value={e.name}>{e.name}</option>)}
                         </select>
                         </p>
                         <button id='sharePopover' onClick={this.toggleShare}><i className="fas fa-share-square"></i>

@@ -20,6 +20,8 @@ import {createBrowserHistory} from 'history';
 import * as qs from 'qs';
 import ParametersPage from "./ParametersPage";
 import * as _ from "lodash";
+import simdFunction from './simdFunction.json';
+import * as myLib from "../ASMComponents/myLibrary.js";
 //const WaitingScreen = React.lazy(() => import('./WaitingScreen'));
 
 const codeSample=[{name:"PrefixSum", code:`__m128i PrefixSum(__m128i curr) {
@@ -73,21 +75,21 @@ const codeSample=[{name:"PrefixSum", code:`__m128i PrefixSum(__m128i curr) {
                       _mm_srli_epi64(s1, 18)), _mm_srli_epi64(s0, 5));
       return _mm_add_epi64(*part2, s0);
   }`}]
-const funcSample=[{"head":
-{"name":"_mm_add_epi8",
- "operandBitCount": [128, 128],
- "operandType": ["__m128i", "__m128i"],
- "resultBitCount": 128,
- "resultType": "__m128i",
- "fieldOperandCount":[16, 16],
- "fieldResultCount": 16
+const funcSample=[{head:
+{name:"_mm_add_epi8",
+ operandBitCount: [128, 128],
+ operandType: ["__m128i", "__m128i"],
+ resultBitCount: 128,
+ resultType: "__m128i",
+ fieldOperandCount:[16, 16],
+ fieldResultCount: 16
 },
-"operand":[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],
+operand:[ [3, 8, 9, 10, 6, 7, 8, 1, 8, 10, 17, 9, 5, 7, 23, 77 ],
           
           [11,2, 4, 76, 56,3, 26,12,11,32, 3,  7,45, 9, 24, 87 ]
         ],
-"LinkingIndex":[[[[15,1,null]],[[15,2,"+"]]],[[[14,1,null]],[[14,2,"+"]]],[[[13,1,null]],[[13,2,"+"]]],[[[12,1,null]],[[12,2,"+"]]],[[[11,1,null]],[[11,2,"+"]]],[[[10,1,null]],[[10,2,"+"]]],[[[9,1,null]],[[9,2,"+"]]],[[[8,1,null]],[[8,2,"+"]]],[[[7,1,null]],[[7,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[6,1,null]],[[6,2,"+"]]],[[[5,1,null]],[[5,2,"+"]]],[[[4,1,null]],[[4,2,"+"]]],[[[3,1,null]],[[3,2,"+"]]],[[[2,1,null]],[[2,2,"+"]]],[[[1,1,null]],[[1,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]]],
-"result": []
+LinkingIndex:[[[[15,1,null]],[[15,2,"+"]]],[[[14,1,null]],[[14,2,"+"]]],[[[13,1,null]],[[13,2,"+"]]],[[[12,1,null]],[[12,2,"+"]]],[[[11,1,null]],[[11,2,"+"]]],[[[10,1,null]],[[10,2,"+"]]],[[[9,1,null]],[[9,2,"+"]]],[[[8,1,null]],[[8,2,"+"]]],[[[7,1,null]],[[7,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]],[[[6,1,null]],[[6,2,"+"]]],[[[5,1,null]],[[5,2,"+"]]],[[[4,1,null]],[[4,2,"+"]]],[[[3,1,null]],[[3,2,"+"]]],[[[2,1,null]],[[2,2,"+"]]],[[[1,1,null]],[[1,2,"+"]]],[[[0,1,null]],[[0,2,"+"]]]],
+result: []
 }]
 
 const Container = styled.div`
@@ -119,7 +121,7 @@ class App extends Component {
         this.state = {//initial state of the application, the next state depends on it
             code: `#include <x86intrin.h>\n\n__m128i PrefixSum(__m128i curr) {\n  __m128i Add = _mm_slli_si128(curr, 4); \n  curr = _mm_add_epi32(curr, Add);   \n  Add = _mm_slli_si128(curr, 8);    \n  return _mm_add_epi32(curr, Add);       \n}`,
             codeWasModifiedSinceLastCompile: true,
-            intrinsicName:`_mm_add_epi8`,
+            //intrinsicName:`_mm_add_epi8`,
             disableButtons: false,
             status: 'compiles',
             compiling: false,
@@ -232,9 +234,16 @@ class App extends Component {
         });
     };
     chooseCode = (codeName) => {
-        let code=codeSample.find(codeObject=>codeObject.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())
-        if(!code) return;
-        var newcode = "#include <x86intrin.h>\n\n"+code.code;
+        var sourceCode,functionDescription;
+        if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){console.log("e,", simdFunction.intrinsic[0] );
+         console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("_rettype")));
+            functionDescription=simdFunction.intrinsic.find(anIntrinsic=>anIntrinsic._name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
+        } 
+        else{
+            sourceCode=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
+        }
+        if(!(sourceCode||functionDescription)) return;
+        var newcode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:myLib.constructDescription(functionDescription._name, simdFunction);  //functionDescription.operation;
         this.setState({code:newcode});
         this.restart()
         this.shouldcallviz = true;
@@ -303,7 +312,7 @@ class App extends Component {
                                    onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>  
                 <Pane label="Visualize Intrinsics">
-                    <ViewIntrinsics cm={this.cm} asm={this.state.asm}
+                    <ViewIntrinsics cm={this.cm} asm={this.state.asm} simdFunction={simdFunction}
                                     onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>
             {/*    <Pane label="AST">
@@ -326,7 +335,7 @@ class App extends Component {
                         getShareLink={this.getShareLink}
                         disabled={disableButtons}
                         status={status}
-                        codeSample={codeSample}
+                        codeSample={[...codeSample,...funcSample]}
                     />
                     {
                         this.getCodeMirror()

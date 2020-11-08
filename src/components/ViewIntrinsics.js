@@ -5,7 +5,6 @@ import 'react-sortable-tree/style.css';
 import '../css/ASTVisualizer.css'
 import ViewSimd from "../ASMComponents/ViewSimd";
 import description from './descriptions.json';
-import simdFunction from './simdFunction.json';
 //const file=require('./descriptions.txt');
 //var file = File.createFromFileName("./descriptions.txt");
 //const intrinsics=["vpslldq","vpaddd","vpsubd","vpalignr"];
@@ -246,7 +245,7 @@ this.state = {
         );*/
         return (
             <div>
-                <ViewSimd instructions= {this.instructions} asm={this.props.asm} cm={this.props.cm} description={this.description} simdFunction={simdFunction}/>                
+                <ViewSimd instructions= {this.instructions} asm={this.props.asm} cm={this.props.cm} description={this.description} simdFunction={this.props.simdFunction}/>                
             </div>
             );
     }

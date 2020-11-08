@@ -568,3 +568,17 @@ export function constructPositionFromId(anIdOfFirstColumnPosition){
   let codeLine=parseInt(myArray[2],10)
   return {line:line, column:0, rank:0, codeLine:codeLine}
 }
+
+export function constructDescription(aSimdFunction, aDescriptionFile, returnType){// take a name of a function (which return returnType) and construct a look-like manufacturer description using a file provide by the manufacturer (Intel)
+  var objectDescription, funcDescription;
+  if(returnType){
+    objectDescription=aDescriptionFile.intrinsic.find(o=>(o._name.toLocaleLowerCase()==aSimdFunction.toLocaleLowerCase()) && (returnType.toLocaleLowerCase()==o._rettype.toLocaleLowerCase()));
+  }
+  else{
+    objectDescription=aDescriptionFile.intrinsic.find(o=>o._name.toLocaleLowerCase()==aSimdFunction.toLocaleLowerCase());
+  }
+  let parameter=!objectDescription.hasOwnProperty("parameter")?"void":objectDescription.parameter;
+  objectDescription={...objectDescription, parameter}//we add parameter property if it doesn't yet exist
+  let line1=`${objectDescription._rettype} ${objectDescription._name} (${Array.isArray(objectDescription.parameter)?objectDescription.parameter.flatMap((e,i)=>i<objectDescription.parameter.length-1?[e._type, e._varname+","]:[e._type, e._varname]).join(" "):objectDescription.parameter}) \n` ;
+  return line1;
+}
