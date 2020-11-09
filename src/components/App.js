@@ -121,7 +121,7 @@ class App extends Component {
         this.state = {//initial state of the application, the next state depends on it
             code: `#include <x86intrin.h>\n\n__m128i PrefixSum(__m128i curr) {\n  __m128i Add = _mm_slli_si128(curr, 4); \n  curr = _mm_add_epi32(curr, Add);   \n  Add = _mm_slli_si128(curr, 8);    \n  return _mm_add_epi32(curr, Add);       \n}`,
             codeWasModifiedSinceLastCompile: true,
-            //intrinsicName:`_mm_add_epi8`,
+            intrinsicDescrition:"",
             disableButtons: false,
             status: 'compiles',
             compiling: false,
@@ -236,15 +236,16 @@ class App extends Component {
     chooseCode = (codeName) => {
         var sourceCode,functionDescription;
         if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){console.log("e,", simdFunction.intrinsic[0] );
-         console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("_rettype")));
+         console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("operation")));
             functionDescription=simdFunction.intrinsic.find(anIntrinsic=>anIntrinsic._name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
         } 
         else{
             sourceCode=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
         }
         if(!(sourceCode||functionDescription)) return;
-        var newcode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:myLib.constructDescription(functionDescription._name, simdFunction);  //functionDescription.operation;
-        this.setState({code:newcode});
+        let intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
+        var newcode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:intrinsicDescrition[1];  //functionDescription.operation;
+        this.setState({code:newcode, intrinsicDescrition:intrinsicDescrition[0]});
         this.restart()
         this.shouldcallviz = true;
     }

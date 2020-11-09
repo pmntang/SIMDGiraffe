@@ -579,6 +579,9 @@ export function constructDescription(aSimdFunction, aDescriptionFile, returnType
   }
   let parameter=!objectDescription.hasOwnProperty("parameter")?"void":objectDescription.parameter;
   objectDescription={...objectDescription, parameter}//we add parameter property if it doesn't yet exist
-  let line1=`${objectDescription._rettype} ${objectDescription._name} (${Array.isArray(objectDescription.parameter)?objectDescription.parameter.flatMap((e,i)=>i<objectDescription.parameter.length-1?[e._type, e._varname+","]:[e._type, e._varname]).join(" "):objectDescription.parameter}) \n` ;
-  return line1;
+  let line1=`${objectDescription._rettype} ${objectDescription._name} (${Array.isArray(objectDescription.parameter)?objectDescription.parameter.flatMap((e,i)=>i<objectDescription.parameter.length-1?[e._type, e._varname+","]:[e._type, e._varname]).join(" "):objectDescription.parameter})` ;
+  let line2=`Synopsis \n\t\t${line1} \n\t\t#include <${objectDescription.header}>\n\t\tInstruction: ${objectDescription.hasOwnProperty("instruction")? objectDescription.instruction[0]._name+" "+objectDescription.instruction[0]._form:"sequence"}\n\t\t${objectDescription.hasOwnProperty("CPUID")?"CPUID Flags: "+objectDescription.CPUID:""} `;
+  let line3=`Description \n\t\t${objectDescription.description}`;
+  let line4=`Operation \n\t\t${objectDescription.operation.replaceAll('\t', '\t\t').replaceAll('\n', '\n\t\t')}`;
+  return [objectDescription, `${line1}\n\n\t${line2}\n\n\t${line3}\n\n\t${line4}`];
 }
