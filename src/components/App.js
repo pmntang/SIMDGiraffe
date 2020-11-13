@@ -234,20 +234,23 @@ class App extends Component {
         });
     };
     chooseCode = (codeName) => {
-        var sourceCode,functionDescription, intrinsicDescrition;
-        if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){console.log("e,", simdFunction.intrinsic[0] );
-         console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("operation")));
+        var newCode,functionDescription, intrinsicDescrition;
+        if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){
+            console.log("e,", simdFunction.intrinsic[0] );
+            console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("operation")));
             functionDescription=simdFunction.intrinsic.find(anIntrinsic=>anIntrinsic._name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
-        } 
-        else{
-            sourceCode=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
+            intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
+            //var newCode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:intrinsicDescrition[1];  //functionDescription.operation;
+            this.setState((state)=>({code:newCode, intrinsicDescrition:intrinsicDescrition[0]}));
         }
-        if(!(sourceCode||functionDescription)) return;
-        if (functionDescription) intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
-        var newcode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:intrinsicDescrition[1];  //functionDescription.operation;
-        this.setState((state)=>({code:newcode, intrinsicDescrition:intrinsicDescrition[0]}));
-        this.restart()
-        this.shouldcallviz = true;
+        else{
+            let code=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())
+            if(!code) return;
+            newCode = "#include <x86intrin.h>\n\n"+code.code;
+            this.setState({code:newCode});
+            this.restart()
+            this.shouldcallviz = true;
+        }
     }
    
 
