@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/SIMDGiraffe/precache-manifest.dc3a47830f71fb047b367389e6c857e4.js"
+  "/SIMDGiraffe/precache-manifest.cdd10a99f092107a93174c5e50e8be9b.js"
 );
 
 self.addEventListener('message', (event) => {

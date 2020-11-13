@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/SIMDGiraffe/static/css/main.3bc02946.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.ab65311d.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.ab65311d.chunk.js.map",
+    "main.js": "/SIMDGiraffe/static/js/main.cc6e44b8.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.cc6e44b8.chunk.js.map",
     "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.aa86f6a9.js",
     "runtime-main.js.map": "/SIMDGiraffe/static/js/runtime-main.aa86f6a9.js.map",
     "static/css/2.84771bed.chunk.css": "/SIMDGiraffe/static/css/2.84771bed.chunk.css",
     "static/js/2.d098ca9e.chunk.js": "/SIMDGiraffe/static/js/2.d098ca9e.chunk.js",
     "static/js/2.d098ca9e.chunk.js.map": "/SIMDGiraffe/static/js/2.d098ca9e.chunk.js.map",
     "index.html": "/SIMDGiraffe/index.html",
-    "precache-manifest.dc3a47830f71fb047b367389e6c857e4.js": "/SIMDGiraffe/precache-manifest.dc3a47830f71fb047b367389e6c857e4.js",
+    "precache-manifest.cdd10a99f092107a93174c5e50e8be9b.js": "/SIMDGiraffe/precache-manifest.cdd10a99f092107a93174c5e50e8be9b.js",
     "service-worker.js": "/SIMDGiraffe/service-worker.js",
     "static/css/2.84771bed.chunk.css.map": "/SIMDGiraffe/static/css/2.84771bed.chunk.css.map",
     "static/css/main.3bc02946.chunk.css.map": "/SIMDGiraffe/static/css/main.3bc02946.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.84771bed.chunk.css",
     "static/js/2.d098ca9e.chunk.js",
     "static/css/main.3bc02946.chunk.css",
-    "static/js/main.ab65311d.chunk.js"
+    "static/js/main.cc6e44b8.chunk.js"
   ]
 }
