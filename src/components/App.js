@@ -156,6 +156,10 @@ class App extends Component {
             this.shouldcallviz = false;
             this.visualize();
         }
+        else if(this.shouldcallvizSIMD){
+                this.shouldcallvizSIMD=false;
+                this.visualizeSIMD(this.state.intrinsicDescrition.name);
+        }
     }
 
     handleClear = (clearCode = true) => {
@@ -205,6 +209,13 @@ class App extends Component {
         }
     };
 
+    visualizeSIMD = (instructionName) => {
+
+        
+        this.shouldcallvizSIMD=true;
+
+    }
+
     restart = () => {
         this.setState((state) => {
             Object.keys(state.ast).forEach(k => delete state.ast[k]);
@@ -233,6 +244,7 @@ class App extends Component {
             }
         });
     };
+    
     chooseCode = (codeName) => {
         var newCode,functionDescription, intrinsicDescrition;
         if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){
@@ -240,7 +252,7 @@ class App extends Component {
             console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("operation")));
             functionDescription=simdFunction.intrinsic.find(anIntrinsic=>anIntrinsic._name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
             intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
-            //var newCode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:intrinsicDescrition[1];  //functionDescription.operation;
+            newCode = intrinsicDescrition[1];  //functionDescription.operation;
             this.setState((state)=>({code:newCode, intrinsicDescrition:intrinsicDescrition[0]}));
         }
         else{
@@ -250,6 +262,7 @@ class App extends Component {
             this.setState({code:newCode});
             this.restart()
             this.shouldcallviz = true;
+            this.shouldcallvizSIMD=false;
         }
     }
    
