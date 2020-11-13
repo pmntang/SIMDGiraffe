@@ -234,7 +234,7 @@ class App extends Component {
         });
     };
     chooseCode = (codeName) => {
-        var sourceCode,functionDescription;
+        var sourceCode,functionDescription, intrinsicDescrition;
         if(funcSample.some(e=>e.head.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())){console.log("e,", simdFunction.intrinsic[0] );
          console.log("test", simdFunction.intrinsic.find(anIntrinsic=>!anIntrinsic.hasOwnProperty("operation")));
             functionDescription=simdFunction.intrinsic.find(anIntrinsic=>anIntrinsic._name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
@@ -243,9 +243,9 @@ class App extends Component {
             sourceCode=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase());
         }
         if(!(sourceCode||functionDescription)) return;
-        let intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
+        if (functionDescription) intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
         var newcode = sourceCode?"#include <x86intrin.h>\n\n"+sourceCode.code:intrinsicDescrition[1];  //functionDescription.operation;
-        this.setState({code:newcode, intrinsicDescrition:intrinsicDescrition[0]});
+        this.setState((state)=>({code:newcode, intrinsicDescrition:intrinsicDescrition[0]}));
         this.restart()
         this.shouldcallviz = true;
     }
