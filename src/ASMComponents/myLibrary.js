@@ -570,7 +570,7 @@ export function constructPositionFromId(anIdOfFirstColumnPosition){
 }
 
 export function constructDescription(aSimdFunction, aDescriptionFile, returnType){// take a name of a function (which return returnType) and construct a look-like manufacturer description using a file provide by the manufacturer (Intel)
-  var objectDescription, funcDescription;
+  var objectDescription;
   if(returnType){
     objectDescription=aDescriptionFile.intrinsic.find(o=>(o._name.toLocaleLowerCase()==aSimdFunction.toLocaleLowerCase()) && (returnType.toLocaleLowerCase()==o._rettype.toLocaleLowerCase()));
   }
@@ -585,3 +585,4 @@ export function constructDescription(aSimdFunction, aDescriptionFile, returnType
   let line4=`Operation \n\t\t${objectDescription.operation.replaceAll('\t', '\t\t').replaceAll('\n', '\n\t\t')}`;
   return [objectDescription, `${line1}\n\n\t${line2}\n\n\t${line3}\n\n\t${line4}`];
 }
+

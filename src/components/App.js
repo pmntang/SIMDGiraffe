@@ -254,6 +254,7 @@ class App extends Component {
             intrinsicDescrition=myLib.constructDescription(functionDescription._name, simdFunction);
             newCode = intrinsicDescrition[1];  //functionDescription.operation;
             this.setState((state)=>({code:newCode, intrinsicDescrition:intrinsicDescrition[0]}));
+            this.shouldcallviz=false;console.log("intrinsecdescription:  ", intrinsicDescrition[1].split('Synopsis')[0]);
         }
         else{
             let code=codeSample.find(body=>body.name.toLocaleLowerCase()==codeName.toLocaleLowerCase())

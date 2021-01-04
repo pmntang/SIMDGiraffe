@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import * as _ from "lodash";
 import SortableTree from "react-sortable-tree";
-import 'react-sortable-tree/style.css';
-import '../css/ASTVisualizer.css'
+//import 'react-sortable-tree/style.css';
+//import '../css/ASTVisualizer.css'
 import ViewSimd from "../ASMComponents/ViewSimd";
 import description from './descriptions.json';
 //const file=require('./descriptions.txt');
@@ -145,7 +145,7 @@ function transformIntrInRegister(anIntrObj){
     return newArray
 }
 */
-class ViewRegister extends Component {
+class ViewIntrinsics extends Component {
     constructor(props) {
         super(props);
         this.instructions=extractInstAndRegisters(props)
@@ -244,10 +244,46 @@ this.state = {
             
         );*/
         return (
-            <div>
-                <ViewSimd instructions= {this.instructions} asm={this.props.asm} cm={this.props.cm} description={this.description} simdFunction={this.props.simdFunction}/>                
-            </div>
-            );
+           
+
+                <svg width="100%" height="100%" version="1.1"
+     xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+ <g transform="translate(150,150)">
+  <rect x="0" y="0"
+        width="100" height="50"
+        strokeDasharray="4 4 4 4"
+        style={{fill:"red", stroke:"green" , strokeWidth:"4"}}
+        >
+        <animateTransform attributeName="transform"
+                          attributeType="XML"
+                          type="rotate" fill="freeze"
+                          from="0" to="360" dur="14s"/>
+  </rect>
+
+  <ellipse cx="0" cy="0"
+           rx="4" ry="4"
+           style={{fill:"blue", stroke:"none" , strokeWidth:"4"}}/>
+
+</g>
+
+<g transform="translate(400,150)">
+  <rect x="-50" y="-25"
+        width="100" height="50"
+        strokeDasharray="8 8 8 8"
+        style={{fill:"yellow", stroke:"green" , strokeWidth:"4"}}   >
+        <animateTransform attributeName="transform"
+                          attributeType="XML"
+                          type="rotate" fill="freeze"
+                          from="0" to="360" dur="14s"/>
+  </rect>
+  <ellipse cx="0" cy="0"
+           rx="4" ry="4"
+           style={{fill:"blue", stroke:"none" , strokeWidth:"4"}}/>
+           
+  
+</g>
+</svg>
+           );
     }
 }
-export default ViewRegister;
+export default ViewIntrinsics;
