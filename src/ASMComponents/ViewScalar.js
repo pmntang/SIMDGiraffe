@@ -43,37 +43,16 @@ class ViewScalar extends React.Component {
  <g transform="translate(150,150)">
   <rect x="0" y="0"
         width="100" height="50"
-        strokeDasharray="4 4 4 4"
-        style={{fill:"red", stroke:"green" , strokeWidth:"4"}}
+        style={{fill:"blue", stroke:"green" , strokeWidth:"4"}}
         >
-        <animateTransform attributeName="transform"
-                          attributeType="XML"
-                          type="rotate" fill="freeze"
-                          from="0" to="360" dur="14s"/>
   </rect>
+  <text x="50" y="25" dominantBaseline="middle" textAnchor="middle"
+   style={{ strokeWidth:"2", fontSize:"3rem"}}>F</text>
 
-  <ellipse cx="0" cy="0"
-           rx="4" ry="4"
-           style={{fill:"blue", stroke:"none" , strokeWidth:"4"}}/>
 
 </g>
 
-<g transform="translate(400,150)">
-  <rect x="-50" y="-25"
-        width="100" height="50"
-        strokeDasharray="8 8 8 8"
-        style={{fill:"yellow", stroke:"green" , strokeWidth:"4"}}   >
-        <animateTransform attributeName="transform"
-                          attributeType="XML"
-                          type="rotate" fill="freeze"
-                          from="0" to="360" dur="14s"/>
-  </rect>
-  <ellipse cx="0" cy="0"
-           rx="4" ry="4"
-           style={{fill:"blue", stroke:"none" , strokeWidth:"4"}}/>
-           
-  
-</g>
+
 </svg>
        
    )
