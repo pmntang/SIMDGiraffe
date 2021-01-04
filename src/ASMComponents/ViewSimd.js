@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import * as _ from "lodash";
+import ViewScalar from "../ASMComponents/ViewScalar";
 import * as myLib from "./myLibrary.js";
 import "../css/VectorRegister.css";
 import "../css/ViewOnSvg.css";
@@ -36,13 +37,10 @@ class ViewSimd extends React.Component {
      
             
         return( 
-        <React.Fragment>
-
-        </React.Fragment>
+        <ViewScalar>
+          
+        </ViewScalar>
    )
-    }
-    componentDidUpdate() {
-     // console.log("iss",document.querySelector('rect[class$="id1"]'))
     }
 }
 

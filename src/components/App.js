@@ -15,7 +15,7 @@ import {compile} from "../Utils/Compiler";
 import ErrorHandler from "./ErrorHandler";
 import {Pane, Tabs} from "../Utils/Tabs";
 import ViewRegister from "./ViewRegister";
-import ViewIntrinsics from "./ViewIntrinsics";
+import ViewSimds from "./ViewSimds";
 import {createBrowserHistory} from 'history';
 import * as qs from 'qs';
 import ParametersPage from "./ParametersPage";
@@ -330,7 +330,7 @@ class App extends Component {
                                    onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>  
                 <Pane label="Visualize Intrinsics">
-                    <ViewIntrinsics cm={this.cm} asm={this.state.asm} simdFunction={simdFunction}
+                    <ViewSimds cm={this.cm} asm={this.state.asm} simdFunction={simdFunction}
                                     onGoToParameters={() => this.setState({parametersChosen: false})}/>
                 </Pane>
             {/*    <Pane label="AST">
