@@ -1,0 +1,21 @@
+
+text{
+    font:bold sans-serif;
+    fill: rgb(25, 38, 49);
+    font-size: 0.5rem;
+    stroke-width:0.5;
+    /* background-color: rgb(18, 19, 18);  
+    color: rgb(12, 12, 11); */
+    /* display: block; */
+    /* width: 100%; */
+  } 
+
+ rect{
+    fill: #bfe1fc;
+    font-size: 1rem;
+    stroke-width:1;
+    background-color: rgb(72, 57, 207);  
+    color: #dd1414;
+    /* display: block; */
+    /* width: 100%; */
+  } 
