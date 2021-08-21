@@ -91,16 +91,20 @@ class Visualization extends Component {
         }
 
     }
+    handleOperatorClick=(evt)=>{//To handle both Operator clickS
+        console.log("evt.currentTarget.textContent", evt.currentTarget.textContent)
+    }
 
     render() {
 
         return (
 
-            <div >
-                <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
-                    handleOperandClick={this.handleOperandClick} />
+            < >
                 <Explanation linkingIndex={this.state.linkingIndex} />
-            </div>
+                <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
+                    handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick}/>
+
+            </>
         )
     }
 }

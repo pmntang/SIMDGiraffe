@@ -31,7 +31,7 @@ class Explanation extends Component {
         return (
 
 
-            <>explain</>
+            <div>explain</div>
 
 
 

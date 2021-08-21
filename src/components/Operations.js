@@ -31,17 +31,14 @@ class Operations extends Component {
         const rectOprHeight = 35
         return (
 
-
-            <svg id="operations" className="operations" width="100%" height="100%" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-                <Operator rectOprHeight={rectOprHeight} linkingIndex={this.props.linkingIndex} />
-                <Operands translation={rectOprHeight + rectOprHeight / 2} currentInstruction={this.props.currentInstruction}
-                    linkingIndex={this.props.linkingIndex} handleOperandClick={this.props.handleOperandClick}/>
-            </svg>
-
-
-
-
+        
+                <svg id="operations" className="operations" width="100%" height="100%" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+                    <Operator rectOprHeight={rectOprHeight} linkingIndex={this.props.linkingIndex} handleOperatorClick={this.props.handleOperatorClick}/>
+                    <Operands translation={rectOprHeight + rectOprHeight / 2} currentInstruction={this.props.currentInstruction}
+                        linkingIndex={this.props.linkingIndex} handleOperandClick={this.props.handleOperandClick} />
+                </svg>
+    
         )
     }
 }
