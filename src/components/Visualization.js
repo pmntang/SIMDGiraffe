@@ -91,8 +91,15 @@ class Visualization extends Component {
         }
 
     }
-    handleOperatorClick=(evt)=>{//To handle both Operator clickS
-        console.log("evt.currentTarget.textContent", evt.currentTarget.textContent)
+    handleOperatorClick = (evt) => {//To handle both Operator clickS
+        var linkingIndex = this.state.linkingIndex;
+        let indexOfResult = linkingIndex.findIndex(e => e[0] == "active");
+        let operator=evt.currentTarget.textContent;
+        if (indexOfResult != -1) {          
+            this.setState(prevState => ({
+                currentOperator: operator
+            })); console.log("evt.currentTarget.textContent",operator, "ffr",this.state.linkingIndex)
+        }
     }
 
     render() {
@@ -102,7 +109,7 @@ class Visualization extends Component {
             < >
                 <Explanation linkingIndex={this.state.linkingIndex} />
                 <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
-                    handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick}/>
+                    handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} />
 
             </>
         )
