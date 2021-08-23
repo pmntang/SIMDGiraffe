@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
-import '../styles/Operand.css';
+import '../styles/Operations.css';
 import simdFunction from '../utilities/simdFunction.json';
 import Operands from './Operands';
 import Operator from './Operator';

@@ -31,7 +31,7 @@ class Explanation extends Component {
         return (
 
 
-            <div>explain</div>
+            <div id="explanation" className="explanation">explain</div>
 
 
 

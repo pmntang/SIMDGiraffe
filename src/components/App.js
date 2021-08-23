@@ -30,17 +30,17 @@ const myDataListTab = myLib.constructDataListTable(simdFunction);
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: "_mm_add_epi8"};
-    this.handleOnchange = this.handleOnchange.bind(this);
-
+    this.state = { value: "_mm_add_epi8" };
+    this.handleOnchange = this.handleOnchange.bind(this)
   }
 
   componentDidMount() {
     
+
   }
 
   componentDidUpdate() {
-   
+
   }
 
   componentWillUnmount() {
@@ -48,24 +48,20 @@ class App extends Component {
   }
   handleOnchange(e) {
     if (myDataListTab.find(o => o[0] == e.target.value)) {
-         this.setState(prevState => ({
-            value: e.target.value       
-        }));
+      this.setState(prevState => ({
+        value: e.target.value
+      }));
     }
 
-}
-
+  }
 
 
 
   render() {
-    
-   
     return (
-
-      <div id="displayZone" className="displayZone"><CodeText handleOnchange={this.handleOnchange}  value={this.state.value}/>
-        <Visualization value={this.state.value}/></div>
-
+      <div id="displayZone" className="displayZone"><CodeText handleOnchange={this.handleOnchange} value={this.state.value} />
+        <Visualization value={this.state.value} />
+      </div>
     );
   }
 
