@@ -18,6 +18,7 @@ class Visualization extends Component {
         super(props);
         this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null };
         this.handleOperandClick = this.handleOperandClick.bind(this);
+        this.currentInstruction = operandsAndResults.find(e => e.name == props.value)
     }
 
     componentDidMount() {
@@ -26,9 +27,10 @@ class Visualization extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.value !== prevProps.value) {
+            this.currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
             this.setState(prevState => ({
                 linkingIndex: constInitialLinkingIndexInstruction(this.props.value)
-            }));;
+            }));
           }
     }
 
@@ -104,12 +106,12 @@ class Visualization extends Component {
     }
 
     render() {
-    var currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
+   
         return (
 
             <React.Fragment>
                <Explanation linkingIndex={this.state.linkingIndex} />
-               <Operations currentInstruction={currentInstruction} linkingIndex={this.state.linkingIndex}
+               <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
                     handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} />
            </React.Fragment>
         )

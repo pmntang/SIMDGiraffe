@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Operand.css';
+import * as _ from "lodash";
 import simdFunction from '../utilities/simdFunction.json';
 
 class Operand extends Component {
@@ -13,8 +14,10 @@ class Operand extends Component {
 
     }
 
-    componentDidUpdate() {
-
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!_.isEqual(this.props.operand, prevProps.operand) ) {
+            this.result = this.props.operand.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
+          }
     }
 
     componentWillUnmount() {
