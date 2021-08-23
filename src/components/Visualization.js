@@ -18,18 +18,18 @@ class Visualization extends Component {
         super(props);
         this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null };
         this.handleOperandClick = this.handleOperandClick.bind(this);
-        
-        this.test=this.props.value
-
-
     }
 
     componentDidMount() {
       
     }
 
-    componentDidUpdate() {
-
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.value !== prevProps.value) {
+            this.setState(prevState => ({
+                linkingIndex: constInitialLinkingIndexInstruction(this.props.value)
+            }));;
+          }
     }
 
     componentWillUnmount() {
