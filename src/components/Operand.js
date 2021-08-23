@@ -7,7 +7,7 @@ import simdFunction from '../utilities/simdFunction.json';
 class Operand extends Component {
     constructor(props) {
         super(props);
-        this.result = props.operand.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
+        
     }
 
     componentDidMount() {
@@ -15,9 +15,7 @@ class Operand extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!_.isEqual(this.props.operand, prevProps.operand) ) {
-            this.result = this.props.operand.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
-          }
+
     }
 
     componentWillUnmount() {
@@ -26,7 +24,8 @@ class Operand extends Component {
 
     
     render() {
-        var rank = this.props.rank, result = this.result, type=this.props.type;
+      var  result = this.props.operand.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
+        var rank = this.props.rank, result = result, type=this.props.type;
                const rectOprHeight = 50, rectOprWidth = 80, spaceOprBetween = 10, xOpr0 = "0", yOpr0 = "0";
         const rectOperandHeight = 20, rectOperandWidth = 20, spaceBetweenOperand = 0.5, xOperand0 = "0", yOperand0 = "0";
         const gOperand = result.map((o, j) => <g key={(type.toLowerCase() + rank) + o} id={(type.toLowerCase() + rank) + o} className={(type.toLowerCase() + rank) + o} onClick={evt => this.props.handleOperandClick(evt)}>
