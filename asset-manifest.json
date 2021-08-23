@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/SIMDGiraffe/static/css/main.bb71b911.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.5ced5862.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.5ced5862.chunk.js.map",
+    "main.js": "/SIMDGiraffe/static/js/main.fd75b75e.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.fd75b75e.chunk.js.map",
     "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.32bf265d.js",
     "runtime-main.js.map": "/SIMDGiraffe/static/js/runtime-main.32bf265d.js.map",
     "static/js/2.69586b39.chunk.js": "/SIMDGiraffe/static/js/2.69586b39.chunk.js",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.32bf265d.js",
     "static/js/2.69586b39.chunk.js",
     "static/css/main.bb71b911.chunk.css",
-    "static/js/main.5ced5862.chunk.js"
+    "static/js/main.fd75b75e.chunk.js"
   ]
 }
