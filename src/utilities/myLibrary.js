@@ -606,8 +606,8 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
     obj = { ...obj, name };
     var regTypeNumber = /(?<=_m|__m|_int|__int)\d+/g;
     var regextractSizeFromDesc = /\d+(?=-bit)/g;// We have notice that the size of scalar unit of a vector instruction can be assimilated to a x-bit expression in the description of tha instruction
-    let arrayOfMinimunSizeInDescription=e.description.match(regextractSizeFromDesc);
-    const sizeOfScalarField = arrayOfMinimunSizeInDescription? Math.min(...arrayOfMinimunSizeInDescription):1;
+    let arrayOfMinimunSizeInDescription = e.description.match(regextractSizeFromDesc);
+    const sizeOfScalarField = arrayOfMinimunSizeInDescription ? Math.min(...arrayOfMinimunSizeInDescription) : 1;
     var maxSize = sizeOfScalarField;
     obj = { ...obj, sizeOfScalarField };
     var result = [];
@@ -631,7 +631,7 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
         if (element._type) {
           types[k] = element._type.split(" ")[element._type.split(" ").length - 1];
           varnames[k] = element._varname;
-          obj = { ...obj, varnames, types};
+          obj = { ...obj, varnames, types };
           let operandNumber = types[k].match(regTypeNumber);
           var operand = [];
           if (operandNumber) {
@@ -687,4 +687,27 @@ export function buildMessage(operators, operands) {
     }
   }).join('');
   return message
+}
+export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
+  var Msge = "Click on a result field to see its calculation explained";
+  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active");
+  Msge = indexOfactive == -1 ? Msge : aLinkingIndex[indexOfactive].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" ")
+  return Msge
+  // const globalTab = (Array.isArray(operands) && Array.isArray(operators)) ?
+  //   [...operands, ...operators] : (Array.isArray(operators) ?
+  //     operands : (Array.isArray(operators) ? operators : []));
+  // var message = globalTab.sort((o1, o2) => o1.rank - o2.rank).map(o => {
+  //   if (o.hasOwnProperty("idOperand")) {
+
+  //     return document.getElementById(o.idOperand).textContent;
+  //   }
+  //   else if (o.hasOwnProperty("idOperator")) {
+  //     return document.getElementById(o.idOperator).textContent;
+  //   }
+
+  //   else {
+  //     return "";
+  //   }
+  // }).join('');
+  // return message
 }

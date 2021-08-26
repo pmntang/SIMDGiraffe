@@ -16,13 +16,13 @@ const constInitialLinkingIndexInstruction = (instructionName) => {
 class Visualization extends Component {
     constructor(props) {
         super(props);
-        this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null };
+        this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null, currentResult: null };
         this.handleOperandClick = this.handleOperandClick.bind(this);
         this.currentInstruction = operandsAndResults.find(e => e.name == props.value)
     }
 
     componentDidMount() {
-      
+
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -31,15 +31,15 @@ class Visualization extends Component {
             this.setState(prevState => ({
                 linkingIndex: constInitialLinkingIndexInstruction(this.props.value)
             }));
-          }
+        }
     }
 
     componentWillUnmount() {
 
     }
     handleOperandClick = (evt) => {//To handle both operand and result clickS
-        var currentInstructionR = this.currentInstruction.result.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
-        if (evt.currentTarget.id.includes("result")) {
+        var currentInstructionR = this.currentInstruction.result.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);//just to reverse
+        if (evt.currentTarget.id.includes("result")) {//result has been clicked
             let number = evt.currentTarget.textContent;
             let indexR = currentInstructionR.findIndex(e => (String.fromCharCode(65 + this.currentInstruction.operands.length) + e) == number);
             var linkingIndex = this.state.linkingIndex;
@@ -47,9 +47,12 @@ class Visualization extends Component {
             this.setState(prevState => ({
                 linkingIndex: linkingIndex
             }));
+            indexR > -1 && this.setState(prevState => ({
+                currentResult: number
+            }));
         }
-        var currentInstructionO = this.currentInstruction.operands.map(e => e.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []));
-        if (evt.currentTarget.id.includes("operand")) {
+        var currentInstructionO = this.currentInstruction.operands.map(e => e.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []));//just to reverse
+        if (evt.currentTarget.id.includes("operand")) {//operand has been clicked
             let number = evt.currentTarget.textContent;
             var indexO = null;
 
@@ -101,19 +104,24 @@ class Visualization extends Component {
         if (indexOfResult != -1) {
             this.setState(prevState => ({
                 currentOperator: operator
-            })); console.log("evt.currentTarget.textContent", operator, "ffr", this.state.linkingIndex)
+            }));
         }
     }
 
+    handlesimdButtonClick = (evt) => {
+
+    }
+
     render() {
-   
+        console.log("evt.currentTarget.textContent, operator, ffr", this.state.linkingIndex, "msg", myLib.readLinkingIndexMsg(this.state.linkingIndex))
+        var butonMsg = myLib.readLinkingIndexMsg(this.state.linkingIndex);
         return (
 
             <React.Fragment>
-               <Explanation linkingIndex={this.state.linkingIndex} />
-               <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
+                <Explanation handlesimdButtonClick={this.handlesimdButtonClick} butonMsg={butonMsg} currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} />
+                <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
                     handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} />
-           </React.Fragment>
+            </React.Fragment>
         )
     }
 }
