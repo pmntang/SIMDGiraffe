@@ -7,7 +7,7 @@ import simdFunction from '../utilities/simdFunction.json';
 const operators = ['+', 'x', '-', '/', 'mov', ':(int)', 'exp', 'ln','(', ')'];
 
 
-class Operand extends Component {
+class Operator extends Component {
     constructor(props) {
         super(props);
 
@@ -43,4 +43,4 @@ class Operand extends Component {
     }
 }
 
-export default Operand
+export default Operator

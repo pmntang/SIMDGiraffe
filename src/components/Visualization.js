@@ -18,7 +18,8 @@ class Visualization extends Component {
         super(props);
         this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null, currentResult: null };
         this.handleOperandClick = this.handleOperandClick.bind(this);
-        this.currentInstruction = operandsAndResults.find(e => e.name == props.value)
+        this.currentInstruction = operandsAndResults.find(e => e.name == props.value);
+        this.linkingIndexTable=[]
     }
 
     componentDidMount() {
@@ -28,8 +29,13 @@ class Visualization extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.value !== prevProps.value) {
             this.currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
+            let newLinkinIndexObject={name:prevProps.value, linkingIndex:this.state.linkingIndex }
+            let indexOfPrevLinkingIndex=this.linkingIndexTable.findIndex(e=>e.name==prevProps.value)
+            this.linkingIndexTable=indexOfPrevLinkingIndex==-1?[...this.linkingIndexTable,newLinkinIndexObject]:this.linkingIndexTable.fill(indexOfPrevLinkingIndex,newLinkinIndexObject,indexOfPrevLinkingIndex+1);
             this.setState(prevState => ({
-                linkingIndex: constInitialLinkingIndexInstruction(this.props.value)
+                linkingIndex: constInitialLinkingIndexInstruction(this.props.value),
+                currentOperator: null, 
+                currentResult: null
             }));
         }
     }
@@ -113,13 +119,13 @@ class Visualization extends Component {
     }
 
     render() {
-        console.log("evt.currentTarget.textContent, operator, ffr", this.state.linkingIndex, "msg", myLib.readLinkingIndexMsg(this.state.linkingIndex))
-        var butonMsg = myLib.readLinkingIndexMsg(this.state.linkingIndex);
+        //console.log("evt.currentTarget.textContent, operator, ffr", this.state.linkingIndex, "msg", myLib.readLinkingIndexMsg(this.state.linkingIndex))
+        
         return (
 
             <React.Fragment>
-                <Explanation handlesimdButtonClick={this.handlesimdButtonClick} butonMsg={butonMsg} currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} />
-                <Operations currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
+                <Explanation value={this.props.value} handlesimdButtonClick={this.handlesimdButtonClick} linkingIndex={this.state.linkingIndex} currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} />
+                <Operations value={this.props.value} currentInstruction={this.currentInstruction} linkingIndex={this.state.linkingIndex}
                     handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} />
             </React.Fragment>
         )
