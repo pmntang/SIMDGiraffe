@@ -37,7 +37,7 @@ class Explanation extends Component {
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
         this.currentResult = this.props.currentResult;
 
-        console.log("this.props.value", this.props.value, "this.currentResult", this.currentResult, "this.props.currentResult", this.props.currentResult, "this.butonMsg", this.butonMsg)
+        console.log("this.props.linkingIndex", this.props.linkingIndex)
         return (
 
 
@@ -51,7 +51,7 @@ class Explanation extends Component {
                     </p>
                     <p id="buttonParagraph" className="buttonParagraph">
                         {this.currentResult && <button id="simdButton" className="simdButton" form="explanationForm" type="button" onClick={evt => this.props.handlesimdButtonClick(evt)}>
-                            {`Reset the field ${this.currentResult}:  `}
+                            {`Reset the field ${this.currentResult}  `}
                         </button>}
                     </p>
                 </form>

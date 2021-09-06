@@ -26,14 +26,16 @@ class Visualization extends Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps, prevState, snapshot) {console.log("before this.state.linkingIndex", this.state.linkingIndex)
         if (this.props.value !== prevProps.value) {
             this.currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
             let newLinkinIndexObject={name:prevProps.value, linkingIndex:this.state.linkingIndex }
             let indexOfPrevLinkingIndex=this.linkingIndexTable.findIndex(e=>e.name==prevProps.value)
             this.linkingIndexTable=indexOfPrevLinkingIndex==-1?[...this.linkingIndexTable,newLinkinIndexObject]:this.linkingIndexTable.fill(indexOfPrevLinkingIndex,newLinkinIndexObject,indexOfPrevLinkingIndex+1);
+            let linkingIndex=this.linkingIndexTable.find(e=>e.name==this.props.value)?this.linkingIndexTable.find(e=>e.name==this.props.value).linkingIndex:constInitialLinkingIndexInstruction(this.props.value);
+            linkingIndex=linkingIndex.map(e=>e.fill("inactive",0,1))
             this.setState(prevState => ({
-                linkingIndex: constInitialLinkingIndexInstruction(this.props.value),
+                linkingIndex: linkingIndex,
                 currentOperator: null, 
                 currentResult: null
             }));
@@ -115,6 +117,12 @@ class Visualization extends Component {
     }
 
     handlesimdButtonClick = (evt) => {
+        let linkingIndex = this.state.linkingIndex;
+        linkingIndex.map(e=>e[0]=="active"?e.fill([],1):e)
+        this.setState(prevState => ({
+            linkingIndex: linkingIndex,
+            currentOperator: null
+        }));
 
     }
 
