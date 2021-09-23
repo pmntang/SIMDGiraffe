@@ -23,7 +23,7 @@ class Operands extends Component {
 
     }
   
-    render() {console.log("after evt curr props",this.props.linkingIndex) ;
+    render() {
         const currentInstruction = this.props.currentInstruction;
         const currentInstructionMember = [...currentInstruction.operands, currentInstruction.result]
         const operands = currentInstructionMember.map((e, i) => <Operand key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick}

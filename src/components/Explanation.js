@@ -37,7 +37,7 @@ class Explanation extends Component {
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
         this.currentResult = this.props.currentResult;
 
-        console.log("this.props.linkingIndex", this.props.linkingIndex)
+        
         return (
 
 

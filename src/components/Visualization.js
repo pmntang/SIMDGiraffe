@@ -26,7 +26,7 @@ class Visualization extends Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {console.log("before this.state.linkingIndex", this.state.linkingIndex)
+    componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.value !== prevProps.value) {
             this.currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
             let newLinkinIndexObject={name:prevProps.value, linkingIndex:this.state.linkingIndex }
@@ -127,7 +127,7 @@ class Visualization extends Component {
     }
 
     render() {
-        //console.log("evt.currentTarget.textContent, operator, ffr", this.state.linkingIndex, "msg", myLib.readLinkingIndexMsg(this.state.linkingIndex))
+        
         
         return (
 
