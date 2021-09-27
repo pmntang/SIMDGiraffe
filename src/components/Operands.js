@@ -23,11 +23,12 @@ class Operands extends Component {
 
     }
   
-    render() {
-        const currentInstruction = this.props.currentInstruction;
+    render() {console.log(  "this.props.currentInstruction  ",  this.props.currentInstruction)
+        const currentInstruction = this.props.currentInstruction, xPrefixWidth=this.props.xPrefixWidth;
         const currentInstructionMember = [...currentInstruction.operands, currentInstruction.result]
-        const operands = currentInstructionMember.map((e, i) => <Operand key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick}
-            type={((currentInstructionMember.length - 1 == i) && "Result") || "Operand"}></Operand>);
+        const operands = currentInstructionMember.map((e, i) =>(currentInstructionMember.length - 1 == i)?
+                                     <Operand xPrefixWidth={xPrefixWidth} key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick} type={ "Result"} varType={currentInstruction.retType} varName="res"></Operand>:
+                                                                    <Operand xPrefixWidth={xPrefixWidth} key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick} type={"Operand"} varType={currentInstruction.types[i]} varName={currentInstruction.varnames[i]}></Operand>);
         return (
 
             <g id="operands" className="operands" transform={"translate( 0," + this.props.translation + ")"}>
