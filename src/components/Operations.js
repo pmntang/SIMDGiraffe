@@ -28,7 +28,7 @@ class Operations extends Component {
 
 
     render() {
-        const rectOprHeight = 35, xPrefixWidth=50;
+        const rectOprHeight = 35, xPrefixWidth=65;
         return (
 
         
