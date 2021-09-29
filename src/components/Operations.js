@@ -8,6 +8,7 @@ import Operator from './Operator';
 
 
 class Operations extends Component {
+    // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props);
 
@@ -28,7 +29,7 @@ class Operations extends Component {
 
 
     render() {
-        const rectOprHeight = 35, xPrefixWidth=65;
+        const rectOprHeight = 35, xPrefixWidth=75;
         return (
 
         

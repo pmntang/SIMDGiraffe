@@ -39,6 +39,7 @@ const _mName = simdFunction.intrinsic.find((e, i) => {
     return ex;
 });
 class CodeText extends Component {
+    // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props);
 

@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import simdFunction from '../utilities/simdFunction.json';
 
 class Operand extends Component {
+    // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props);
 
@@ -33,10 +34,11 @@ class Operand extends Component {
                 height={"" + rectOperandHeight}></rect>
             <text key={"txtScalar" + type + (rank + j)} id={"txtScalar" + type + (rank + j)} className={"txtScalar" + type + (rank + j)} dy="0 2%" y={yOperand0 + (rank * spaceOprBetween + (2 * rank + 1) * rectOperandHeight / 2)} dx="0 0.07%" x={xOperand0 +
                 (j * (rectOperandWidth + spaceBetweenOperand) + (rectOperandHeight / 2))} dominantBaseline="middle" textAnchor="middle">{String.fromCharCode(65 + rank)}{o}</text>
-            <text key={"prefixScalar" + type + (rank + j)} id={"prefixScalar" + type + (rank + j)} className={"prefixScalar" + type + (rank + j)} y={yOperand0 + (rank * spaceOprBetween + (2 * rank + 1) * rectOperandHeight / 2)} x={this.props.xPrefixWidth / 2} dominantBaseline="middle" textAnchor="middle">{`${this.props.varName}   ${this.props.varType}`}</text></g>)
+            </g>)
         return (
             <>
                 {gOperand}
+                <text key={"prefixScalar" + type + rank} id={"prefixScalar" + type + rank} className={"prefixScalar" + type + rank} y={yOperand0 + (rank * spaceOprBetween + (2 * rank + 1) * rectOperandHeight / 2)} x={this.props.xPrefixWidth / 2} dominantBaseline="middle" textAnchor="middle">{`${this.props.varName}   ${this.props.varType}`}</text>
             </>
         )
     }

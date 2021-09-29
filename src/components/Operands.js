@@ -6,6 +6,7 @@ import Operand from './Operand';
 
 
 class Operands extends Component {
+    // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props);
 
@@ -23,11 +24,11 @@ class Operands extends Component {
 
     }
   
-    render() {console.log(  "this.props.currentInstruction  ",  this.props.currentInstruction)
+    render() {
         const currentInstruction = this.props.currentInstruction, xPrefixWidth=this.props.xPrefixWidth;
         const currentInstructionMember = [...currentInstruction.operands, currentInstruction.result]
         const operands = currentInstructionMember.map((e, i) =>(currentInstructionMember.length - 1 == i)?
-                                     <Operand xPrefixWidth={xPrefixWidth} key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick} type={ "Result"} varType={currentInstruction.retType} varName="res"></Operand>:
+                                     <Operand xPrefixWidth={xPrefixWidth} key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick} type={ "Result"} varType={currentInstruction.retType} varName="r"></Operand>:
                                                                     <Operand xPrefixWidth={xPrefixWidth} key={i} operand={e} rank={i} handleOperandClick={this.props.handleOperandClick} type={"Operand"} varType={currentInstruction.types[i]} varName={currentInstruction.varnames[i]}></Operand>);
         return (
 

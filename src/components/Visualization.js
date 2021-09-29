@@ -61,7 +61,7 @@ class Visualization extends Component {
         }
         var currentInstructionO = this.currentInstruction.operands.map(e => e.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []));//just to reverse
         if (evt.currentTarget.id.includes("operand")) {//operand has been clicked
-            let number = evt.currentTarget.textContent;
+            let number = evt.currentTarget.textContent; 
             var indexO = null;
 
             let indexOfOperand = currentInstructionO.findIndex((e, i) => {
