@@ -688,6 +688,7 @@ export function buildMessage(operators, operands) {
   }).join('');
   return message
 }
+
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
   var Msge = "Click on a result field to see its calculation explained";
   let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active");
@@ -710,4 +711,8 @@ export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and r
   //   }
   // }).join('');
   // return message
+}
+
+export function findCurrentInstructionByName(tableOfInstrinsicsInstructions, instructionName) {
+  return tableOfInstrinsicsInstructions.find(e=>e.name==instructionName)
 }

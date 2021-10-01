@@ -16,10 +16,10 @@ const constInitialLinkingIndexInstruction = (instructionName) => {
 class Visualization extends Component {
     constructor(props) {
         super(props);
-        this.state = { linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null, currentResult: null };
+        this.state = {currentInstruction:myLib.findCurrentInstructionByName(operandsAndResults,props.value), linkingIndex: constInitialLinkingIndexInstruction(props.value), currentOperator: null, currentResult: null };
         this.handleOperandClick = this.handleOperandClick.bind(this);
         this.currentInstruction = operandsAndResults.find(e => e.name == props.value);
-        this.linkingIndexTable=[]
+        this.linkingIndexTable = []
     }
 
     componentDidMount() {
@@ -29,14 +29,14 @@ class Visualization extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.value !== prevProps.value) {
             this.currentInstruction = operandsAndResults.find(e => e.name == this.props.value);
-            let newLinkinIndexObject={name:prevProps.value, linkingIndex:this.state.linkingIndex }
-            let indexOfPrevLinkingIndex=this.linkingIndexTable.findIndex(e=>e.name==prevProps.value)
-            this.linkingIndexTable=indexOfPrevLinkingIndex==-1?[...this.linkingIndexTable,newLinkinIndexObject]:this.linkingIndexTable.fill(indexOfPrevLinkingIndex,newLinkinIndexObject,indexOfPrevLinkingIndex+1);
-            let linkingIndex=this.linkingIndexTable.find(e=>e.name==this.props.value)?this.linkingIndexTable.find(e=>e.name==this.props.value).linkingIndex:constInitialLinkingIndexInstruction(this.props.value);
-            linkingIndex=linkingIndex.map(e=>e.fill("inactive",0,1))
+            let newLinkinIndexObject = { name: prevProps.value, linkingIndex: this.state.linkingIndex }
+            let indexOfPrevLinkingIndex = this.linkingIndexTable.findIndex(e => e.name == prevProps.value)
+            this.linkingIndexTable = indexOfPrevLinkingIndex == -1 ? [...this.linkingIndexTable, newLinkinIndexObject] : this.linkingIndexTable.fill(indexOfPrevLinkingIndex, newLinkinIndexObject, indexOfPrevLinkingIndex + 1);
+            let linkingIndex = this.linkingIndexTable.find(e => e.name == this.props.value) ? this.linkingIndexTable.find(e => e.name == this.props.value).linkingIndex : constInitialLinkingIndexInstruction(this.props.value);
+            linkingIndex = linkingIndex.map(e => e.fill("inactive", 0, 1))
             this.setState(prevState => ({
                 linkingIndex: linkingIndex,
-                currentOperator: null, 
+                currentOperator: null,
                 currentResult: null
             }));
         }
@@ -61,7 +61,7 @@ class Visualization extends Component {
         }
         var currentInstructionO = this.currentInstruction.operands.map(e => e.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []));//just to reverse
         if (evt.currentTarget.id.includes("operand")) {//operand has been clicked
-            let number = evt.currentTarget.textContent; 
+            let number = evt.currentTarget.textContent;
             var indexO = null;
 
             let indexOfOperand = currentInstructionO.findIndex((e, i) => {
@@ -118,7 +118,7 @@ class Visualization extends Component {
 
     handlesimdButtonClick = (evt) => {
         let linkingIndex = this.state.linkingIndex;
-        linkingIndex.map(e=>e[0]=="active"?e.fill([],1):e)
+        linkingIndex.map(e => e[0] == "active" ? e.fill([], 1) : e)
         this.setState(prevState => ({
             linkingIndex: linkingIndex,
             currentOperator: null
@@ -127,8 +127,8 @@ class Visualization extends Component {
     }
 
     render() {
-        
-        
+
+
         return (
 
             <React.Fragment>
