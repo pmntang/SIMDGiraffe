@@ -6,21 +6,7 @@ import simdFunction from '../utilities/simdFunction.json';
 const myDataListTab = myLib.constructDataListTable(simdFunction);
 const options=myDataListTab.map((e, i) => <option key={`${e[0]}+${i}`} value={e[0]}>{e[0]}</option>)
 
-const returnTypeAndParam = simdFunction.intrinsic.reduce((acc, cur) => {
-    if (cur._rettype) {
-        acc = acc.indexOf(cur._rettype) == -1 ? [...acc, cur._rettype] : [...acc];
-    }
-    if (cur.parameter && Array.isArray(cur.parameter)) {
-        cur.parameter.forEach(element => {
-            if (element._type) {
-                acc = acc.indexOf(element._type) == -1 ? [...acc, element._type] : [...acc];
-            }
-            return acc
-        });
 
-    }
-    return acc
-}, []);
 const operandsAndResults = myLib.computeOperandsAndresultElt(simdFunction);
 const _mName = simdFunction.intrinsic.find((e, i) => {
     var ex = ""

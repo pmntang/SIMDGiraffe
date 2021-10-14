@@ -668,6 +668,24 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
   })
 }
 
+export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+
+
+export const returnTypeAndParam = (asimdFile)=>asimdFile.intrinsic.reduce((acc, cur) => {
+  if (cur._rettype) {
+      acc = acc.indexOf(cur._rettype) == -1 ? [...acc, cur._rettype] : [...acc];
+  }
+  if (cur.parameter && Array.isArray(cur.parameter)) {
+      cur.parameter.forEach(element => {
+          if (element._type) {
+              acc = acc.indexOf(element._type) == -1 ? [...acc, element._type] : [...acc];
+          }
+          return acc
+      });
+
+  }
+  return acc
+}, []);
 
 export function buildMessage(operators, operands) {
   const globalTab = (Array.isArray(operands) && Array.isArray(operators)) ?
