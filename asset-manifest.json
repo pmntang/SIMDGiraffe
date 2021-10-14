@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/SIMDGiraffe/static/css/main.35182c1d.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.c686af22.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.c686af22.chunk.js.map",
+    "main.js": "/SIMDGiraffe/static/js/main.bb46dd5a.chunk.js",
+    "main.js.map": "/SIMDGiraffe/static/js/main.bb46dd5a.chunk.js.map",
     "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.32bf265d.js",
     "runtime-main.js.map": "/SIMDGiraffe/static/js/runtime-main.32bf265d.js.map",
-    "static/js/2.514bbe4a.chunk.js": "/SIMDGiraffe/static/js/2.514bbe4a.chunk.js",
-    "static/js/2.514bbe4a.chunk.js.map": "/SIMDGiraffe/static/js/2.514bbe4a.chunk.js.map",
+    "static/js/2.0fd50cf8.chunk.js": "/SIMDGiraffe/static/js/2.0fd50cf8.chunk.js",
+    "static/js/2.0fd50cf8.chunk.js.map": "/SIMDGiraffe/static/js/2.0fd50cf8.chunk.js.map",
     "static/js/3.11fb268d.chunk.js": "/SIMDGiraffe/static/js/3.11fb268d.chunk.js",
     "static/js/3.11fb268d.chunk.js.map": "/SIMDGiraffe/static/js/3.11fb268d.chunk.js.map",
     "index.html": "/SIMDGiraffe/index.html",
     "static/css/main.35182c1d.chunk.css.map": "/SIMDGiraffe/static/css/main.35182c1d.chunk.css.map",
-    "static/js/2.514bbe4a.chunk.js.LICENSE.txt": "/SIMDGiraffe/static/js/2.514bbe4a.chunk.js.LICENSE.txt",
+    "static/js/2.0fd50cf8.chunk.js.LICENSE.txt": "/SIMDGiraffe/static/js/2.0fd50cf8.chunk.js.LICENSE.txt",
     "static/media/logo.0333e8cd.png": "/SIMDGiraffe/static/media/logo.0333e8cd.png"
   },
   "entrypoints": [
     "static/js/runtime-main.32bf265d.js",
-    "static/js/2.514bbe4a.chunk.js",
+    "static/js/2.0fd50cf8.chunk.js",
     "static/css/main.35182c1d.chunk.css",
-    "static/js/main.c686af22.chunk.js"
+    "static/js/main.bb46dd5a.chunk.js"
   ]
 }
