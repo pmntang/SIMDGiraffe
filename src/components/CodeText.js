@@ -4,7 +4,7 @@ import '../styles/CodeText.css';
 import simdFunction from '../utilities/simdFunction.json';
 
 const myDataListTab = myLib.constructDataListTable(simdFunction);
-const options=myDataListTab.map((e, i) => <option key={`${e[0]}-${i}`} value={e[0]}></option>)
+const options=myDataListTab.map((e, i) => <option key={`${e[0]}+${i}`} value={e[0]}>{e[0]}</option>)
 
 const returnTypeAndParam = simdFunction.intrinsic.reduce((acc, cur) => {
     if (cur._rettype) {
@@ -63,7 +63,7 @@ class CodeText extends Component {
         const description = myDataListTab.find(e => e[0] == value)[3];
         return (
 
-            <div className='instruction-choice-and-explanation'>
+           <div className='instruction-choice-and-explanation'>
 
                 <label htmlFor="instruction-name-search"><span className="button">Choose SIMD Instruction</span></label><br />
                 <input type="search" id="instruction-name-search" name="instruction-name-search" autoComplete="on"
@@ -72,9 +72,9 @@ class CodeText extends Component {
                 <datalist id="myDataListTab">
                     {options}
                 </datalist>
-                <div className="plain-text-explanation">
+               {this.props.isVisible && <div className="plain-text-explanation">
                     {description}
-                </div>
+                </div>}
 
             </div>
         )
