@@ -668,20 +668,46 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
   })
 }
 
-export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1}, (_, i) => start + (i * step));
+export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
 
-export const returnTypeAndParam = (asimdFile)=>asimdFile.intrinsic.reduce((acc, cur) => {
+export function insertOperand(opName, opType, opRank, opDimension, aCurrentInstruction) {
+  if (opName === "r" &&((opRank === aCurrentInstruction.operands.length + 2 && aCurrentInstruction.result.length!==0)||(opRank === aCurrentInstruction.operands.length + 1 && aCurrentInstruction.result.length===0))){
+    let result = opDimension === 0 ? range(0, opDimension, opDimension) : range(0, opDimension - 1, 1);
+    let retType = opType;
+    return { ...aCurrentInstruction, result, retType }
+  }
+  else {
+    if (opRank < aCurrentInstruction.operands.length + 2 && opName !== "r") {
+      let operands = aCurrentInstruction.operands;
+      let types = aCurrentInstruction.types;
+      let varnames = aCurrentInstruction.varnames;
+      operands.splice(opRank - 1, 0, range(0, opDimension-1, 1));
+      types.splice(opRank - 1, 0, opType);
+      varnames.splice(opRank - 1, 0, opName);
+      return { ...aCurrentInstruction, operands, types, varnames }
+    }
+    else {
+      return aCurrentInstruction
+    }
+  }
+}
+
+export function deleteOperand(opName, opRank, aCurrentInstruction) {
+
+}
+
+export const returnTypeAndParam = (asimdFile) => asimdFile.intrinsic.reduce((acc, cur) => {
   if (cur._rettype) {
-      acc = acc.indexOf(cur._rettype) == -1 ? [...acc, cur._rettype] : [...acc];
+    acc = acc.indexOf(cur._rettype) === -1 ? [...acc, cur._rettype] : [...acc];
   }
   if (cur.parameter && Array.isArray(cur.parameter)) {
-      cur.parameter.forEach(element => {
-          if (element._type) {
-              acc = acc.indexOf(element._type) == -1 ? [...acc, element._type] : [...acc];
-          }
-          return acc
-      });
+    cur.parameter.forEach(element => {
+      if (element._type) {
+        acc = acc.indexOf(element._type) === -1 ? [...acc, element._type] : [...acc];
+      }
+      return acc
+    });
 
   }
   return acc
@@ -732,5 +758,5 @@ export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and r
 }
 
 export function findCurrentInstructionByName(tableOfInstrinsicsInstructions, instructionName) {
-  return tableOfInstrinsicsInstructions.find(e=>e.name==instructionName)
+  return tableOfInstrinsicsInstructions.find(e => e.name == instructionName)
 }
