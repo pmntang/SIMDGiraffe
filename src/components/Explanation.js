@@ -3,10 +3,9 @@ import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Explanation.css';
 import simdFunction from '../utilities/simdFunction.json';
 
-const optionsType = ["--Choose operand type--",...myLib.returnTypeAndParam(simdFunction)].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
 const alphabethLetters = myLib.range('a'.charCodeAt(0), 'z'.charCodeAt(0), 1).map(x => String.fromCharCode(x));
-
-
+const optionOfT=(arrayOfT)=>arrayOfT.map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
+const optionsType=optionOfT(["--Choose operand type--",...myLib.returnTypeAndParam(simdFunction)]);
 
 class Explanation extends Component {
     constructor(props) {
@@ -35,20 +34,20 @@ class Explanation extends Component {
     }
 
 
-    render() {console.log("Name",this.props.msgToUser.Name, "this.props.currentInstruction",this.props.currentInstruction)
-        let availableLetters = alphabethLetters.filter(x => !this.props.currentInstruction.varnames.includes(x));
-        let availableName=[...this.props.deletedName, ...availableLetters].filter(x => !this.props.currentInstruction.varnames.includes(x));
-        let optionsName =["--Choose operand name--",...availableName].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
+    render() {console.log("Name", this.props.msgToUser.Name.Name, "this.props.currentInstruction",this.props.currentInstruction)
+        let availableLetters =this.props.currentInstruction.operands.length===0?alphabethLetters: alphabethLetters.filter(x => !this.props.currentInstruction.varnames.includes(x));
+        let availableName=this.props.currentInstruction.operands.length===0?[...this.props.deletedName, ...availableLetters]:[...this.props.deletedName, ...availableLetters].filter(x => !this.props.currentInstruction.varnames.includes(x));
+        let optionsName =optionOfT(["--Choose operand name--",...availableName]) 
         var canBeDeletedName =this.props.currentInstruction.varnames ;
-        var optionNameToDelete =["--Operand name to delete--",...canBeDeletedName].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
+        var optionNameToDelete =optionOfT(["--Operand name to delete--",...canBeDeletedName]);
         var canBeDeletedRank = myLib.range(1, this.props.currentInstruction.operands.length, 1);
-        var optionRankToDelete = ["--Operand rank to delete--",...canBeDeletedRank].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
-        var canBeInsertRank =this.props.msgToUser.Name?(this.props.msgToUser.Name!=="r"?(this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 1, 1)):
+        var optionRankToDelete = optionOfT(["--Operand rank to delete--",...canBeDeletedRank]);
+        var canBeInsertRank = this.props.msgToUser.Name.Name?( this.props.msgToUser.Name.Name!=="r"?(this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 1, 1)):
         (this.props.currentInstruction.result.length === 0 ? myLib.range(this.props.currentInstruction.operands.length+1, this.props.currentInstruction.operands.length+1, 1) : myLib.range(this.props.currentInstruction.operands.length + 2, this.props.currentInstruction.operands.length + 2, 1))):
         (this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length+1, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 2, 1));
-        var optionRankToInsert = ["--Choose operand rank--",...canBeInsertRank].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
+        var optionRankToInsert = optionOfT(["--Choose operand rank--",...canBeInsertRank]);
         var dimension = [0,...myLib.range(0, 10, 1).map(e=>2**e)];
-        var optionDimension = ["--Choose operand dimension--",...dimension].map((e, i) =>i===0?<option key={`${e}+${i}`} value="">{e}</option>:<option key={`${e}+${i}`} value={e}>{e}</option>);
+        var optionDimension = optionOfT(["--Choose operand dimension--",...dimension]); 
         var insertField = <div className='insert-operand'>
             <label htmlFor="type-of-operand-to-insert"><span className="button-insert"></span></label>
             <select id="type-of-operand-to-insert" form="explanationForm" name="type-of-operand-to-insert" autoComplete="on" required
@@ -91,7 +90,7 @@ class Explanation extends Component {
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
         this.currentResult = this.props.currentResult;
         if (this.props.clickedButton) {
-            this.deletedButtonState = this.props.clickedButton === "deleteOperandButton";
+            this.deletedButtonState =1;// this.props.clickedButton === "deleteOperandButton";
             this.insertButtonState = 1;
             this.groupButtonState = 1;
             this.partButtonState = 1;

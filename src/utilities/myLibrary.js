@@ -626,7 +626,7 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
       obj = { ...obj, result };
     }
     var operands = [], varnames = [], types = [];
-    if (e.parameter && Array.isArray(e.parameter)) {
+    if (e.parameter && Array.isArray(e.parameter) && !e.parameter.find(e => e._varname === "" || e._type === "void")) {
       e.parameter.forEach((element, k) => {
         if (element._type) {
           types[k] = element._type.split(" ")[element._type.split(" ").length - 1];
@@ -657,6 +657,11 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
         }
       });
     }
+    else {
+      if (e.parameter && Array.isArray(e.parameter) &&e.parameter.find(e => e._varname === "" || e._type === "void")) {
+        obj = { ...obj, operands, varnames, types }
+      }
+    }
     if (result.length == 0 && e._rettype.match(/(?<=_m|__m|_int|__int)\w*mask\w*/g)) {
       let size = maxSize / sizeOfScalarField;
       for (let i = 0; i < size; i++) {
@@ -671,29 +676,33 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
 export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
 
-export function insertOperand(opName, opType, opRank, opDimension, aCurrentInstruction) {
-  if (opName === "r" &&((opRank === aCurrentInstruction.operands.length + 2 && aCurrentInstruction.result.length!==0)||(opRank === aCurrentInstruction.operands.length + 1 && aCurrentInstruction.result.length===0))){
+export function insertOperand(opName, opType, opRank, opDimension, aLinkingObject) {
+  if (opName === "r" && ((opRank === aLinkingObject.currentInstruction.operands.length + 2 && aLinkingObject.currentInstruction.result.length !== 0) || (opRank === aLinkingObject.currentInstruction.operands.length + 1 && aLinkingObject.currentInstruction.result.length === 0))) {
     let result = opDimension === 0 ? range(0, opDimension, opDimension) : range(0, opDimension - 1, 1);
     let retType = opType;
-    return { ...aCurrentInstruction, result, retType }
+    let currentInstruction = aLinkingObject.currentInstruction;
+    let linkingIndex = aLinkingObject.linkingIndex;
+    currentInstruction = { ...currentInstruction, result, retType };
+    //linkingIndex=linkingIndex.map((e,i)=>e.)
+    return { ...aLinkingObject.currentInstruction, result, retType }
   }
   else {
-    if (opRank < aCurrentInstruction.operands.length + 2 && opName !== "r") {
-      let operands = aCurrentInstruction.operands;
-      let types = aCurrentInstruction.types;
-      let varnames = aCurrentInstruction.varnames;
-      operands.splice(opRank - 1, 0, range(0, opDimension-1, 1));
+    if (opRank < aLinkingObject.currentInstruction.operands.length + 2 && opName !== "r") {
+      let operands = aLinkingObject.currentInstruction.operands;
+      let types = aLinkingObject.currentInstruction.types;
+      let varnames = aLinkingObject.currentInstruction.varnames;
+      operands.splice(opRank - 1, 0, range(0, opDimension - 1, 1));
       types.splice(opRank - 1, 0, opType);
       varnames.splice(opRank - 1, 0, opName);
-      return { ...aCurrentInstruction, operands, types, varnames }
+      return { ...aLinkingObject.currentInstruction, operands, types, varnames }
     }
     else {
-      return aCurrentInstruction
+      return aLinkingObject.currentInstruction
     }
   }
 }
 
-export function deleteOperand(opName, opRank, aCurrentInstruction) {
+export function deleteOperand(opName, opRank, aLinkingObject) {
 
 }
 

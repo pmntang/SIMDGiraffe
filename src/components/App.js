@@ -40,8 +40,8 @@ class App extends Component {
       value: "_mm_add_epi8", isVisible: true, currentOperator: null, currentResult: null, linkingIndexTable: [{
         linkingIndex: constInitialLinkingIndexInstruction("_mm_add_epi8"),
         currentInstruction: myLib.findCurrentInstructionByName(operandsAndResults, "_mm_add_epi8")
-      }], clickedButton: null, msgToUser: { Type: null, Name: null, Rank: null, Dimension: 1 },
-      deletedName:[]
+      }], clickedButton: 1, msgToUser: { Type: { Type: null, state: false }, Name: { Name: null, state: false }, Rank: { Rank: null, state: false }, Dimension: { Dimension: null, state: false } },
+      deletedName: []
     };
     this.handleOperandClick = this.handleOperandClick.bind(this);
     this.handleOnchange = this.handleOnchange.bind(this);
@@ -162,7 +162,7 @@ class App extends Component {
     let indexOfcurrentInstruction = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
     let indexOfResult = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.findIndex(e => e[0] == "active");
     let operator = evt.currentTarget.textContent;
-    if (indexOfResult != -1) {
+    if (indexOfResult !== -1) {
       this.setState(prevState => ({
         currentOperator: operator
       }));
@@ -181,17 +181,20 @@ class App extends Component {
   }
 
   handleDimensionOfOperandChange = (evt) => {
-    let Dimension = 2 ** evt.target.value;
+    console.log("this.state.msgToUser.Dimension ", this.state.msgToUser.Dimension);
+    let Dimension = { Dimension: evt.target.value, state: true };
     this.setState(prevState => ({
       msgToUser: { ...prevState.msgToUser, Dimension }
-    }));
+    })); console.log("this.state.msgToUser.Dimension ", this.state.msgToUser.Dimension);
   }
 
   handleNameOfOperandChange = (evt) => {
-    let Name = evt.target.value;
-    if (Name === "r") {
+    let Name = { Name: evt.target.value, state: true };
+    if (Name.Name === "r") {
       let indexOfLinkingIndex = this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
-      let Rank = this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands.length + 2;
+      let RankV = this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.result.length === 0 ? this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands + 1 :
+        this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands.length + 2;
+      let Rank = { Rank: RankV, state: this.state.msgToUser.Rank.state }
       this.setState(prevState => ({
         msgToUser: { ...prevState.msgToUser, Name, Rank }
       }));
@@ -206,23 +209,23 @@ class App extends Component {
   }
 
   handleTypeOfOperandChange = (evt) => {
-    let Type = evt.target.value;
+    let Type = { Type: evt.target.value, state: true };
     this.setState(prevState => ({
       msgToUser: { ...prevState.msgToUser, Type }
     }))
   }
 
   handleRankOfOperandChange = (evt) => {
-    let Rank = evt.target.value;
-    let Name = "r";
+    let Rank = { Rank: evt.target.value, state: true };
+    let Name = { Name: "r", state: this.state.msgToUser.Name.state };
     let indexOfLinkingIndex = this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
-    if (((Rank === this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands + 2)&&this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.result.length!==0)
-    ||((Rank === this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands + 1)&&this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.result.length===0)) {
+    if (((Rank.Rank === this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands + 2) && this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.result.length !== 0)
+      || ((Rank.Rank === this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.operands + 1) && this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction.result.length === 0)) {
       this.setState(prevState => ({
         msgToUser: { ...prevState.msgToUser, Name, Rank }
       }))
     }
-    else{
+    else {
       this.setState(prevState => ({
         msgToUser: { ...prevState.msgToUser, Rank }
       }));
@@ -231,14 +234,21 @@ class App extends Component {
   }
 
   handleInsertClick = (evt) => {
+    var linkingIndexTable = this.state.linkingIndexTable;
+    var msgToUser = this.state.msgToUser;
+    if (msgToUser.Name.state && msgToUser.Type.state && msgToUser.Rank.state && msgToUser.Dimension.state) {
+      let indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
+      let modifiedCurrentInstruction = myLib.insertOperand(msgToUser.Name.Name, msgToUser.Type.Type, msgToUser.Rank.Rank, msgToUser.Dimension.Dimension, linkingIndexTable[indexOfLinkingIndex].currentInstruction);
+      linkingIndexTable[indexOfLinkingIndex].currentInstruction = modifiedCurrentInstruction;
+    }
     this.setState(prevState => ({
-      clickedButton: evt.target.id
+      linkingIndexTable:linkingIndexTable
     }));
 
   }
 
   handleDeleteClick = (evt) => {
-     this.setState(prevState => ({
+    this.setState(prevState => ({
       clickedButton: evt.target.id
     }));
   }
@@ -253,7 +263,7 @@ class App extends Component {
     //console.log("evtTarget select", evt.target, "evt.currentTarget select", evt.currentTarget)
   }
 
-  render() {
+  render() {console.log("linkingIndextable", this.state.linkingIndexTable);
     let indexOfLinkingIndex = this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name == this.state.value);
     let linkingIndex = this.state.linkingIndexTable[indexOfLinkingIndex].linkingIndex;
     let currentInstruction = this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction;
@@ -263,8 +273,8 @@ class App extends Component {
         {this.state.isVisible && <Visualization deletedName={this.state.deletedName} currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} handlesimdButtonClick={this.handlesimdButtonClick}
           currentInstruction={currentInstruction} linkingIndex={linkingIndex} handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} value={this.state.value}
           clickedButton={this.state.clickedButton} handleDimensionOfOperandChange={this.handleDimensionOfOperandChange} handleRankOfOperandChange={this.handleRankOfOperandChange}
-          handleInsertClick={this.handleInsertClick} handleDeleteClick={this.handleDeleteClick} handleGroupClick={this.handleGroupClick} handlePartClick={this.handlePartClick} msgToUser={this.state.msgToUser} 
-          handleTypeOfOperandChange={this.handleTypeOfOperandChange}  handleNameOfOperandChange={this.handleNameOfOperandChange}/>}
+          handleInsertClick={this.handleInsertClick} handleDeleteClick={this.handleDeleteClick} handleGroupClick={this.handleGroupClick} handlePartClick={this.handlePartClick} msgToUser={this.state.msgToUser}
+          handleTypeOfOperandChange={this.handleTypeOfOperandChange} handleNameOfOperandChange={this.handleNameOfOperandChange} />}
       </div>
     );
   }
