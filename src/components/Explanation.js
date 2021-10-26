@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Explanation.css';
+import * as _ from "lodash";
 import simdFunction from '../utilities/simdFunction.json';
 
 const alphabethLetters = myLib.range('a'.charCodeAt(0), 'z'.charCodeAt(0), 1).map(x => String.fromCharCode(x));
@@ -22,7 +23,7 @@ class Explanation extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.value !== prevProps.value) {
+        if (this.props.value !== prevProps.value||_.isEqual(this.props.linkingIndex, prevProps.linkingIndex)) {
             this.currentResult = this.props.currentResult
             this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
         }

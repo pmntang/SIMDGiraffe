@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import * as _ from "lodash";
+import simdFunction from '../utilities/simdFunction.json';
 // import 'array-flat-polyfill';
 // import 'underscore';
 
@@ -675,31 +676,37 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
 
 export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
+export const operandsAndResults=computeOperandsAndresultElt(simdFunction);
+
+export const constInitialLinkingIndexInstruction = (instructionName) => {
+  let operand = operandsAndResults.find(e => e.name == instructionName);
+  return operand.result.map(o => ["inactive", ...operand.operands.map(e => [])])
+}
 
 export function insertOperand(opName, opType, opRank, opDimension, aLinkingObject) {
-  if (opName === "r" && ((opRank === aLinkingObject.currentInstruction.operands.length + 2 && aLinkingObject.currentInstruction.result.length !== 0) || (opRank === aLinkingObject.currentInstruction.operands.length + 1 && aLinkingObject.currentInstruction.result.length === 0))) {
-    let result = opDimension === 0 ? range(0, opDimension, opDimension) : range(0, opDimension - 1, 1);
+  if (opName === "r" ) {
+    let result = opDimension == 0 ? range(0, opDimension, opDimension) : range(0, opDimension - 1, 1);
     let retType = opType;
     let currentInstruction = aLinkingObject.currentInstruction;
     let linkingIndex = aLinkingObject.linkingIndex;
     currentInstruction = { ...currentInstruction, result, retType };
-    //linkingIndex=linkingIndex.map((e,i)=>e.)
-    return { ...aLinkingObject.currentInstruction, result, retType }
+    linkingIndex=result.length==0?result:result.map(e=>currentInstruction.operands.length==0?["inactive"]:["inactive",...range(0,currentInstruction.operands.length-1,1).map(n=>[])]);
+    return { ...aLinkingObject,linkingIndex, currentInstruction}
   }
   else {
-    if (opRank < aLinkingObject.currentInstruction.operands.length + 2 && opName !== "r") {
-      let operands = aLinkingObject.currentInstruction.operands;
-      let types = aLinkingObject.currentInstruction.types;
-      let varnames = aLinkingObject.currentInstruction.varnames;
+    
+      let currentInstruction = aLinkingObject.currentInstruction;
+      let linkingIndex=aLinkingObject.linkingIndex;
+      let operands = currentInstruction.operands;
+      let types = currentInstruction.types;
+      let varnames = currentInstruction.varnames;    
       operands.splice(opRank - 1, 0, range(0, opDimension - 1, 1));
       types.splice(opRank - 1, 0, opType);
       varnames.splice(opRank - 1, 0, opName);
-      return { ...aLinkingObject.currentInstruction, operands, types, varnames }
+      currentInstruction={...currentInstruction,operands, types, varnames};
+      linkingIndex=constInitialLinkingIndexInstruction(currentInstruction.name);
+      return { ...aLinkingObject, linkingIndex, currentInstruction}
     }
-    else {
-      return aLinkingObject.currentInstruction
-    }
-  }
 }
 
 export function deleteOperand(opName, opRank, aLinkingObject) {
@@ -744,7 +751,7 @@ export function buildMessage(operators, operands) {
 
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
   var Msge = "Click on a result field to see its calculation explained";
-  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active");
+  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active");console.log("aLinkingIndex", aLinkingIndex);
   Msge = indexOfactive == -1 ? Msge : aLinkingIndex[indexOfactive].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" ")
   return Msge
   // const globalTab = (Array.isArray(operands) && Array.isArray(operators)) ?
