@@ -35,7 +35,7 @@ class Explanation extends Component {
     }
 
 
-    render() {console.log("Name", this.props.msgToUser.Name.Name, "this.props.currentInstruction",this.props.currentInstruction)
+    render() {console.log()
         let availableLetters =this.props.currentInstruction.operands.length===0?alphabethLetters: alphabethLetters.filter(x => !this.props.currentInstruction.varnames.includes(x));
         let availableName=this.props.currentInstruction.operands.length===0?[...this.props.deletedName, ...availableLetters]:[...this.props.deletedName, ...availableLetters].filter(x => !this.props.currentInstruction.varnames.includes(x));
         let optionsName =optionOfT(["--Choose operand name--",...availableName]) 
@@ -77,13 +77,13 @@ class Explanation extends Component {
         var deleteField = <div className='delete-operand'>
             <label htmlFor="name-of-operand-to-delete"><span className="button-delete"></span></label>
             <select id="name-of-operand-to-delete" form="explanationForm" name="name-of-operand-to-delete" autoComplete="on"
-                required >
+                required onChange={(evt) => this.props.handleNameOfOperandChange(evt)}>
                 {optionNameToDelete}
             </select>
             <br />
             <label htmlFor="rank-of-operand-to-delete"><span className="button-delete"></span></label>
             <select id="rank-of-operand-to-delete" name="rank-of-operand-to-delete" autoComplete="on"
-                required >
+                required onChange={(evt) => this.props.handleRankOfOperandChange(evt)}>
                 {optionRankToDelete}
             </select>
 

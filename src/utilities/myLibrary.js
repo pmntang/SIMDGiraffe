@@ -659,7 +659,7 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
       });
     }
     else {
-      if (e.parameter && Array.isArray(e.parameter) &&e.parameter.find(e => e._varname === "" || e._type === "void")) {
+      if (e.parameter && Array.isArray(e.parameter) && e.parameter.find(e => e._varname === "" || e._type === "void")) {
         obj = { ...obj, operands, varnames, types }
       }
     }
@@ -676,7 +676,7 @@ export function computeOperandsAndresultElt(aSimdDescriptionFile) {// take a fil
 
 export const range = (start, stop, step) => Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
-export const operandsAndResults=computeOperandsAndresultElt(simdFunction);
+export const operandsAndResults = computeOperandsAndresultElt(simdFunction);
 
 export const constInitialLinkingIndexInstruction = (instructionName) => {
   let operand = operandsAndResults.find(e => e.name == instructionName);
@@ -684,32 +684,45 @@ export const constInitialLinkingIndexInstruction = (instructionName) => {
 }
 
 export function insertOperand(opName, opType, opRank, opDimension, aLinkingObject) {
-  if (opName === "r" ) {
+  if (opName === "r") {
     let result = opDimension == 0 ? range(0, opDimension, opDimension) : range(0, opDimension - 1, 1);
     let retType = opType;
     let currentInstruction = aLinkingObject.currentInstruction;
     let linkingIndex = aLinkingObject.linkingIndex;
     currentInstruction = { ...currentInstruction, result, retType };
-    linkingIndex=result.length==0?result:result.map(e=>currentInstruction.operands.length==0?["inactive"]:["inactive",...range(0,currentInstruction.operands.length-1,1).map(n=>[])]);
-    return { ...aLinkingObject,linkingIndex, currentInstruction}
+    linkingIndex = result.length == 0 ? result : result.map(e => currentInstruction.operands.length == 0 ? ["inactive"] : ["inactive", ...range(0, currentInstruction.operands.length - 1, 1).map(n => [])]);
+    return { ...aLinkingObject, linkingIndex, currentInstruction }
   }
   else {
-    
-      let currentInstruction = aLinkingObject.currentInstruction;
-      let linkingIndex=aLinkingObject.linkingIndex;
-      let operands = currentInstruction.operands;
-      let types = currentInstruction.types;
-      let varnames = currentInstruction.varnames;    
-      operands.splice(opRank - 1, 0, range(0, opDimension - 1, 1));
-      types.splice(opRank - 1, 0, opType);
-      varnames.splice(opRank - 1, 0, opName);
-      currentInstruction={...currentInstruction,operands, types, varnames};
-      linkingIndex=constInitialLinkingIndexInstruction(currentInstruction.name);
-      return { ...aLinkingObject, linkingIndex, currentInstruction}
-    }
+
+    let currentInstruction = aLinkingObject.currentInstruction;
+    let linkingIndex = aLinkingObject.linkingIndex;
+    let operands = currentInstruction.operands;
+    let types = currentInstruction.types;
+    let varnames = currentInstruction.varnames;
+    operands.splice(opRank - 1, 0, range(0, opDimension - 1, 1));
+    types.splice(opRank - 1, 0, opType);
+    varnames.splice(opRank - 1, 0, opName);
+    currentInstruction = { ...currentInstruction, operands, types, varnames };
+    linkingIndex = constInitialLinkingIndexInstruction(currentInstruction.name);
+    return { ...aLinkingObject, linkingIndex, currentInstruction }
+  }
 }
 
 export function deleteOperand(opName, opRank, aLinkingObject) {
+  let currentInstruction = aLinkingObject.currentInstruction;
+  let linkingIndex = aLinkingObject.linkingIndex;
+  let operands = currentInstruction.operands;
+  let types = currentInstruction.types;
+  let varnames = currentInstruction.varnames;
+  if (opName === varnames[opRank - 1]) {
+    operands.splice(opRank - 1, 1);
+    types.splice(opRank - 1, 1);
+    varnames.splice(opRank - 1, 1);
+    currentInstruction = { ...currentInstruction, operands, types, varnames };
+    linkingIndex = constInitialLinkingIndexInstruction(currentInstruction.name);
+    return [{ ...aLinkingObject, linkingIndex, currentInstruction }, opName]
+  }
 
 }
 
@@ -751,7 +764,7 @@ export function buildMessage(operators, operands) {
 
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
   var Msge = "Click on a result field to see its calculation explained";
-  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active");console.log("aLinkingIndex", aLinkingIndex);
+  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active"); console.log("aLinkingIndex", aLinkingIndex);
   Msge = indexOfactive == -1 ? Msge : aLinkingIndex[indexOfactive].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" ")
   return Msge
   // const globalTab = (Array.isArray(operands) && Array.isArray(operators)) ?

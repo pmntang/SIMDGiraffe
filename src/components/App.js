@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
+import * as _ from "lodash";
 import simdFunction from '../utilities/simdFunction.json';
 import styled from 'styled-components'
 import logo from '../assets/logo.png';
@@ -231,23 +232,42 @@ class App extends Component {
   }
 
   handleInsertClick = (evt) => {
+    var deletedName=this.state.deletedName;
     var linkingIndexTable = this.state.linkingIndexTable;
     var msgToUser = this.state.msgToUser;
     if (msgToUser.Name.state && msgToUser.Type.state && msgToUser.Rank.state && msgToUser.Dimension.state) {
       let indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
       let modifiedCurrentInstruction = myLib.insertOperand(msgToUser.Name.Name, msgToUser.Type.Type, msgToUser.Rank.Rank, msgToUser.Dimension.Dimension, linkingIndexTable[indexOfLinkingIndex]);
+      deletedName=_.isEqual(linkingIndexTable[indexOfLinkingIndex],modifiedCurrentInstruction)?deletedName:deletedName.filter(x=>x!==msgToUser.Name.Name);
       linkingIndexTable[indexOfLinkingIndex] = modifiedCurrentInstruction;
+    
     }
     this.setState(prevState => ({
+      deletedName:deletedName,
+      clickedButton: evt.target.id,
       linkingIndexTable:linkingIndexTable,
-      currentResult: null
+      currentResult: null,
+      msgToUser: { Type: { Type: null, state: false }, Name: { Name: null, state: false }, Rank: { Rank: null, state: false }, Dimension: { Dimension: null, state: false } }
     }));
 
   }
 
   handleDeleteClick = (evt) => {
+    var deletedName=this.state.deletedName;
+    var linkingIndexTable = this.state.linkingIndexTable;
+    var msgToUser = this.state.msgToUser;
+    if (msgToUser.Name.state && msgToUser.Rank.state) {
+      let indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
+      let modifiedCurrentInstruction = myLib.deleteOperand(msgToUser.Name.Name,  msgToUser.Rank.Rank, linkingIndexTable[indexOfLinkingIndex]);
+      linkingIndexTable[indexOfLinkingIndex] = modifiedCurrentInstruction[0];
+      deletedName=[modifiedCurrentInstruction[1],...deletedName]
+    }
     this.setState(prevState => ({
-      clickedButton: evt.target.id
+      deletedName:deletedName,
+      clickedButton: evt.target.id,
+      linkingIndexTable:linkingIndexTable,
+      currentResult: null,
+      msgToUser: { Type: { Type: null, state: false }, Name: { Name: null, state: false }, Rank: { Rank: null, state: false }, Dimension: { Dimension: null, state: false } }
     }));
   }
   handleGroupClick = (evt) => {
