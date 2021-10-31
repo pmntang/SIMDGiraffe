@@ -36,9 +36,46 @@
     transform: rotate(360deg);
   }
 }
-.displayZone{
+
+#application
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+	padding:1px;
+	margin:1px;
+/* 	height:2048px;
+	width:2048px; */
+}
+
+#codeTextExplanation
+{
   display: flex;
-  flex-wrap: wrap;
-  border: 1px solid black;
-  /* justify-content: space-between; */
+  flex-direction: row;
+      justify-content: flex-start;
+    align-items: flex-start;
+
+}
+
+#operation  
+{
+  
+  padding-top: 15px;
+  margin-top: 15px;
+
+}
+
+
+#codeText  
+{
+  
+flex: 1;
+
+}
+#explanation  
+{  
+flex: 1;
+padding-left: 15px;
+margin-left: 15px;
 }

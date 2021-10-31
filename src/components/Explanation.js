@@ -43,9 +43,10 @@ class Explanation extends Component {
         var optionNameToDelete =optionOfT(["--Operand name to delete--",...canBeDeletedName]);
         var canBeDeletedRank = myLib.range(1, this.props.currentInstruction.operands.length, 1);
         var optionRankToDelete = optionOfT(["--Operand rank to delete--",...canBeDeletedRank]);
-        var canBeInsertRank = this.props.msgToUser.Name.Name?( this.props.msgToUser.Name.Name!=="r"?(this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 1, 1)):
+        let canBeInsertRank = this.props.msgToUser.Name.Name?( this.props.msgToUser.Name.Name!=="r"?(this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 1, 1)):
         (this.props.currentInstruction.result.length === 0 ? myLib.range(this.props.currentInstruction.operands.length+1, this.props.currentInstruction.operands.length+1, 1) : myLib.range(this.props.currentInstruction.operands.length + 2, this.props.currentInstruction.operands.length + 2, 1))):
         (this.props.currentInstruction.result.length === 0 ? myLib.range(1, this.props.currentInstruction.operands.length+1, 1) : myLib.range(1, this.props.currentInstruction.operands.length + 2, 1));
+        
         var optionRankToInsert = optionOfT(["--Choose operand rank--",...canBeInsertRank]);
         var dimension = [0,...myLib.range(0, 10, 1).map(e=>2**e)];
         var optionDimension = optionOfT(["--Choose operand dimension--",...dimension]); 
