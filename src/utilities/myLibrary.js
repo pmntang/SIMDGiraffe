@@ -762,6 +762,16 @@ export function buildMessage(operators, operands) {
   return message
 }
 
+export function replaceOperandInMessage(anOperand, aMessage){
+  switch(anOperand){
+    case "Idx":return  aMessage.replace(/\w+\s+Idx\s+\w+/g, (match, p,offset, string)=>{
+          return `<var>${match.charAt(0)}<sub>${match.slice(match.indexOf(anOperand)+anOperand.length+1)}</sub></var>`;
+    })
+    default:return aMessage;
+  }
+  
+}
+
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
   var Msge = "Click on a result field to see its calculation explained";
   let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active"); console.log("aLinkingIndex", aLinkingIndex);

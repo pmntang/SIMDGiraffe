@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Explanation.css';
 import * as _ from "lodash";
+import parse from 'html-react-parser';
 import simdFunction from '../utilities/simdFunction.json';
 
 const alphabethLetters = myLib.range('a'.charCodeAt(0), 'z'.charCodeAt(0), 1).map(x => String.fromCharCode(x));
@@ -90,6 +91,8 @@ class Explanation extends Component {
 
         </div>
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
+        this.butonMsg=myLib.replaceOperandInMessage("Idx", this.butonMsg);
+        //console.log("msg ",this.butonMsg ," Modified Msg ",myLib.replaceOperandInMessage("Idx", this.butonMsg) );
         this.currentResult = this.props.currentResult;
         if (this.props.clickedButton) {
             this.deletedButtonState =1;// this.props.clickedButton === "deleteOperandButton";
@@ -107,7 +110,7 @@ class Explanation extends Component {
                     <p id="outputParagraph" className="outputParagraph">
                         <label>{this.currentResult && `How to compute the field  `}</label>
                         <output id="simdOutput" className="simdOutput" name="outputSimd" form="explanationForm" >
-                            <span id="fieldFormul" className="fieldFormul">{this.currentResult && `${this.currentResult}:  `}</span><span id="textFormul" className="textFmormul">{this.currentResult && `${this.currentResult} =`}{`${this.butonMsg}`}</span>
+                            <span id="fieldFormul" className="fieldFormul">{this.currentResult && `${this.currentResult}:  `}</span><span id="textFormul" className="textFmormul">{this.currentResult && `${this.currentResult} =`}{parse(this.butonMsg)}</span>
                         </output>
                     </p>
                     <p id="buttonParagraph" className="buttonParagraph">
