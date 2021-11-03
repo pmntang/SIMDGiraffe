@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Explanation.css';
 import * as _ from "lodash";
+import '../styles/Explanation.css';
 import parse from 'html-react-parser';
 import simdFunction from '../utilities/simdFunction.json';
 
@@ -91,9 +92,10 @@ class Explanation extends Component {
 
         </div>
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
-        this.butonMsg=myLib.replaceOperandInMessage("Idx", this.butonMsg);
-        //console.log("msg ",this.butonMsg ," Modified Msg ",myLib.replaceOperandInMessage("Idx", this.butonMsg) );
-        this.currentResult = this.props.currentResult;
+       this.butonMsg=myLib.replaceOperandInMessage(this.butonMsg);
+       // this.butonMsg='<var>A<sub><var>B<sub>10</sub></var></sub></var>';
+        console.log("msg ",this.props.currentResult ," Modified Msg ",myLib.replaceOperandInMessage(this.props.currentResult) );
+        this.currentResult = this.props.currentResult?myLib.replaceOperandInMessage(this.props.currentResult):this.props.currentResult;
         if (this.props.clickedButton) {
             this.deletedButtonState =1;// this.props.clickedButton === "deleteOperandButton";
             this.insertButtonState = 1;
@@ -110,12 +112,13 @@ class Explanation extends Component {
                     <p id="outputParagraph" className="outputParagraph">
                         <label>{this.currentResult && `How to compute the field  `}</label>
                         <output id="simdOutput" className="simdOutput" name="outputSimd" form="explanationForm" >
-                            <span id="fieldFormul" className="fieldFormul">{this.currentResult && `${this.currentResult}:  `}</span><span id="textFormul" className="textFmormul">{this.currentResult && `${this.currentResult} =`}{parse(this.butonMsg)}</span>
+                        {this.currentResult && <span id="fieldFormul" className="fieldFormul"> {parse(this.currentResult)}:  </span>}{this.currentResult?<span id="textFormul" className="textFmormul"> {parse(this.currentResult)} = {parse(this.butonMsg)}</span>:
+                        "Click on a result field to see its calculation explained"}
                         </output>
                     </p>
                     <p id="buttonParagraph" className="buttonParagraph">
                         {this.currentResult && <button id="simdButton" className="simdButton" form="explanationForm" type="button" onClick={evt => this.props.handlesimdButtonClick(evt)}>
-                            {`Reset the field ${this.currentResult}  `}
+                            Reset the field {parse(this.currentResult)}  
                         </button>}
                     </p>
                     <p id="buttonManageVectorOperands" className="buttonManageVectorOperands">

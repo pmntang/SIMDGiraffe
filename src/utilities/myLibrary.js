@@ -762,18 +762,25 @@ export function buildMessage(operators, operands) {
   return message
 }
 
-export function replaceOperandInMessage(anOperand, aMessage){
-  switch(anOperand){
-    case "Idx":return  aMessage.replace(/\w+\s+Idx\s+\w+/g, (match, p,offset, string)=>{
-          return `<var>${match.charAt(0)}<sub>${match.slice(match.indexOf(anOperand)+anOperand.length+1)}</sub></var>`;
-    })
-    default:return aMessage;
+export function replaceOperandInMessage(aMessage){
+  var reshapedMessage=aMessage;
+  if(reshapedMessage){
+    reshapedMessage=reshapedMessage.replace(/([A-Z])([0-9]{1,4})/g, (match, p1,p2, offset, string)=>{
+      return `<var>${p1}<sub>${p2}</sub></var>`
+    });
+    
+    reshapedMessage= reshapedMessage.replace(/<var>([A-Z])<sub>[0-9]{1,4}<\/sub><\/var>\s+Idx\s+(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1,p2,offset, string)=>{
+            return `<var>${p1}<sub>${p2}</sub></var>`
+      });
+ 
   }
+     
+  return reshapedMessage
   
 }
 
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
-  var Msge = "Click on a result field to see its calculation explained";
+  var Msge = "";
   let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active"); console.log("aLinkingIndex", aLinkingIndex);
   Msge = indexOfactive == -1 ? Msge : aLinkingIndex[indexOfactive].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" ")
   return Msge
