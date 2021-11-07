@@ -28,7 +28,7 @@ const RightContainer = styled.div`
   overflow: hidden;
 `
 const myDataListTab = myLib.constructDataListTable(simdFunction);
-
+const initializeResultElt=anInstructionName=>myLib.range(1,myLib.constInitialLinkingIndexInstruction(anInstructionName).length,1).map(e=>({state:"inactive",fieldResult:null}));
 
 
 
@@ -37,9 +37,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "_mm_add_epi8", isVisible: true, currentOperator: null, currentResult: null, linkingIndexTable: [{
+      value: "_mm_add_epi8",activeView:"novice", isVisible: true, currentOperator: null, currentResult: null, linkingIndexTable: [{
         linkingIndex: myLib.constInitialLinkingIndexInstruction("_mm_add_epi8"),
-        currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, "_mm_add_epi8")
+        currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, "_mm_add_epi8"),resultTable:initializeResultElt("_mm_add_epi8")
       }], clickedButton: 1, msgToUser: { Type: { Type: null, state: false }, Name: { Name: null, state: false }, Rank: { Rank: null, state: false }, Dimension: { Dimension: null, state: false } },
       deletedName: []
     };
@@ -61,8 +61,26 @@ class App extends Component {
 
   }
 
-  componentDidUpdate() {
-
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    let indexOfLinkingIndex =this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value);
+    let resultTable=this.state.linkingIndexTable[indexOfLinkingIndex].resultTable;
+    this.state.linkingIndexTable[indexOfLinkingIndex].linkingIndex.forEach((r, i,a)=>{
+      if(r.some((o,j)=>j>0&&o.find(x=>x[2]))){
+        resultTable[i].state="active";
+        }
+        else{
+          resultTable[i].state="inactive";
+        }
+    })
+    if(!_.isEqual(resultTable, this.state.linkingIndexTable[indexOfLinkingIndex].resultTable)){
+     let linkingIndexTable=this.state.linkingIndexTable;
+      let newLinkinIndexObject = { linkingIndex: linkingIndexTable[indexOfLinkingIndex].linkingIndex, currentInstruction: linkingIndexTable[indexOfLinkingIndex].currentInstruction,
+      resultTable:resultTable };
+      linkingIndexTable[indexOfLinkingIndex]=newLinkinIndexObject;
+      this.setState(state => ({
+        linkingIndexTable: linkingIndexTable
+      }));
+    }
   }
 
   componentWillUnmount() {
@@ -72,17 +90,19 @@ class App extends Component {
     if (myDataListTab.find(o => o[0] == evt.target.value)) {
       var linkingIndexTable = this.state.linkingIndexTable
       if (!(linkingIndexTable.find(e => e.currentInstruction.name === evt.target.value))) {
-        let newLinkinIndexObject = { linkingIndex: myLib.constInitialLinkingIndexInstruction(evt.target.value), currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, evt.target.value) }
+        let newLinkinIndexObject = { linkingIndex: myLib.constInitialLinkingIndexInstruction(evt.target.value), currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, evt.target.value),
+          resultTable:initializeResultElt(evt.target.value) }
         linkingIndexTable = linkingIndexTable.map(e => ({ linkingIndex: e.linkingIndex.map(o => o.fill("inactive", 0, 1)), currentInstruction: e.currentInstruction }))
         linkingIndexTable = [...linkingIndexTable, newLinkinIndexObject]
       }
       else {
         let indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === evt.target.value);
-        let newLinkinIndexObject = { linkingIndex: linkingIndexTable[indexOfLinkingIndex].linkingIndex.map(o => o.fill("inactive", 0, 1)), currentInstruction: linkingIndexTable[indexOfLinkingIndex].currentInstruction };
+        let newLinkinIndexObject = { linkingIndex: linkingIndexTable[indexOfLinkingIndex].linkingIndex.map(o => o.fill("inactive", 0, 1)), currentInstruction: linkingIndexTable[indexOfLinkingIndex].currentInstruction,
+        resultTable:linkingIndexTable[indexOfLinkingIndex].resultTable };
         linkingIndexTable = linkingIndexTable.fill(newLinkinIndexObject, indexOfLinkingIndex, indexOfLinkingIndex + 1);
 
       }
-      this.setState(prevState => ({
+      this.setState(state => ({
         linkingIndexTable: linkingIndexTable,
         currentOperator: null,
         currentResult: null,
@@ -103,8 +123,9 @@ class App extends Component {
     var currentInstructionR = linkingIndexTable[indexOfcurrentInstruction].currentInstruction.result.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);//just to reverse
     if (evt.currentTarget.id.includes("result")) {//result has been clicked
       let number = evt.currentTarget.textContent;
-      let indexR = currentInstructionR.findIndex(e => (String.fromCharCode(65 + linkingIndexTable[indexOfcurrentInstruction].currentInstruction.operands.length) + e) == number);
-      linkingIndexTable[indexOfcurrentInstruction].linkingIndex = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.map((e, i) => i == indexR ? e.map((x, j) => j == 0 ? "active" : x) : e.map((x, j) => j == 0 ? "inactive" : x));
+      let indexR = currentInstructionR.findIndex(e => (String.fromCharCode(65 + linkingIndexTable[indexOfcurrentInstruction].currentInstruction.operands.length) + e) === number);
+      linkingIndexTable[indexOfcurrentInstruction].linkingIndex = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.map((e, i) => i === indexR ? e.map((x, j) => j === 0 ? "active" : x) : e.map((x, j) => j === 0 ? "inactive" : x));
+      linkingIndexTable[indexOfcurrentInstruction].resultTable = linkingIndexTable[indexOfcurrentInstruction].resultTable.map((e,i)=>i===indexR?({state:e.state, fieldResult:number}):e);console.log("number", number,"index", indexR)
       indexR > -1 && this.setState(prevState => ({
         currentResult: number,
         linkingIndexTable: linkingIndexTable
@@ -116,12 +137,12 @@ class App extends Component {
       var indexO = null;
 
       let indexOfOperand = currentInstructionO.findIndex((e, i) => {
-        indexO = e.indexOf(e.find(o => (String.fromCharCode(65 + i) + o) == number))
-        return indexO != -1
+        indexO = e.indexOf(e.find(o => (String.fromCharCode(65 + i) + o) === number))
+        return indexO !== -1
       })
-      let indexOfResult = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.findIndex(e => e[0] == "active");
-      if (indexOfResult != -1) {
-        if (!linkingIndexTable[indexOfcurrentInstruction].linkingIndex[indexOfResult].some(e => Array.isArray(e) && e.length != 0)) {
+      let indexOfResult = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.findIndex(e => e[0] === "active");
+      if (indexOfResult !== -1) {
+        if (!linkingIndexTable[indexOfcurrentInstruction].linkingIndex[indexOfResult].some(e => Array.isArray(e) && e.length !== 0)) {
           linkingIndexTable[indexOfcurrentInstruction].linkingIndex[indexOfResult][indexOfOperand + 1] = [[number, 0, this.state.currentOperator], ...linkingIndexTable[indexOfcurrentInstruction].linkingIndex[indexOfResult][indexOfOperand + 1]];
           this.setState(prevState => ({
             currentOperator: null,
@@ -137,9 +158,9 @@ class App extends Component {
             // const operationIdx=(anArray,anIndex)=>anArray[anIndex].findIndex((e, i) => Array.isArray(e) && e.length != 0 && e.findIndex((o, j) => o.indexOf(Math.max(...g(anArray,anIndex))) != -1) != -1)
 
             const operationIdx = (anArray, anIndex) => anArray[anIndex].findIndex((e, i) => {
-              if (Array.isArray(e) && e.length != 0) {
-                indexOfMaxRankArray = e.findIndex((o, j) => o.indexOf(Math.max(...g(anArray, anIndex))) != -1)
-                return indexOfMaxRankArray != -1
+              if (Array.isArray(e) && e.length !== 0) {
+                indexOfMaxRankArray = e.findIndex((o, j) => o.indexOf(Math.max(...g(anArray, anIndex))) !== -1)
+                return indexOfMaxRankArray !== -1
               }
             })
             var indexOperand = operationIdx(linkingIndexTable[indexOfcurrentInstruction].linkingIndex, indexOfResult);//The index of the operand currently bearing the array of contribution to current result field with the maximun rank
@@ -284,12 +305,23 @@ class App extends Component {
   handleGroupPartSelect = (evt) => {
     //console.log("evtTarget select", evt.target, "evt.currentTarget select", evt.currentTarget)
   }
+  handleNoviceViewClick=(evt)=>{
+    this.setState(prevState => ({
+      activeView:"expert"
+      }));
+  }
+  handleExpertViewClick=(evt)=>{
+    this.setState(prevState => ({
+      activeView:"novice"
+      }));
+  }
 
   render() {
     console.log("linkingIndextable", this.state.linkingIndexTable);
     let indexOfLinkingIndex = this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name == this.state.value);
     let linkingIndex = this.state.linkingIndexTable[indexOfLinkingIndex].linkingIndex;
     let currentInstruction = this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction;
+    let resultTable=this.state.linkingIndexTable[indexOfLinkingIndex].resultTable;
     return (
 
       <div id="application" className="application">
@@ -299,8 +331,9 @@ class App extends Component {
           </div>
           <div id="explanation" className="explanation">
             {this.state.isVisible && <Explanation value={this.state.value} handlesimdButtonClick={this.handlesimdButtonClick} linkingIndex={linkingIndex} msgToUser={this.state.msgToUser} deletedName={this.state.deletedName}
-              currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} currentInstruction={currentInstruction} clickedButton={this.state.clickedButton}
-              handleDimensionOfOperandChange={this.handleDimensionOfOperandChange} handleRankOfOperandChange={this.handleRankOfOperandChange} handleTypeOfOperandChange={this.handleTypeOfOperandChange}
+              currentOperator={this.state.currentOperator} currentResult={this.state.currentResult} currentInstruction={currentInstruction} clickedButton={this.state.clickedButton} resultTable={resultTable} activeView={this.state.activeView}
+              handleDimensionOfOperandChange={this.handleDimensionOfOperandChange} handleRankOfOperandChange={this.handleRankOfOperandChange} handleTypeOfOperandChange={this.handleTypeOfOperandChange} handleNoviceViewClick={this.handleNoviceViewClick}
+              handleExpertViewClick={this.handleExpertViewClick}
               handleNameOfOperandChange={this.handleNameOfOperandChange} handleInsertClick={this.handleInsertClick} handleDeleteClick={this.handleDeleteClick} handleGroupClick={this.handleGroupClick} handlePartClick={this.handlePartClick} />}
           </div>
         </div>

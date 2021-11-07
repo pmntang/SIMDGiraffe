@@ -3,7 +3,16 @@
     border: 1px solid white
   }
 
-  #textFormul {
+  .textFormul {
     background-color:#bfe1fc;
+    
+  }
+  .blanKSpaceInNoviceView {
+    color:white;
+    
+  }
+
+  .view {
+    font-weight:bold;
     
   }

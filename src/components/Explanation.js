@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/Explanation.css';
 import * as _ from "lodash";
@@ -94,7 +94,9 @@ class Explanation extends Component {
         this.butonMsg = myLib.readLinkingIndexMsg(this.props.linkingIndex);
        this.butonMsg=myLib.replaceOperandInMessage(this.butonMsg);
        // this.butonMsg='<var>A<sub><var>B<sub>10</sub></var></sub></var>';
-        console.log("msg ",this.props.currentResult ," Modified Msg ",myLib.replaceOperandInMessage(this.props.currentResult) );
+       let resultTable=this.props.resultTable.map(e=>({state:e.state, fieldResult:myLib.replaceOperandInMessage(e.fieldResult)}))
+      let theseButonMsg=myLib.readAllLinkinIndex(this.props.linkingIndex,resultTable);
+        console.log("msg ",resultTable ," Modified Msg ",theseButonMsg);
         this.currentResult = this.props.currentResult?myLib.replaceOperandInMessage(this.props.currentResult):this.props.currentResult;
         if (this.props.clickedButton) {
             this.deletedButtonState =1;// this.props.clickedButton === "deleteOperandButton";
@@ -108,12 +110,13 @@ class Explanation extends Component {
 
 
             <div id="explanation" className="explanation">
+              {this.props.activeView!=="novice"?<span id="viewExpert" className="view">Expert view</span>:<span id="viewNovice" className="view">Novice view</span>}
                 <form id="explanationForm" className="explanationForm">
-                    <p id="outputParagraph" className="outputParagraph">
+                {this.props.activeView!=="novice"? <>  <p id="outputParagraph" className="outputParagraph">
                         <label>{this.currentResult && `How to compute the field  `}</label>
                         <output id="simdOutput" className="simdOutput" name="outputSimd" form="explanationForm" >
-                        {this.currentResult && <span id="fieldFormul" className="fieldFormul"> {parse(this.currentResult)}:  </span>}{this.currentResult?<span id="textFormul" className="textFmormul"> {parse(this.currentResult)} = {parse(this.butonMsg)}</span>:
-                        "Click on a result field to see its calculation explained"}
+                        {this.currentResult && <span id="fieldFormul" className="fieldFormul"> {parse(this.currentResult)}:  </span>}{this.currentResult?<span id="textFormul" className="textFormul"> {parse(this.currentResult)} = {parse(this.butonMsg)}</span>:
+                        "Click on a result field explain its calculation"}
                         </output>
                     </p>
                     <p id="buttonParagraph" className="buttonParagraph">
@@ -121,6 +124,7 @@ class Explanation extends Component {
                             Reset the field {parse(this.currentResult)}  
                         </button>}
                     </p>
+                    
                     <p id="buttonManageVectorOperands" className="buttonManageVectorOperands">
                         {this.insertButtonState && <button id="insertOperandButton" className="insertOperandButton" form="explanationForm" type="button" onClick={evt => this.props.handleInsertClick(evt)}>
                             Insert an operand
@@ -128,14 +132,23 @@ class Explanation extends Component {
                         {this.deletedButtonState && < button id="deleteOperandButton" className="deleteOperandButton" form="explanationForm" type="button" onClick={evt => this.props.handleDeleteClick(evt)}>
                             Delete an operand
                         </button>}<br /><br />
-                        <button id="groupOperandsButton" className="groupOperandsButton" form="explanationForm" type="button" onClick={evt => this.props.handleGroupClick(evt)}>
+                        {false && <><button id="groupOperandsButton" className="groupOperandsButton" form="explanationForm" type="button" onClick={evt => this.props.handleGroupClick(evt)}>
                             Group selected scalar operands
                         </button><br /><br />
                         <button id="partOperandsButton" className="partOperandsButton" form="explanationForm" type="button" onClick={evt => this.props.handlePartClick(evt)}>
                             Part selected scalar operands
-                        </button>
+                        </button></>}
                     </p>
-                    {insertField}{deleteField}
+                    {insertField}{deleteField}<br /><br />
+                    <button id="returnToNoviceViewButton" className="returnToNoviceViewButton" form="explanationForm" type="button" onClick={evt => this.props.handleExpertViewClick(evt)}>
+                            view how to compute all fields
+                        </button>
+                    </>:
+                    <>How to compute these fields:<br /> <br />{theseButonMsg.map((e,i)=><React.Fragment key={i+e.state}><output  id= {i+"simdOutput"} className="simdOutput" name="outputSimd" form="explanationForm"><span id={"textFormul"+i} className="textFormul">{parse(e.fieldResult)} = {parse(e.state)}</span></output><span id={"blanKSpaceInNoviceView"+i} className="blanKSpaceInNoviceView"> | </span></React.Fragment>)}
+                   <br /> <br /><br /> <br /> <button id="returnToExpertViewButton" className="returnToExpertViewButton" form="explanationForm" type="button" onClick={evt => this.props.handleNoviceViewClick(evt)}>
+                            return to expert view
+                        </button></>}
+               
                 </form>
             </div>
 

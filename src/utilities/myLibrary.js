@@ -772,7 +772,9 @@ export function replaceOperandInMessage(aMessage){
     reshapedMessage= reshapedMessage.replace(/<var>([A-Z])<sub>[0-9]{1,4}<\/sub><\/var>\s+Idx\s+(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1,p2,offset, string)=>{
             return `<var>${p1}<sub>${p2}</sub></var>`
       });
- 
+      reshapedMessage= reshapedMessage.replace(/mov\s*(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1,offset, string)=>{
+        return `${p1}`
+  });
   }
      
   return reshapedMessage
@@ -781,7 +783,7 @@ export function replaceOperandInMessage(aMessage){
 
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
   var Msge = "";
-  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active"); console.log("aLinkingIndex", aLinkingIndex);
+  let indexOfactive = aLinkingIndex.findIndex(e => e[0] == "active"); //console.log("aLinkingIndex", aLinkingIndex);
   Msge = indexOfactive == -1 ? Msge : aLinkingIndex[indexOfactive].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" ")
   return Msge
   // const globalTab = (Array.isArray(operands) && Array.isArray(operators)) ?
@@ -802,7 +804,10 @@ export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and r
   // }).join('');
   // return message
 }
-
+export function readAllLinkinIndex(aLinkingIndex, aResultTable){
+ let result= aResultTable.map((e,i)=>e.state==="active"?({state:aLinkingIndex[i].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" "), fieldResult:e.fieldResult}):e)
+return result.filter(e=>e.state!=="inactive").map(e=>({state:replaceOperandInMessage(e.state),fieldResult:e.fieldResult}));
+}
 export function findCurrentInstructionByName(tableOfInstrinsicsInstructions, instructionName) {
-  return tableOfInstrinsicsInstructions.find(e => e.name == instructionName)
+  return tableOfInstrinsicsInstructions.find(e => e.name === instructionName)
 }
