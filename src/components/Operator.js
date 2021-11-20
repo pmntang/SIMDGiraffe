@@ -4,7 +4,7 @@ import '../styles/Operator.css';
 import simdFunction from '../utilities/simdFunction.json';
 
 
-const operators = ['+', 'x', '-', '/', 'mov', ':(int)', 'exp', 'ln', '(', ')','Idx'];
+const operators = ['+', 'x', '-', '/', 'mov', ':(int)', 'exp', 'ln', '(', ')','Idx','Inv'];
 
 
 class Operator extends Component {

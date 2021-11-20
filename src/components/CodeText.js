@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as myLib from '../utilities/myLibrary.js';
 import '../styles/CodeText.css';
 import simdFunction from '../utilities/simdFunction.json';
+import parse from 'html-react-parser';
 
 const myDataListTab = myLib.constructDataListTable(simdFunction);
 const options=myDataListTab.map((e, i) => <option key={`${e[0]}+${i}`} value={e[0]}>{e[0]}</option>)
@@ -46,7 +47,7 @@ class CodeText extends Component {
     render() {
      
         var  handleOnchange = this.props.handleOnchange, value = this.props.value;
-        const description = myDataListTab.find(e => e[0] == value)[3];
+        const description = myDataListTab.find(e => e[0] == value)[3];console.log("description",description);
         return (
 
            <div className='instruction-choice-and-explanation'>
@@ -59,7 +60,7 @@ class CodeText extends Component {
                     {options}
                 </datalist>
                {this.props.isVisible && <div className="plain-text-explanation">
-                    {description}
+                   {description}
                 </div>}
 
             </div>

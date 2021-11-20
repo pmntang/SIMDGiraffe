@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as _ from "lodash";
 import simdFunction from '../utilities/simdFunction.json';
+import parse from 'html-react-parser';
 // import 'array-flat-polyfill';
 // import 'underscore';
 
@@ -762,23 +763,66 @@ export function buildMessage(operators, operands) {
   return message
 }
 
-export function replaceOperandInMessage(aMessage){
-  var reshapedMessage=aMessage;
-  if(reshapedMessage){
-    reshapedMessage=reshapedMessage.replace(/([A-Z])([0-9]{1,4})/g, (match, p1,p2, offset, string)=>{
+export function replaceOperandInMessage(aMessage) {
+  var reshapedMessage = aMessage;
+  if (reshapedMessage) {console.log("reshapedMessage  ",reshapedMessage );
+    const reg = /\+\s*([A-Z][0-9]{1,4})\s*x\s*([A-Z][0-9]{1,4})/g;
+    var allMatch = [], groupedMatch = [];
+    const f = (match, p1, p2, offset, string) => {
+      let thisMatch = [match, p1, p2, offset];
+      allMatch = [...allMatch, thisMatch];
+      groupedMatch = allMatch.reduce((acc, crv, cri, arr) => {
+        if (cri === 0 || !acc.find(e => e.some(x => x[1] === crv[1]))) {
+          acc = [...acc, Array.of(crv)];
+        }
+        else {
+          let indexGroup = acc.findIndex(e => e.some(x => x[1] === crv[1]));
+          let groupAddedElt = acc.find(e => e.some(x => x[1] === crv[1]));
+          groupAddedElt = [...groupAddedElt, crv];
+          acc[indexGroup] = groupAddedElt;
+        }
+        return acc
+      }, [])
+      //console.log(match, string, "groupedMatch", groupedMatch)
+      if (match.length + offset < string.length) {
+        return ""
+      }
+      if (match.length + offset === string.length && groupedMatch[groupedMatch.length - 1][groupedMatch[groupedMatch.length - 1].length - 1][3] === offset) {
+        if (groupedMatch.length - 1 === 0 && groupedMatch[groupedMatch.length - 1].length - 1 === 0) {
+          //console.log("groupedMatchzzzz", groupedMatch)
+          return match
+        }
+        else {
+          if (groupedMatch.length - 1 === 0) {
+            return groupedMatch[0].map((e, i) => i === 0 ? "+ " + e[1] + " x (" + e[2] + " +" : (i & 1 ? (i === groupedMatch[groupedMatch.length - 1].length - 1 ? e[2] + ")" : e[2]) : (i === groupedMatch[groupedMatch.length - 1].length - 1 ? " + " + e[2] + ")" : " + " + e[2] + " + "))).join("")
+          }
+          else {
+            return groupedMatch.map((u, j) => u.length - 1 === 0 ? u[0][0] : u.map((e, i) => i === 0 ? "+ " + e[1] + " x (" + e[2] + " +" : (i & 1 ? (i === u.length - 1 ? e[2] + ")" : e[2]) : (i === u.length - 1 ? " + " + e[2] + ")" : " + " + e[2] + " + "))).join("")).join("")
+          }
+        }
+
+      }
+
+    }
+    reshapedMessage = reshapedMessage.replace(reg, f);console.log("reshapedMessage2  ",reshapedMessage );
+    reshapedMessage = reshapedMessage.replace(/([A-Z])([0-9]{1,4})/g, (match, p1, p2, offset, string) => {
       return `<var>${p1}<sub>${p2}</sub></var>`
     });
-    
-    reshapedMessage= reshapedMessage.replace(/<var>([A-Z])<sub>[0-9]{1,4}<\/sub><\/var>\s+Idx\s+(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1,p2,offset, string)=>{
-            return `<var>${p1}<sub>${p2}</sub></var>`
-      });
-      reshapedMessage= reshapedMessage.replace(/mov\s*(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1,offset, string)=>{
-        return `${p1}`
-  });
+
+    reshapedMessage = reshapedMessage.replace(/<var>([A-Z])<sub>[0-9]{1,4}<\/sub><\/var>\s*Idx\s*(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1, p2, offset, string) => {
+      return `<var>${p1}<sub>${p2}</sub></var>`
+    });
+    reshapedMessage = reshapedMessage.replace(/mov\s*(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1, offset, string) => {
+      return `${p1}`
+    });
+    reshapedMessage = reshapedMessage.replace(/Inv\s*(<var>[A-Z]<sub>[0-9]{1,4}<\/sub><\/var>)/g, (match, p1, offset, string) => {
+      return `(1-${p1})`
+    });
+
   }
-     
+
   return reshapedMessage
-  
+
 }
 
 export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and return a message
@@ -804,9 +848,9 @@ export function readLinkingIndexMsg(aLinkingIndex) {//take a linking index and r
   // }).join('');
   // return message
 }
-export function readAllLinkinIndex(aLinkingIndex, aResultTable){
- let result= aResultTable.map((e,i)=>e.state==="active"?({state:aLinkingIndex[i].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" "), fieldResult:e.fieldResult}):e)
-return result.filter(e=>e.state!=="inactive").map(e=>({state:replaceOperandInMessage(e.state),fieldResult:e.fieldResult}));
+export function readAllLinkinIndex(aLinkingIndex, aResultTable) {
+  let result = aResultTable.map((e, i) => e.state === "active" ? ({ state: aLinkingIndex[i].slice(1).flat().sort((a, b) => a[1] - b[1]).reduce((pre, cur) => cur[2] ? [...pre, cur[2], cur[0]] : [...pre, cur[0]], []).join(" "), fieldResult: e.fieldResult }) : e)
+  return result.filter(e => e.state !== "inactive").map(e => ({ state: replaceOperandInMessage(e.state), fieldResult: e.fieldResult }));
 }
 export function findCurrentInstructionByName(tableOfInstrinsicsInstructions, instructionName) {
   return tableOfInstrinsicsInstructions.find(e => e.name === instructionName)

@@ -144,7 +144,7 @@ class Explanation extends Component {
                             view how to compute all fields
                         </button>
                     </>:
-                    <>How to compute these fields:<br /> <br />{theseButonMsg.map((e,i)=><React.Fragment key={i+e.state}><output  id= {i+"simdOutput"} className="simdOutput" name="outputSimd" form="explanationForm"><span id={"textFormul"+i} className="textFormul">{parse(e.fieldResult)} = {parse(e.state)}</span></output><span id={"blanKSpaceInNoviceView"+i} className="blanKSpaceInNoviceView"> | </span></React.Fragment>)}
+                    <>{theseButonMsg.length>0 && "How to compute these fields:"}<br /> <br />{theseButonMsg.map((e,i)=><React.Fragment key={i+e.state}><output  id= {i+"simdOutput"} className="simdOutput" name="outputSimd" form="explanationForm"><span id={"textFormul"+i} className="textFormul">{parse(e.fieldResult)} = {parse(e.state)}</span></output><span id={"blanKSpaceInNoviceView"+i} className="blanKSpaceInNoviceView"> | </span></React.Fragment>)}
                    <br /> <br /><br /> <br /> <button id="returnToExpertViewButton" className="returnToExpertViewButton" form="explanationForm" type="button" onClick={evt => this.props.handleNoviceViewClick(evt)}>
                             return to expert view
                         </button></>}
