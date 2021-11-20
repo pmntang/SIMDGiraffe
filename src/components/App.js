@@ -37,7 +37,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "_mm_add_epi8",activeView:"novice", isVisible: true, currentOperator: null, currentResult: null, linkingIndexTable: [{
+      value: "_mm_add_epi8",activeView:"expert", isVisible: true, currentOperator: null, currentResult: null, linkingIndexTable: [{
         linkingIndex: myLib.constInitialLinkingIndexInstruction("_mm_add_epi8"),
         currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, "_mm_add_epi8"),resultTable:initializeResultElt("_mm_add_epi8")
       }], clickedButton: 1, msgToUser: { Type: { Type: null, state: false }, Name: { Name: null, state: false }, Rank: { Rank: null, state: false }, Dimension: { Dimension: null, state: false } },

@@ -128,10 +128,12 @@ class Explanation extends Component {
                     <p id="buttonManageVectorOperands" className="buttonManageVectorOperands">
                         {this.insertButtonState && <button id="insertOperandButton" className="insertOperandButton" form="explanationForm" type="button" onClick={evt => this.props.handleInsertClick(evt)}>
                             Insert an operand
-                        </button>}<br /><br />
+                        </button>}<br />
+                        {insertField}<br /><br />
                         {this.deletedButtonState && < button id="deleteOperandButton" className="deleteOperandButton" form="explanationForm" type="button" onClick={evt => this.props.handleDeleteClick(evt)}>
                             Delete an operand
-                        </button>}<br /><br />
+                        </button>}<br />
+                        {deleteField}<br /><br />
                         {false && <><button id="groupOperandsButton" className="groupOperandsButton" form="explanationForm" type="button" onClick={evt => this.props.handleGroupClick(evt)}>
                             Group selected scalar operands
                         </button><br /><br />
@@ -139,7 +141,7 @@ class Explanation extends Component {
                             Part selected scalar operands
                         </button></>}
                     </p>
-                    {insertField}{deleteField}<br /><br />
+                    
                     <button id="returnToNoviceViewButton" className="returnToNoviceViewButton" form="explanationForm" type="button" onClick={evt => this.props.handleExpertViewClick(evt)}>
                             view how to compute all fields
                         </button>
