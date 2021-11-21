@@ -338,7 +338,7 @@ class App extends Component {
           </div>
         </div>
         <div id="operation" className="operation">
-          {this.state.isVisible &&(this.state.activeView==="expert")&& <Operations value={this.state.value} currentInstruction={currentInstruction} linkingIndex={linkingIndex}
+          {this.state.isVisible && <Operations value={this.state.value} currentInstruction={currentInstruction} linkingIndex={linkingIndex}
             handleOperandClick={this.handleOperandClick} handleOperatorClick={this.handleOperatorClick} />}
         </div>
       </div>
