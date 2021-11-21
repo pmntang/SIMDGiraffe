@@ -1,13 +1,23 @@
 .explanation {
    
-    border: 1px solid white
+    border: 1px solid white;
+    
   }
+
+  /* .novice-explanation {
+       border: 1px solid rgb(138, 13, 13);
+       display: flex;
+       justify-content: space-between;
+       flex-wrap: wrap;
+       align-content:space-between;
+    } */
+
 
   .textFormul {
     background-color:#bfe1fc;
-    white-space: nowrap;
-    
+    white-space: nowrap;   
   }
+
   .blanKSpaceInNoviceView {
     color:white;
     
