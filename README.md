@@ -10,7 +10,7 @@ The first time I saw SIMD code, I almost had a heart attack.  My brain was overw
 
 The thing is, we still need SIMD. It's powerful and once you understand what it does, it's quite simple. So, how do we understand what it does then?  We visualize it!  We make it look simple with animations, colors and graphics!
 
-Our goal is to experiment with different visualization methods, until we figure out the ones that are so easy to understand that even our grandmothers would think it's a kids play. For now, we think we found a solution that allows anyone with basic computer science knowledge to understand any given SIMD code, quickly and free of hearth attacks. 
+Our goal is to experiment with different visualization methods, until we figure out the ones that are so easy to understand that even our grandmothers would think it's a kids play. For now, we think we found a solution that allows anyone with basic knowledge of algebra to understand any given SIMD instruction or precisely its intrinsic equivalent, quickly and free of hearth attacks. 
 
 # Basic Features
 - Capturing Expert Explanation.
