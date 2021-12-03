@@ -3,7 +3,7 @@
 [https://pmntang.github.io/SIMDGiraffe](https://pmntang.github.io/SIMDGiraffe)
 
 # But wait, what is SIMD?
-SIMD (pronounced "seem-dee") is short for **Single intrinsic/Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
+SIMD (pronounced "seem-dee") is short for **Single intrinsic, Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
 
 # Why would one need to visualize it?
 The first time I saw SIMD code, I almost had a heart attack.  My brain was overwhelmed, my stress level rose, my face turned white like a sheet of paper and cold sweats started to flow all over my body.  SIMD code is not designed to be easily understood by human brain, it's similar to assembly code, it's made for machines.
@@ -13,6 +13,7 @@ The thing is, we still need SIMD. It's powerful and once you understand what it 
 Our goal is to experiment with different visualization methods, until we figure out the ones that are so easy to understand that even our grandmothers would think it's a kids play. For now, we think we found a solution that allows anyone with basic computer science knowledge to understand any given SIMD code, quickly and free of hearth attacks. 
 
 # Basic Features
+- Capturing Expert Explanation.
 - Semantic SIMD visualization.
 - Graphical Visualization. 🔥🔥
 - Explain SIMD instructions/code. 😮😍
