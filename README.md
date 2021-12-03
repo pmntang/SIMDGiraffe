@@ -16,7 +16,7 @@ Our goal is to experiment with different visualization methods, until we figure 
 - Capturing Expert Explanation.
 - Semantic SIMD visualization.
 - Graphical Visualization. 🔥🔥
-- Explain SIMD instructions/code. 😮😍
+- Explain SIMD instructions/intrinsics. 😮😍
 
 
 
