@@ -53,7 +53,7 @@ See the section about [running tests](#running-tests) for more information.
 
 # Credits
 
-This project is made possible by [Pierre Marie Ntang](https://github.com/pmntang).  It is part of his PhD thesis in congnitive computing at [Université du Québec (TELUQ)](https://www.teluq.ca/site/en/).  Many ideas came from his brilliant mind. Thanks to [Jeremie Piotte](https://github.com/piotte13) who laid the foundation of this software during an internship in our lab at Teluq.
+This project is made possible by [Pierre Marie Ntang](https://github.com/pmntang).  It is part of his PhD thesis in congnitive computing at [Université du Québec (TELUQ)](https://www.teluq.ca/site/en/). Thanks to [Jeremie Piotte](https://github.com/piotte13) who laid the foundation of [SIMD-Visualiser](https://github.com/piotte13/SIMD-Visualiser) during an internship in our lab at Teluq. The ideas of this software were first reused in SIMDGiraffe, but were later completely abandoned due to a pitfall trap related to wrong data abstraction.
 
 Thanks to [Daniel Lemire](https://github.com/lemire) for his many ideas and his deep knowledge and expertise in SIMD software.  He is well known in the open source world as well as the big data community. His work is used by companies such as eBay, Facebook, LinkedIn and Netflix in their data warehouses. Git also uses his techniques to accelerate queries.
 
