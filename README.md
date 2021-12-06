@@ -3,7 +3,7 @@
 [https://pmntang.github.io/SIMDGiraffe](https://pmntang.github.io/SIMDGiraffe)
 ![](src/assets/_mm512_mask_add_ps.gif)
 # But wait, what is SIMD?
-SIMD (pronounced "seem-dee") is short for **Single intrinsic, Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
+SIMD (pronounced "seem-dee") is short for **Single Instruction, Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
 
 # Why would one need to visualize it?
 The first time I saw SIMD code, I almost had a heart attack.  My brain was overwhelmed, my stress level rose, my face turned white like a sheet of paper and cold sweats started to flow all over my body.  SIMD code is not designed to be easily understood by human brain, it's similar to assembly code, it's made for machines.
