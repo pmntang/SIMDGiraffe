@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/SIMDGiraffe/static/css/main.c1bda040.chunk.css",
+    "main.css": "/SIMDGiraffe/static/css/main.5042cb75.chunk.css",
     "main.js": "/SIMDGiraffe/static/js/main.e1706dc2.chunk.js",
     "main.js.map": "/SIMDGiraffe/static/js/main.e1706dc2.chunk.js.map",
     "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.a9c234fb.js",
@@ -10,14 +10,14 @@
     "static/js/3.d4574024.chunk.js": "/SIMDGiraffe/static/js/3.d4574024.chunk.js",
     "static/js/3.d4574024.chunk.js.map": "/SIMDGiraffe/static/js/3.d4574024.chunk.js.map",
     "index.html": "/SIMDGiraffe/index.html",
-    "static/css/main.c1bda040.chunk.css.map": "/SIMDGiraffe/static/css/main.c1bda040.chunk.css.map",
+    "static/css/main.5042cb75.chunk.css.map": "/SIMDGiraffe/static/css/main.5042cb75.chunk.css.map",
     "static/js/2.304d267d.chunk.js.LICENSE.txt": "/SIMDGiraffe/static/js/2.304d267d.chunk.js.LICENSE.txt",
     "static/media/logo.0333e8cd.png": "/SIMDGiraffe/static/media/logo.0333e8cd.png"
   },
   "entrypoints": [
     "static/js/runtime-main.a9c234fb.js",
     "static/js/2.304d267d.chunk.js",
-    "static/css/main.c1bda040.chunk.css",
+    "static/css/main.5042cb75.chunk.css",
     "static/js/main.e1706dc2.chunk.js"
   ]
 }
