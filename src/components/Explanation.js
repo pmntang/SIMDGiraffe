@@ -116,7 +116,7 @@ class Explanation extends Component {
                         <label>{this.currentResult && `How to compute the field  `}</label>
                         <output id="simdOutput" className="simdOutput" name="outputSimd" form="explanationForm" >
                         {this.currentResult && <span id="fieldFormul" className="fieldFormul"> {parse(this.currentResult)}:  </span>}{this.currentResult?<span id="textFormul" className="textFormul"> {parse(this.currentResult)} = {parse(this.butonMsg)}</span>:
-                        "Click on a result field explain its calculation"}
+                        "Click on a result field to explain its calculation"}
                         </output>
                     </p>
                     <p id="buttonParagraph" className="buttonParagraph">
