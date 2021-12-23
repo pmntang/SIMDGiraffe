@@ -8,7 +8,7 @@ SIMD (pronounced "seem-dee") is short for **Single Instruction, Multiple Data** 
 # Why would one need to visualize it?
 The first time I saw SIMD code, I almost had a heart attack.  My brain was overwhelmed, my stress level rose, my face turned white like a sheet of paper and cold sweats started to flow all over my body.  SIMD code is not designed to be easily understood by human brain, it's similar to assembly code, it's made for machines.
 
-The thing is, we still need SIMD. It's powerful and once you understand what it does, it's quite simple. So, how do we understand what it does then?  We visualize it!  We make it look simple with animations, colors and graphics!
+The thing is, we still need SIMD. It's powerful and once you understand what it does, it's quite simple. So, how do we understand what it does then?  We visualize it!  We make it look simple with animations and colors!
 
 Our goal is to experiment with different visualization methods, until we figure out the ones that are so easy to understand that even our grandmothers would think it's a kids play. For now, we think we found a solution that allows anyone with basic knowledge of algebra to understand any given SIMD instruction or precisely its intrinsic equivalent, quickly and free of hearth attacks. 
 
@@ -20,9 +20,10 @@ Our goal is to experiment with different visualization methods, until we figure 
 
 # How does it work?
 
-It depends on the view you choose: the novice view or the expert view.
+It depends on the view you choose: the novice view or the expert view; but most, if not all, actions and operations are done with a mouse click.
 The expert view is to explain the operation of a vector instruction, an intrinsic. The novice view is to see the traces left by the expert, through the expert view, during his explanation. So, if there was no interaction of the expert with SIMDGiraffe, the novice view has nothing.
 For example, from the expert view, if you want to explain the vector instruction **_mm512_mask_add_ps**, you must choose a scalar field from the result vector. For the particular case of this vector instruction, you must use the scalar operators **+**, **x** and **Inv** to connect each result scalar field to the corresponding operand scalar fields.
+The operator **Idx** *(indexing)* is defined by `A Idx B = A~B`. Apart from **Idx** and **Inv**, the other operators are those of elementary arithmetic and retain their semantics of elementary arithmetic.
 
 
 ## Available Scripts
