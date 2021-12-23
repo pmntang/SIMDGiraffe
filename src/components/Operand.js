@@ -28,7 +28,7 @@ class Operand extends Component {
         var result = this.props.operand.reduce((accumulator, currentValue) => [currentValue, ...accumulator], []);
         var rank = this.props.rank, type = this.props.type;
         const rectOprHeight = 50, rectOprWidth = 80, spaceOprBetween = 10, xOpr0 = "0", yOpr0 = "0";
-        const rectOperandHeight = 20, rectOperandWidth = 20, spaceBetweenOperand = 0.5, xOperand0 = this.props.xPrefixWidth, yOperand0 = "0";
+        const rectOperandHeight = 35, rectOperandWidth = 35, spaceBetweenOperand = 0.5, xOperand0 = this.props.xPrefixWidth, yOperand0 = "0";
         const gOperand = result.map((o, j) => <g key={(type.toLowerCase() + rank) + o} id={(type.toLowerCase() + rank) + o} className={(type.toLowerCase() + rank) + o} onClick={evt => this.props.handleOperandClick(evt)}>
             <rect key={"recScalar" + type + (rank + j)} id={"recScalar" + type + (rank + j)} className={"recScalar" + type + (rank + j)} y={yOperand0 + (rank * (rectOperandHeight + spaceOprBetween))} x={xOperand0 + (j * (rectOperandWidth + spaceBetweenOperand))} width={"" + rectOperandWidth}
                 height={"" + rectOperandHeight}></rect>
