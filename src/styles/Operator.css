@@ -8,3 +8,14 @@ text[class*="prefixOperator"]{
     /* display: block; */
     /* width: 100%; */
   } 
+
+  text[class^="txtOperator"]{
+/*     font:bold sans-serif;
+    fill: rgb(25, 38, 49); */
+    font-size: 0.7rem;
+    stroke-width: 0.5;
+    /* background-color: rgb(18, 19, 18);  
+    color: rgb(12, 12, 11); */
+    /* display: block; */
+    /* width: 100%; */
+  } 
