@@ -40,7 +40,7 @@ class Operator extends Component {
         return (
             <>
                 {gOperator}
-                <text key={"prefixOperator"} id={"prefixOperator"} className={"prefixOperator"} x={xOpr0/2} y={yOpr0} dy={"" + rectOprWidth / 2} dominantBaseline="middle" textAnchor="middle">{"operator"}</text>
+                <text key={"prefixOperator"} id={"prefixOperator"} className={"prefixOperator"} x={xOpr0/2} y={yOpr0} dy={"" + rectOprWidth / 2} dominantBaseline="middle" textAnchor="middle">{"operator   = "}</text>
             </>
         )
     }

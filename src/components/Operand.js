@@ -38,7 +38,7 @@ class Operand extends Component {
         return (
             <>
                 {gOperand}
-                <text key={"prefixScalar" + type + rank} id={"prefixScalar" + type + rank} className={"prefixScalar" + type + rank} y={yOperand0 + (rank * spaceOprBetween + (2 * rank + 1) * rectOperandHeight / 2)} x={this.props.xPrefixWidth / 2} dominantBaseline="middle" textAnchor="middle">{`${this.props.varName}   ${this.props.varType}`}</text>
+                <text key={"prefixScalar" + type + rank} id={"prefixScalar" + type + rank} className={"prefixScalar" + type + rank} y={yOperand0 + (rank * spaceOprBetween + (2 * rank + 1) * rectOperandHeight / 2)} x={this.props.xPrefixWidth / 2} dominantBaseline="middle" textAnchor="middle">{`${this.props.varType}   ${this.props.varName} = `}</text>
             </>
         )
     }
