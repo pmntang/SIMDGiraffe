@@ -24,8 +24,8 @@ rect{
 text[class*="prefixScalar"]{
   font:bold sans-serif;
   fill: rgb(25, 38, 49);
-  font-size: 0.7rem;
-  stroke-width: 0.7;
+  font-size: 0.71rem;
+  stroke-width: 0.75;
   /* background-color: rgb(18, 19, 18);  
   color: rgb(12, 12, 11); */
   /* display: block; */

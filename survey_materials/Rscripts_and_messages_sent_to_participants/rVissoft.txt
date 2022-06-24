@@ -1,0 +1,23 @@
+tab1<-read.csv2("Group1.csv")
+vectorMark1<-tab1$NoteInstrucionVectorielle
+tab2<-read.csv2("Group2.csv")
+vectorMark2<-tab2$NoteInstrucionVectorielle
+tab3<-read.csv2("Group3.csv")
+vectorMark3<-tab3$NoteInstrucionVectorielle
+
+par(mfrow=c(1,4))
+h1=hist(vectorMark1, plot=FALSE)
+h1$density=h1$counts/sum(h1$counts)
+h2=hist(vectorMark2, plot=FALSE)
+h2$density=h2$counts/sum(h2$counts)
+h3=hist(vectorMark3, plot=FALSE)
+h3$density=h3$counts/sum(h3$counts)
+
+
+
+plot(h1, freq=FALSE, col = "lightgray", ylim=c(0,0.8),main=paste("",""), xlab="score obtained group 1", ylab="relative frequency per score obtained", cex.lab=1.5)
+plot(h2, freq=FALSE, col = "lightgray", ylim=c(0,0.8),main=paste("",""), xlab="score obtained group 2", ylab="relative frequency per score obtained", cex.lab=1.5)
+plot(h3, freq=FALSE, col = "lightgray", ylim=c(0,0.8),main=paste("",""), xlab="score obtained group 3", ylab="relative frequency per score obtained", cex.lab=1.5)
+boxplot(vectorMark1, vectorMark2, vectorMark3, at=c(1,2,3), names=c("1", "2","3"), xlab="Group Number", ylab="score obtained", cex.lab=1.5, varwidth=TRUE)
+ wilcox.test(vectorMark2, vectorMark1,alternative="greater", conf.level=0.99, exact=FALSE)
+
