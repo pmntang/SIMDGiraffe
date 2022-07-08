@@ -44,6 +44,9 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "standardx": "3.0.0",
     "ts-standard": "^11.0.0"
   }
 }

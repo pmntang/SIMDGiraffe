@@ -1,7 +1,10 @@
 
 # Live Version found here 
 [https://pmntang.github.io/SIMDGiraffe](https://pmntang.github.io/SIMDGiraffe)
+Interaction of the expert with SIMDGiraffe to create, in the expert view, a visual representation of the intrinsic function _mm512_mask_add_ps. The result of the entire interaction process for this intrinsic function is available in the novice view.
 ![](src/assets/_mm512_mask_add_ps.gif)
+Interaction of the expert with SIMDGiraffe to create, in the expert view, a visual representation of the intrinsic function _mm_shuffle_epi32. The result of the entire interaction process for this intrinsic function is available in the novice view.
+![](src/assets/_mm_shuffle_epi32.gif)
 # But wait, what is SIMD?
 SIMD (pronounced "seem-dee") is short for **Single Instruction, Multiple Data** which is one [classification of computer architectures](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy "classification of computer architectures"). SIMD allows one same operation to be performed on multiple data points resulting in data level parallelism and thus performance gains, for example for 3D graphics and video processing, physics simulations or cryptography, and other domains.
 
