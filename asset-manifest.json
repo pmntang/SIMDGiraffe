@@ -1,23 +1,16 @@
 {
   "files": {
-    "main.css": "/SIMDGiraffe/static/css/main.0bfdba9a.chunk.css",
-    "main.js": "/SIMDGiraffe/static/js/main.acf3b846.chunk.js",
-    "main.js.map": "/SIMDGiraffe/static/js/main.acf3b846.chunk.js.map",
-    "runtime-main.js": "/SIMDGiraffe/static/js/runtime-main.a9c234fb.js",
-    "runtime-main.js.map": "/SIMDGiraffe/static/js/runtime-main.a9c234fb.js.map",
-    "static/js/2.304d267d.chunk.js": "/SIMDGiraffe/static/js/2.304d267d.chunk.js",
-    "static/js/2.304d267d.chunk.js.map": "/SIMDGiraffe/static/js/2.304d267d.chunk.js.map",
-    "static/js/3.d4574024.chunk.js": "/SIMDGiraffe/static/js/3.d4574024.chunk.js",
-    "static/js/3.d4574024.chunk.js.map": "/SIMDGiraffe/static/js/3.d4574024.chunk.js.map",
+    "main.css": "/SIMDGiraffe/static/css/main.41cfc489.css",
+    "main.js": "/SIMDGiraffe/static/js/main.f868dc62.js",
+    "static/js/787.d53558c2.chunk.js": "/SIMDGiraffe/static/js/787.d53558c2.chunk.js",
+    "static/media/logo.png": "/SIMDGiraffe/static/media/logo.0333e8cdc6599cf0de33.png",
     "index.html": "/SIMDGiraffe/index.html",
-    "static/css/main.0bfdba9a.chunk.css.map": "/SIMDGiraffe/static/css/main.0bfdba9a.chunk.css.map",
-    "static/js/2.304d267d.chunk.js.LICENSE.txt": "/SIMDGiraffe/static/js/2.304d267d.chunk.js.LICENSE.txt",
-    "static/media/logo.0333e8cd.png": "/SIMDGiraffe/static/media/logo.0333e8cd.png"
+    "main.41cfc489.css.map": "/SIMDGiraffe/static/css/main.41cfc489.css.map",
+    "main.f868dc62.js.map": "/SIMDGiraffe/static/js/main.f868dc62.js.map",
+    "787.d53558c2.chunk.js.map": "/SIMDGiraffe/static/js/787.d53558c2.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.a9c234fb.js",
-    "static/js/2.304d267d.chunk.js",
-    "static/css/main.0bfdba9a.chunk.css",
-    "static/js/main.acf3b846.chunk.js"
+    "static/css/main.41cfc489.css",
+    "static/js/main.f868dc62.js"
   ]
 }
