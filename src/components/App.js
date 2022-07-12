@@ -62,7 +62,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-
+    console.log('linkingIndexTable', this.state.linkingIndexTable)
   }
 
   componentDidUpdate (prevProps, prevState, snapshot) {
@@ -94,18 +94,28 @@ class App extends Component {
   }
 
   handleOnchange (evt) {
-    if (myDataListTab.find(o => o[0] == evt.target.value)) {
-      let linkingIndexTable = this.state.linkingIndexTable
-      if (!(linkingIndexTable.find(e => e.currentInstruction.name === evt.target.value))) {
+    let linkingIndexTable = this.state.linkingIndexTable
+    let isVisible = this.state.isVisible
+    let value = this.state.value
+    let currentOperator = this.state.currentOperator
+    let currentResult = this.state.currentResult
+    if (!(myDataListTab.find(o => o[0] == evt.target.value))) {
+      isVisible = null
+    } else {
+      isVisible = true
+      value = evt.target.value
+      currentOperator = null
+      currentResult = null
+      if (!(linkingIndexTable.find(e => e.currentInstruction.name === value))) {
         const newLinkinIndexObject = {
-          linkingIndex: myLib.constInitialLinkingIndexInstruction(evt.target.value),
-          currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, evt.target.value),
-          resultTable: initializeResultElt(evt.target.value)
+          linkingIndex: myLib.constInitialLinkingIndexInstruction(value),
+          currentInstruction: myLib.findCurrentInstructionByName(myLib.operandsAndResults, value),
+          resultTable: initializeResultElt(value)
         }
-        linkingIndexTable = linkingIndexTable.map(e => ({ linkingIndex: e.linkingIndex.map(o => o.fill('inactive', 0, 1)), currentInstruction: e.currentInstruction }))
+        linkingIndexTable = linkingIndexTable.map(e => ({ linkingIndex: e.linkingIndex.map(o => o.fill('inactive', 0, 1)), currentInstruction: e.currentInstruction, resultTable: e.resultTable }))
         linkingIndexTable = [...linkingIndexTable, newLinkinIndexObject]
       } else {
-        const indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === evt.target.value)
+        const indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === value)
         const newLinkinIndexObject = {
           linkingIndex: linkingIndexTable[indexOfLinkingIndex].linkingIndex.map(o => o.fill('inactive', 0, 1)),
           currentInstruction: linkingIndexTable[indexOfLinkingIndex].currentInstruction,
@@ -113,29 +123,25 @@ class App extends Component {
         }
         linkingIndexTable = linkingIndexTable.fill(newLinkinIndexObject, indexOfLinkingIndex, indexOfLinkingIndex + 1)
       }
-      this.setState(state => ({
-        linkingIndexTable: linkingIndexTable,
-        currentOperator: null,
-        currentResult: null,
-        value: evt.target.value,
-        isVisible: true
-      }))
-    } else {
-      this.setState(prevState => ({
-        isVisible: null
-      }))
     }
+    this.setState(state => ({
+      linkingIndexTable: linkingIndexTable,
+      currentOperator: currentOperator,
+      currentResult: currentResult,
+      value: value,
+      isVisible: isVisible
+    }))
   }
 
   handleOperandClick = (evt) => { // To handle both operand and result clickS
-    const linkingIndexTable = this.state.linkingIndexTable; console.log('linkingIndexTable op', linkingIndexTable)
+    const linkingIndexTable = this.state.linkingIndexTable // console.log('linkingIndexTable op', linkingIndexTable)
     const indexOfcurrentInstruction = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value)
     const currentInstructionR = linkingIndexTable[indexOfcurrentInstruction].currentInstruction.result.reduce((accumulator, currentValue) => [currentValue, ...accumulator], [])// just to reverse
     if (evt.currentTarget.id.includes('result')) { // result has been clicked
       const number = evt.currentTarget.textContent
       const indexR = currentInstructionR.findIndex(e => (String.fromCharCode(65 + linkingIndexTable[indexOfcurrentInstruction].currentInstruction.operands.length) + e) === number)
       linkingIndexTable[indexOfcurrentInstruction].linkingIndex = linkingIndexTable[indexOfcurrentInstruction].linkingIndex.map((e, i) => i === indexR ? e.map((x, j) => j === 0 ? 'active' : x) : e.map((x, j) => j === 0 ? 'inactive' : x))
-      linkingIndexTable[indexOfcurrentInstruction].resultTable = linkingIndexTable[indexOfcurrentInstruction].resultTable.map((e, i) => i === indexR ? ({ state: e.state, fieldResult: number }) : e); console.log('number', number, 'index', indexR)
+      linkingIndexTable[indexOfcurrentInstruction].resultTable = linkingIndexTable[indexOfcurrentInstruction].resultTable.map((e, i) => i === indexR ? ({ state: e.state, fieldResult: number }) : e)// console.log('number', number, 'index', indexR)
       indexR > -1 && this.setState(prevState => ({
         currentResult: number,
         linkingIndexTable: linkingIndexTable
@@ -207,11 +213,11 @@ class App extends Component {
   }
 
   handleDimensionOfOperandChange = (evt) => {
-    console.log('this.state.msgToUser.Dimension ', this.state.msgToUser.Dimension)
+    // console.log('this.state.msgToUser.Dimension ', this.state.msgToUser.Dimension)
     const Dimension = { Dimension: evt.target.value, state: true }
     this.setState(prevState => ({
       msgToUser: { ...prevState.msgToUser, Dimension }
-    })); console.log('this.state.msgToUser.Dimension ', this.state.msgToUser.Dimension)
+    })) // console.log('this.state.msgToUser.Dimension ', this.state.msgToUser.Dimension)
   }
 
   handleNameOfOperandChange = (evt) => {
@@ -320,7 +326,7 @@ class App extends Component {
   }
 
   render () {
-    console.log('linkingIndextable', this.state.linkingIndexTable)
+    // console.log('linkingIndextable', this.state.linkingIndexTable)
     const indexOfLinkingIndex = this.state.linkingIndexTable.findIndex(e => e.currentInstruction.name == this.state.value)
     const linkingIndex = this.state.linkingIndexTable[indexOfLinkingIndex].linkingIndex
     const currentInstruction = this.state.linkingIndexTable[indexOfLinkingIndex].currentInstruction

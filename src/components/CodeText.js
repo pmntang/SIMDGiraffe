@@ -1,54 +1,51 @@
-import React, { Component } from 'react';
-import * as myLib from '../utilities/myLibrary.js';
-import '../styles/CodeText.css';
-import simdFunction from '../utilities/simdFunction.json';
-import parse from 'html-react-parser';
+import React, { Component } from 'react'
+import * as myLib from '../utilities/myLibrary.js'
+import '../styles/CodeText.css'
+import simdFunction from '../utilities/simdFunction.json'
+import parse from 'html-react-parser'
 
-const myDataListTab = myLib.constructDataListTable(simdFunction);
-const options=myDataListTab.map((e, i) => <option key={`${e[0]}+${i}`} value={e[0]}>{e[0]}</option>)
+const myDataListTab = myLib.constructDataListTable(simdFunction)
+const options = myDataListTab.map((e, i) => <option key={`${e[0]}+${i}`} value={e[0]}>{e[0]}</option>)
 
-
-const operandsAndResults = myLib.computeOperandsAndresultElt(simdFunction);
+const operandsAndResults = myLib.computeOperandsAndresultElt(simdFunction)
 const _mName = simdFunction.intrinsic.find((e, i) => {
-    var ex = ""
-    if (e._rettype) {
-        ex = e._rettype == "_m512" ? e._rettype : ex;
-    }
-    if (e.parameter && Array.isArray(e.parameter)) {
-        e.parameter.forEach(element => {
-            if (element._type) {
-                ex = element._type == "_m512" ? element._type : ex;
-            }
-        });
-
-    }
-    if (ex) return e;
-    return ex;
-});
+  let ex = ''
+  if (e._rettype) {
+    ex = e._rettype == '_m512' ? e._rettype : ex
+  }
+  if (e.parameter && Array.isArray(e.parameter)) {
+    e.parameter.forEach(element => {
+      if (element._type) {
+        ex = element._type == '_m512' ? element._type : ex
+      }
+    })
+  }
+  if (ex) return e
+  return ex
+})
 class CodeText extends Component {
-    // eslint-disable-next-line no-useless-constructor
-    constructor(props) {
-        super(props);
+  // eslint-disable-next-line no-useless-constructor
+  constructor (props) {
+    super(props)
+  }
 
-    }
+  componentDidMount () {
 
-    componentDidMount() {
+  }
 
-    }
+  componentDidUpdate () {
 
-    componentDidUpdate() {
+  }
 
-    }
+  componentWillUnmount () {
 
-    componentWillUnmount() {
+  }
 
-    }
-
-    render() {
-     
-        var  handleOnchange = this.props.handleOnchange, value = this.props.value;
-        const description = myDataListTab.find(e => e[0] == value)[3];console.log("description",description);
-        return (
+  render () {
+    // eslint-disable-next-line react/prop-types
+    const handleOnchange = this.props.handleOnchange; const value = this.props.value
+    const description = myDataListTab.find(e => e[0] == value)[3]// console.log("description",description);
+    return (
 
            <div className='instruction-choice-and-explanation'>
 
@@ -64,8 +61,8 @@ class CodeText extends Component {
                 </div>}
 
             </div>
-        )
-    }
+    )
+  }
 }
 
 export default CodeText

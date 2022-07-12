@@ -34,7 +34,7 @@ class Explanation extends Component {
   }
 
   render () {
-    console.log()
+    //console.log()
     const availableLetters = this.props.currentInstruction.operands.length === 0 ? alphabethLetters : alphabethLetters.filter(x => !this.props.currentInstruction.varnames.includes(x))
     const availableName = this.props.currentInstruction.operands.length === 0 ? [...this.props.deletedName, ...availableLetters] : [...this.props.deletedName, ...availableLetters].filter(x => !this.props.currentInstruction.varnames.includes(x))
     const optionsName = optionOfT(['--Choose operand name--', ...availableName])
@@ -97,7 +97,7 @@ class Explanation extends Component {
     const resultTable = this.props.resultTable.map(e => ({ state: e.state, fieldResult: myLib.replaceOperandInMessage(e.fieldResult) }))
     // eslint-disable-next-line react/prop-types
     const theseButonMsg = myLib.readAllLinkinIndex(this.props.linkingIndex, resultTable)
-    console.log('msg ', resultTable, ' Modified Msg ', theseButonMsg)
+    //console.log('msg ', resultTable, ' Modified Msg ', theseButonMsg)
     this.currentResult = this.props.currentResult ? myLib.replaceOperandInMessage(this.props.currentResult) : this.props.currentResult
     if (this.props.clickedButton) {
       this.deletedButtonState = 1// this.props.clickedButton === "deleteOperandButton";
