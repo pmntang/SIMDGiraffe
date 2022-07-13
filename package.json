@@ -18,12 +18,12 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
-    "eject": "DISABLE_ESLINT_PLUGIN=true react-scripts eject",
-    "predeploy": "DISABLE_ESLINT_PLUGIN=true yarn run build",
-    "deploy": "DISABLE_ESLINT_PLUGIN=true gh-pages  -d build"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages  -d build"
   },
   "eslintConfig": {
     "extends": [
