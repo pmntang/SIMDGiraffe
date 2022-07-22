@@ -701,12 +701,14 @@ export function deleteOperand (opName, opRank, aLinkingObject) {
   const operands = currentInstruction.operands
   const types = currentInstruction.types
   const varnames = currentInstruction.varnames
+  console.log('deleted 0', [{ ...aLinkingObject, linkingIndex, currentInstruction }, opName])
   if (opName === varnames[opRank - 1]) {
     operands.splice(opRank - 1, 1)
     types.splice(opRank - 1, 1)
     varnames.splice(opRank - 1, 1)
     currentInstruction = { ...currentInstruction, operands, types, varnames }
     linkingIndex = constInitialLinkingIndexInstruction(currentInstruction.name)
+    console.log('deleted', [{ ...aLinkingObject, linkingIndex, currentInstruction }, opName])
     return [{ ...aLinkingObject, linkingIndex, currentInstruction }, opName]
   }
 }

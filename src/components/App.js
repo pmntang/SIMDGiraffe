@@ -62,7 +62,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-    console.log('linkingIndexTable', this.state.linkingIndexTable)
+    
   }
 
   componentDidUpdate (prevProps, prevState, snapshot) {
@@ -286,11 +286,13 @@ class App extends Component {
     let deletedName = this.state.deletedName
     const linkingIndexTable = this.state.linkingIndexTable
     const msgToUser = this.state.msgToUser
+    console.log('delete2', deletedName, 'msgToUser',msgToUser,'linkingIndexTable', linkingIndexTable)
     if (msgToUser.Name.state && msgToUser.Rank.state) {
       const indexOfLinkingIndex = linkingIndexTable.findIndex(e => e.currentInstruction.name === this.state.value)
       const modifiedCurrentInstruction = myLib.deleteOperand(msgToUser.Name.Name, msgToUser.Rank.Rank, linkingIndexTable[indexOfLinkingIndex])
       linkingIndexTable[indexOfLinkingIndex] = modifiedCurrentInstruction[0]
       deletedName = [modifiedCurrentInstruction[1], ...deletedName]
+      console.log('delete3',deletedName)
     }
     this.setState(prevState => ({
       deletedName: deletedName,
