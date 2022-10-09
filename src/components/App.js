@@ -72,7 +72,7 @@ class App extends Component {
       if (r.some((o, j) => j > 0 && o.find(x => x[2]))) {
         resultTable[i].state = 'active'
       } else {
-        resultTable[i].state = 'inactive'
+        if(resultTable[i]) resultTable[i].state = 'inactive' // check this latter
       }
     })
     if (!_.isEqual(resultTable, this.state.linkingIndexTable[indexOfLinkingIndex].resultTable)) {

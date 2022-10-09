@@ -666,7 +666,7 @@ export const range = (start, stop, step) => Array.from({ length: (stop - start) 
 
 export const operandsAndResults = computeOperandsAndresultElt(simdFunction)
 
-export const constInitialLinkingIndexInstruction = (instructionName) => {//take an instrinsic name, search in inoperandsAndResults computed from a simd file, and return an array with elements ['inactive', ...[]] and length equal the number of operands + 1
+export const constInitialLinkingIndexInstruction = (instructionName) => {// take an instrinsic name, search in inoperandsAndResults computed from a simd file, and return an array with elements ['inactive', ...[]] and length equal the number of operands + 1
   const operand = operandsAndResults.find(e => e.name == instructionName)
   return operand.result.map(o => ['inactive', ...operand.operands.map(e => [])])
 }
