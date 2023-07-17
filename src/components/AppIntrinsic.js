@@ -4,10 +4,10 @@ import * as _ from 'lodash'
 import simdFunction from '../utilities/simdFunction.json'
 import styled from 'styled-components'
 import logo from '../assets/logo.png'
-import '../styles/App.css'
-import CodeText from './CodeText'
-import Operations from './Operations'
-import Explanation from './Explanation'
+import '../styles/AppIntrinsic.css'
+import CodeText from './CodeText.js'
+import Operations from './Operations.js'
+import Explanation from './Explanation.js'
 // import Visualization from './Visualization';
 
 const Container = styled.div`
@@ -30,7 +30,7 @@ const RightContainer = styled.div`
 const myDataListTab = myLib.constructDataListTable(simdFunction)
 const initializeResultElt = anInstructionName => myLib.range(1, myLib.constInitialLinkingIndexInstruction(anInstructionName).length, 1).map(e => ({ state: 'inactive', fieldResult: null }))
 
-class App extends Component {
+class AppIntrinsic extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -357,4 +357,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default AppIntrinsic

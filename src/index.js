@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
-import App from './components/App';
+import AppIntrinsic from './components/AppIntrinsic';
 import * as serviceWorker from './serviceWorker';
 import {HashRouter, Switch, Route} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
@@ -9,8 +9,8 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <HashRouter basename={process.env.PUBLIC_URL}>
       <Switch>
-          <Route exact path='/' component={App}/>
-          <Route path='/link/:code' component={App}/>
+          <Route exact path='/' component={AppIntrinsic}/>
+          <Route path='/link/:code' component={AppIntrinsic}/>
       </Switch>
   </HashRouter>,
   document.getElementById('root')
