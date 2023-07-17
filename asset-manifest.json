@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/SIMDGiraffe/static/css/main.41cfc489.css",
-    "main.js": "/SIMDGiraffe/static/js/main.812c2600.js",
+    "main.js": "/SIMDGiraffe/static/js/main.1544c32b.js",
     "static/js/787.8f5141e3.chunk.js": "/SIMDGiraffe/static/js/787.8f5141e3.chunk.js",
     "static/media/logo.png": "/SIMDGiraffe/static/media/logo.0333e8cdc6599cf0de33.png",
     "index.html": "/SIMDGiraffe/index.html",
     "main.41cfc489.css.map": "/SIMDGiraffe/static/css/main.41cfc489.css.map",
-    "main.812c2600.js.map": "/SIMDGiraffe/static/js/main.812c2600.js.map",
+    "main.1544c32b.js.map": "/SIMDGiraffe/static/js/main.1544c32b.js.map",
     "787.8f5141e3.chunk.js.map": "/SIMDGiraffe/static/js/787.8f5141e3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.41cfc489.css",
-    "static/js/main.812c2600.js"
+    "static/js/main.1544c32b.js"
   ]
 }
