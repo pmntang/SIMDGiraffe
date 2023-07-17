@@ -1,9 +1,12 @@
-tab1<-read.csv2("Group1.csv")
+tab1<-read.csv2("Answ_QuestionnaireGroup1_And_QuestionnaireGroupe1.csv")
 vectorMark1<-tab1$NoteInstrucionVectorielle
-tab2<-read.csv2("Group2.csv")
+tab2<-read.csv2("Answ_QuestionnaireGroup2_And_QuestionnaireGroupe2.csv")
 vectorMark2<-tab2$NoteInstrucionVectorielle
-tab3<-read.csv2("Group3.csv")
+tab3<-read.csv2("Answ_QuestionnaireGroup3_And_QuestionnaireGroupe3.csv")
 vectorMark3<-tab3$NoteInstrucionVectorielle
+tab<-rbind(tab1, tab2, tab3)
+vectorMarkTot<-tab$NoteInstrucionVectorielle
+
 
 par(mfrow=c(1,4))
 h1=hist(vectorMark1, plot=FALSE)
